@@ -32,13 +32,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/img/bg.jpg
-    - assets/img/1.jpg
-    - assets/img/2.jpg
-    - assets/img/3.jpg
-    - assets/img/4.jpeg
-    - assets/img/5.jpeg
-    - assets/img/6.png
+    - assets/img/
     
   fonts:
     - family: Pacifico
