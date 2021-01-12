@@ -1,15 +1,11 @@
-//System Imports
 import 'package:afeez/Intents/splash_screen.dart';
 import 'package:flutter/material.dart';
-
-//Custom Imports
 
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: Afeez(),
   )
-      // Afeez()
       );
 }
 
