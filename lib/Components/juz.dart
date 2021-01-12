@@ -1,8 +1,4 @@
-// import 'dart:convert';
-// import 'package:http/http.dart' as http;
-// import 'package:afeez/Api/requests.dart';
 import 'dart:convert';
-
 import 'package:afeez/Api/requests.dart';
 import 'package:afeez/Intents/test_page.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +53,6 @@ class _Juz extends State<Juz> {
 
   @override
   void initState() {
-    // _getJuz();
     super.initState();
   }
 
