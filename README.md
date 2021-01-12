@@ -1,4 +1,4 @@
-# hafiz
+# Hafiz
 
 Test your Quran memorisation skill.
 
