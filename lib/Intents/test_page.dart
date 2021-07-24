@@ -59,7 +59,7 @@ class _TestPage extends State<TestPage> with SingleTickerProviderStateMixin {
   getSettings() async {
     SharedPreferences settings = await SharedPreferences.getInstance();
     setState(() {
-      autoplay = settings.getBool('autoplay');
+      autoplay = settings.getBool('autoplay') ?? true;
     });
   }
 

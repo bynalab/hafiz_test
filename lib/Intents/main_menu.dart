@@ -13,13 +13,13 @@ class MainMenu extends StatefulWidget {
 
 class _MainMenu extends State<MainMenu> {
   bool text;
-  bool isSwitched = false;
+  bool isSwitched = true;
   bool splash = true;
   var random;
   getSettings() async {
     SharedPreferences settings = await SharedPreferences.getInstance();
     setState(() {
-      isSwitched = settings.getBool('autoplay');
+      isSwitched = settings.getBool('autoplay') ?? true;
     });
   }
 
