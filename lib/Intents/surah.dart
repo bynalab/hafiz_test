@@ -1,8 +1,7 @@
 import 'dart:convert';
-
 import 'package:afeez/Api/requests.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:audioplayer/audioplayer.dart';
 
 class Surah extends StatefulWidget {
   final int surahNumber;
@@ -39,10 +38,7 @@ class _Surah extends State<Surah> {
 
   AudioPlayer audioPlayer = AudioPlayer();
   playAudio(url) async {
-    int result = await audioPlayer.play(url);
-    if (result == 1) {
-      audioPlayer.onPlayerCompletion.listen((event) {});
-    }
+    await audioPlayer.play(url);
   }
 
   int _selectedIndex;
@@ -110,7 +106,8 @@ class _Surah extends State<Surah> {
                                 _onSelected(index);
                                 playAudio(verses[index]['audioSecondary'][0]);
 
-                                audioPlayer.onPlayerCompletion.listen((event) {
+                                audioPlayer.onAudioPositionChanged
+                                    .listen((event) {
                                   setState(() {
                                     _selectedIndex = null;
                                   });

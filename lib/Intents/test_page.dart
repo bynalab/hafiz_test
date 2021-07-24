@@ -1,14 +1,10 @@
-//System Imports
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:afeez/Api/requests.dart';
 import 'package:afeez/Intents/surah.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:audioplayer/audioplayer.dart';
 import 'package:flutter/material.dart';
-
-//Custom Imports
-// import 'package:nice_button/NiceButton.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TestPage extends StatefulWidget {
@@ -24,33 +20,22 @@ class _TestPage extends State<TestPage> with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   Random random;
   AudioPlayer audioPlayer = AudioPlayer();
-  // StreamSubscription<AudioPlayerState> _stateSubscription;
 
   var isPlaying = false;
   var randomVerse = 'Random Verse';
-  var currentVerse;
+  int currentVerse = 0;
   var audioVerse;
   bool isLoading = false;
   bool isResume = false;
   bool isJuz = false;
+  bool isFirst = true;
 
   List randomVerses;
   var chapter;
   var verse;
 
   playAudio(url) async {
-    int result = await audioPlayer.play(url);
-    if (result == 1) {
-      audioPlayer.onPlayerCompletion.listen((event) {
-        setState(() {
-          isPlaying = false;
-        });
-      });
-
-      if (isPlaying == false) {
-        await audioPlayer.pause();
-      }
-    } else {}
+    await audioPlayer.play(url);
   }
 
   @override
@@ -70,7 +55,7 @@ class _TestPage extends State<TestPage> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  bool autoplay;
+  bool autoplay = true;
   getSettings() async {
     SharedPreferences settings = await SharedPreferences.getInstance();
     setState(() {
@@ -128,22 +113,20 @@ class _TestPage extends State<TestPage> with SingleTickerProviderStateMixin {
     setState(() {
       isLoading = false;
     });
-
-    // print(currentVerse);
-
-    // print(currentVerse);
   }
 
   _nextVerse(ctx) async {
-    // print(currentVerse);
+    if (isFirst) {
+      currentVerse -= 1;
+      isFirst = false;
+    }
     if (currentVerse < randomVerses.length) {
       setState(() {
         currentVerse += 1;
         randomVerse = randomVerses[currentVerse]['text'];
         audioVerse = randomVerses[currentVerse]['audioSecondary'][0];
-        // currentVerse += 1;
       });
-      // print(currentVerse);
+
       if (autoplay) {
         await this.playAudio(audioVerse);
         setState(() {
@@ -156,7 +139,6 @@ class _TestPage extends State<TestPage> with SingleTickerProviderStateMixin {
         });
       }
     } else {
-      // print('The End');
       final snackBar = SnackBar(
         content: Text('End of Surah'),
         action: SnackBarAction(
@@ -171,15 +153,11 @@ class _TestPage extends State<TestPage> with SingleTickerProviderStateMixin {
   }
 
   _previousVerse(ctx) {
-    // print(currentVerse);
-
     if (currentVerse != 0) {
-      // print(currentVerse);
       setState(() {
         currentVerse -= 1;
         randomVerse = randomVerses[currentVerse]['text'];
         audioVerse = randomVerses[currentVerse]['audioSecondary'][0];
-        // currentVerse -= 1;
       });
       if (autoplay) {
         this.playAudio(audioVerse);
@@ -193,7 +171,6 @@ class _TestPage extends State<TestPage> with SingleTickerProviderStateMixin {
         });
       }
     } else {
-      // print('The End');
       final snackBar = SnackBar(
         content: Text('Beginning of Surah'),
         action: SnackBarAction(
@@ -210,6 +187,7 @@ class _TestPage extends State<TestPage> with SingleTickerProviderStateMixin {
   Future<void> _refreshVerse() async {
     setState(() {
       _randomVerse();
+      isFirst = true;
     });
   }
 
@@ -276,7 +254,6 @@ class _TestPage extends State<TestPage> with SingleTickerProviderStateMixin {
                               SizedBox(height: 50),
                               Wrap(
                                 spacing: 50,
-                                // _previousVerse(ctx)
                                 children: <Widget>[
                                   FlatButton.icon(
                                     color: Colors.blueGrey,
@@ -332,7 +309,6 @@ class _TestPage extends State<TestPage> with SingleTickerProviderStateMixin {
                                   ),
                                 ),
                               ),
-                              // SizedBox(height: 30),
                               ButtonTheme(
                                 minWidth: 300,
                                 height: 40,

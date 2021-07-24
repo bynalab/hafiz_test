@@ -1,15 +1,9 @@
-//System Imports
 import 'dart:math';
-
-import 'package:afeez/Intents/by_juz.dart';
 import 'package:afeez/Intents/test_page.dart';
 import 'package:flutter/material.dart';
-
-//Custom Imports
-import 'package:nice_button/nice_button.dart';
+import 'package:nice_button/NiceButton.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'by_surah.dart';
 
 class MainMenu extends StatefulWidget {
@@ -37,10 +31,8 @@ class _MainMenu extends State<MainMenu> {
   _showDialog() {
     Alert(
       context: context,
-      // type: AlertType.success,
       closeFunction: () {},
       title: "Settings",
-      // desc: "Flutter is more awesome with RFlutter Alert.",
       content: StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
         return Column(
@@ -82,10 +74,7 @@ class _MainMenu extends State<MainMenu> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => TestPage(
-                  verse: null,
-                  chapter: chapter,
-                )));
+            builder: (context) => TestPage(verse: null, chapter: chapter)));
   }
 
   @override
@@ -119,18 +108,6 @@ class _MainMenu extends State<MainMenu> {
                       MaterialPageRoute(builder: (context) => BySurah()));
                 },
               ),
-              // SizedBox(height: 20),
-              // NiceButton(
-              //   width: 500,
-              //   elevation: 8.0,
-              //   radius: 52.0,
-              //   text: "Test by Juz",
-              //   background: Colors.blueGrey,
-              //   onPressed: () {
-              //     Navigator.push(context,
-              //         MaterialPageRoute(builder: (context) => ByJuz()));
-              //   },
-              // ),
               SizedBox(height: 20),
               NiceButton(
                 width: 500,
@@ -138,9 +115,7 @@ class _MainMenu extends State<MainMenu> {
                 radius: 52.0,
                 text: "Test by full Quran",
                 background: Colors.blueGrey,
-                onPressed: () {
-                  _fullQuran();
-                },
+                onPressed: () => _fullQuran(),
               ),
               SizedBox(height: 60),
               NiceButton(
@@ -150,9 +125,7 @@ class _MainMenu extends State<MainMenu> {
                 radius: 52.0,
                 text: "Settings",
                 background: Colors.blueGrey,
-                onPressed: () {
-                  _showDialog();
-                },
+                onPressed: () => _showDialog(),
               ),
             ],
           )),

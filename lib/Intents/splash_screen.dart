@@ -11,7 +11,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreen extends State<SplashScreen> {
   Future<bool> _splash() async {
-    await Future.delayed(Duration(milliseconds: 5000), () {});
+    await Future.delayed(Duration(milliseconds: 1000), () {});
     return true;
   }
 
@@ -48,7 +48,6 @@ class _SplashScreen extends State<SplashScreen> {
                   'HAFIZ',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    // fontFamily: 'Bebas Neue Regular',
                     fontSize: 80.0,
                     fontWeight: FontWeight.bold,
                   ),
