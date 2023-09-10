@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 
 import 'package:hafiz_test/juz/juz_list_screen.dart';
 import 'package:hafiz_test/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';
+import 'package:hafiz_test/widget/button.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -39,7 +41,7 @@ class _MainMenu extends State<MainMenu> {
         appBar: AppBar(
           title: const Text(
             'HAFIZ',
-            style: TextStyle(fontSize: 30),
+            style: TextStyle(fontSize: 20),
           ),
           backgroundColor: Colors.blueGrey,
           actions: [
@@ -57,89 +59,88 @@ class _MainMenu extends State<MainMenu> {
             ),
           ],
         ),
-        body: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton.icon(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  Colors.blueGrey,
-                ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) {
-                      return const SurahListScreen();
-                    },
+        body: Padding(
+          padding: const EdgeInsets.all(30),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomButton(
+                text: const Text(
+                  'Test by Surah',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              },
-              icon: const Icon(
-                Icons.group_work,
-                color: Colors.white,
-              ),
-              label: const Text(
-                'Test by Surah',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  Colors.blueGrey,
                 ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) {
-                      return const Juz();
-                    },
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.book,
-                color: Colors.white,
-              ),
-              label: const Text(
-                'Test by Juz',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  Colors.blueGrey,
+                icon: const Icon(
+                  FlutterIslamicIcons.quran2,
+                  color: Colors.white,
                 ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return const SurahListScreen();
+                      },
+                    ),
+                  );
+                },
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) {
-                      return const TestBySurah(surahNumber: 0);
-                    },
+              const SizedBox(height: 20),
+              CustomButton(
+                text: const Text(
+                  'Test by Juz',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              },
-              icon: const Icon(
-                Icons.book,
-                color: Colors.white,
+                ),
+                icon: const Icon(
+                  FlutterIslamicIcons.quran,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return const JuzListScreen();
+                      },
+                    ),
+                  );
+                },
               ),
-              label: const Text(
-                'Test by full Quran',
-                style: TextStyle(color: Colors.white),
+              const SizedBox(height: 20),
+              CustomButton(
+                text: const Text(
+                  'Entire Quran',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                icon: const Icon(
+                  FlutterIslamicIcons.solidQuran2,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return const TestBySurah(surahNumber: 0);
+                      },
+                    ),
+                  );
+                },
               ),
-            ),
-          ],
-        )),
+            ],
+          ),
+        ),
       ),
     );
   }

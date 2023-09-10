@@ -2,19 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hafiz_test/data/juz_list.dart';
 import 'package:hafiz_test/juz/test_by_juz.dart';
 
-class Juz extends StatefulWidget {
-  const Juz({super.key});
+class JuzListScreen extends StatelessWidget {
+  const JuzListScreen({super.key});
 
-  @override
-  State<StatefulWidget> createState() => _Juz();
-}
-
-class _Juz extends State<Juz> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hafiz'),
+        title: const Text('Hafiz - Juz List'),
         backgroundColor: Colors.blueGrey,
       ),
       body: ListView.builder(
