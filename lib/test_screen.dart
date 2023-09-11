@@ -6,6 +6,7 @@ import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/surah/view_full_surah.dart';
 import 'package:hafiz_test/util/util.dart';
+import 'package:hafiz_test/widget/button.dart';
 
 class TestScreen extends StatefulWidget {
   final Surah surah;
@@ -114,6 +115,7 @@ class _TestPage extends State<TestScreen> {
   Widget build(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: [
             if (ayah.numberInSurah < ayahs.length)
@@ -191,54 +193,61 @@ class _TestPage extends State<TestScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton.icon(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                      Colors.blueGrey,
+                Expanded(
+                  child: CustomButton(
+                    text: const Text(
+                      'Previous',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  onPressed: () => playPreviousAyah(),
-                  icon: const Icon(
-                    Icons.skip_previous,
-                    color: Colors.white,
-                  ),
-                  label: const Text(
-                    'Previous',
-                    style: TextStyle(color: Colors.white),
+                    icon: const Icon(
+                      Icons.skip_previous,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                    onPressed: () => playPreviousAyah(),
                   ),
                 ),
-                ElevatedButton.icon(
-                  onPressed: () => playNextAyah(),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                      Colors.blueGrey,
+                const SizedBox(width: 20),
+                Expanded(
+                  child: CustomButton(
+                    iconPosition: IconPosition.right,
+                    text: const Text(
+                      'Next',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  icon: const Text(
-                    'Next',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  label: const Icon(
-                    Icons.skip_next,
-                    color: Colors.white,
+                    icon: const Icon(
+                      Icons.skip_next,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                    onPressed: () => playNextAyah(),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 30),
-            ElevatedButton.icon(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  Colors.blueGrey,
+            CustomButton(
+              width: 200,
+              text: const Text(
+                'View All',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               icon: const Icon(
                 Icons.remove_red_eye,
                 color: Colors.white,
-              ),
-              label: const Text(
-                'View All',
-                style: TextStyle(color: Colors.white),
+                size: 30,
               ),
               onPressed: () {
                 Navigator.push(
@@ -251,19 +260,21 @@ class _TestPage extends State<TestScreen> {
                 );
               },
             ),
-            ElevatedButton.icon(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  Colors.blueGrey,
+            const SizedBox(height: 20),
+            CustomButton(
+              width: 200,
+              text: const Text(
+                'Refresh',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               icon: const Icon(
                 Icons.refresh,
                 color: Colors.white,
-              ),
-              label: const Text(
-                'Refresh',
-                style: TextStyle(color: Colors.white),
+                size: 30,
               ),
               onPressed: () => widget.onRefresh?.call(),
             ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum IconPosition { left, right }
+
 class CustomButton extends StatelessWidget {
   final Text text;
   final Widget? icon;
@@ -7,6 +9,7 @@ class CustomButton extends StatelessWidget {
   final double? width;
   final bool isLoading;
   final Widget? prefixIcon;
+  final IconPosition iconPosition;
   final Function()? onPressed;
   final Decoration? decoration;
 
@@ -18,6 +21,7 @@ class CustomButton extends StatelessWidget {
     this.height,
     this.width,
     this.icon,
+    this.iconPosition = IconPosition.left,
     this.decoration,
     this.isLoading = false,
     this.prefixIcon,
@@ -54,8 +58,15 @@ class CustomButton extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (icon != null) ...[icon!, const SizedBox(width: 5)],
+                  if (icon != null && iconPosition == IconPosition.left) ...[
+                    icon!,
+                    const SizedBox(width: 5)
+                  ],
                   FittedBox(child: text),
+                  if (icon != null && iconPosition == IconPosition.right) ...[
+                    const SizedBox(width: 5),
+                    icon!
+                  ],
                 ],
               ),
             ),

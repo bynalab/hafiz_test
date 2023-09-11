@@ -77,116 +77,118 @@ class _Surah extends State<SurahScreen> {
         ),
         backgroundColor: Colors.blueGrey,
       ),
-      body: SingleChildScrollView(
+      body: Container(
         padding: const EdgeInsets.only(top: 20),
-        child: Column(
-          children: [
-            if (isLoading)
-              const CircularProgressIndicator(
-                strokeWidth: 5,
-                backgroundColor: Colors.blueGrey,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )
-            else
-              Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 20),
-                    child: Column(
-                      children: [
-                        Text(
-                          surah.name,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            color: Colors.blueGrey,
-                            fontFamily: 'Quran',
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              if (isLoading)
+                const CircularProgressIndicator(
+                  strokeWidth: 5,
+                  backgroundColor: Colors.blueGrey,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                )
+              else
+                Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      child: Column(
+                        children: [
+                          Text(
+                            surah.name,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.blueGrey,
+                              fontFamily: 'Quran',
+                            ),
                           ),
-                        ),
-                        Text(
-                          '${surah.number}. ${surah.englishName}: ${surah.englishNameTranslation}',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            color: Colors.blueGrey,
+                          Text(
+                            '${surah.number}. ${surah.englishName}: ${surah.englishNameTranslation}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.blueGrey,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  const Divider(color: Colors.black),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: surah.ayahs.length,
-                    itemBuilder: (context, index) {
-                      final ayah = surah.ayahs[index];
+                    const Divider(color: Colors.black),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: surah.ayahs.length,
+                      itemBuilder: (context, index) {
+                        final ayah = surah.ayahs[index];
 
-                      return InkWell(
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                              left: 10, right: 20, bottom: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              if (index == selectedIndex)
-                                if (isPlaying)
-                                  const Icon(
-                                    Icons.volume_up,
-                                    color: Colors.blueGrey,
-                                  ).animate(
-                                    onPlay: (controller) {
-                                      controller.repeat(reverse: true);
-                                    },
-                                  ).scaleXY()
-                                else
-                                  const Icon(
-                                    Icons.volume_up,
-                                    color: Colors.blueGrey,
-                                  ),
-                              Expanded(
-                                child: Text.rich(
-                                  textDirection: TextDirection.rtl,
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: ayah.text,
-                                        style: const TextStyle(
-                                          color: Colors.blueGrey,
-                                          fontSize: 20,
-                                          fontFamily: 'Quran',
+                        return InkWell(
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 20, bottom: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if (index == selectedIndex)
+                                  if (isPlaying)
+                                    const Icon(
+                                      Icons.volume_up,
+                                      color: Colors.blueGrey,
+                                    ).animate(
+                                      onPlay: (controller) {
+                                        controller.repeat(reverse: true);
+                                      },
+                                    ).scaleXY()
+                                  else
+                                    const Icon(
+                                      Icons.volume_up,
+                                      color: Colors.blueGrey,
+                                    ),
+                                Expanded(
+                                  child: Text.rich(
+                                    textDirection: TextDirection.rtl,
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: ayah.text,
+                                          style: const TextStyle(
+                                            color: Colors.blueGrey,
+                                            fontSize: 20,
+                                            fontFamily: 'Quran',
+                                          ),
                                         ),
-                                      ),
-                                      TextSpan(
-                                        text:
-                                            makeAyahNumber(ayah.numberInSurah),
-                                        style: const TextStyle(
-                                          color: Colors.blueGrey,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Quran',
+                                        TextSpan(
+                                          text: makeAyahNumber(
+                                              ayah.numberInSurah),
+                                          style: const TextStyle(
+                                            color: Colors.blueGrey,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Quran',
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        onLongPress: () async {
-                          setState(() => selectedIndex = index);
-                          await audioPlayer.pause();
-                          await playAudio(ayah.audio);
-                        },
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return const Divider(color: Colors.black);
-                    },
-                  ),
-                  const Divider(color: Colors.black),
-                ],
-              ),
-          ],
+                          onLongPress: () async {
+                            setState(() => selectedIndex = index);
+                            await audioPlayer.pause();
+                            await playAudio(ayah.audio);
+                          },
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const Divider(color: Colors.black);
+                      },
+                    ),
+                    const Divider(color: Colors.black),
+                  ],
+                ),
+            ],
+          ),
         ),
       ),
     );
