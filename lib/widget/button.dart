@@ -27,14 +27,6 @@ class CustomButton extends StatelessWidget {
     this.prefixIcon,
   });
 
-  void handlePress() {
-    if (!isLoading) {
-      if (onPressed != null) {
-        onPressed!();
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -53,7 +45,11 @@ class CustomButton extends StatelessWidget {
               ),
             )
           : TextButton(
-              onPressed: handlePress,
+              onPressed: () {
+                if (!isLoading && onPressed != null) {
+                  onPressed?.call();
+                }
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
