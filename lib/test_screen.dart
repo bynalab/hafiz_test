@@ -12,7 +12,7 @@ class TestScreen extends StatefulWidget {
   final Surah surah;
   final Ayah ayah;
   final List<Ayah> ayahs;
-  final void Function()? onRefresh;
+  final Function()? onRefresh;
 
   const TestScreen({
     Key? key,
@@ -276,7 +276,10 @@ class _TestPage extends State<TestScreen> {
                 color: Colors.white,
                 size: 30,
               ),
-              onPressed: () => widget.onRefresh?.call(),
+              onPressed: () async {
+                await widget.onRefresh?.call();
+                init();
+              },
             ),
           ],
         ),

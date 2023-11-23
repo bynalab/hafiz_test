@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+// import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
@@ -128,21 +128,21 @@ class _Surah extends State<SurahScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                if (index == selectedIndex)
-                                  if (isPlaying)
-                                    const Icon(
-                                      Icons.volume_up,
-                                      color: Colors.blueGrey,
-                                    ).animate(
-                                      onPlay: (controller) {
-                                        controller.repeat(reverse: true);
-                                      },
-                                    ).scaleXY()
-                                  else
-                                    const Icon(
-                                      Icons.volume_up,
-                                      color: Colors.blueGrey,
-                                    ),
+                                // if (index == selectedIndex)
+                                //   if (isPlaying)
+                                //     const Icon(
+                                //       Icons.volume_up,
+                                //       color: Colors.blueGrey,
+                                //     ).animate(
+                                //       onPlay: (controller) {
+                                //         controller.repeat(reverse: true);
+                                //       },
+                                //     ).scaleXY()
+                                //   else
+                                //     const Icon(
+                                //       Icons.volume_up,
+                                //       color: Colors.blueGrey,
+                                //     ),
                                 Expanded(
                                   child: Text.rich(
                                     textDirection: TextDirection.rtl,
