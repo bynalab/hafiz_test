@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
@@ -71,14 +72,38 @@ class _Surah extends State<SurahScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          '${surah.number}. ${surah.englishName}: ${surah.englishNameTranslation}',
+        backgroundColor: Colors.white,
+        centerTitle: false,
+        automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: SvgPicture.asset('assets/img/arrow_back.svg'),
+            ),
+            const SizedBox(width: 13),
+            Text(
+              '${surah.englishName}: ${surah.englishNameTranslation}',
+              style: GoogleFonts.montserrat(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF222222),
+              ),
+            ),
+          ],
         ),
-        backgroundColor: Colors.blueGrey,
       ),
       body: Container(
+        height: MediaQuery.sizeOf(context).height,
         padding: const EdgeInsets.only(top: 20),
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/img/surah_background.png"),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -99,21 +124,25 @@ class _Surah extends State<SurahScreen> {
                             surah.name,
                             style: const TextStyle(
                               fontSize: 20,
-                              color: Colors.blueGrey,
-                              fontFamily: 'Quran',
+                              color: Color(0xFF000000),
+                              fontFamily: 'Kitab',
                             ),
                           ),
                           Text(
                             '${surah.number}. ${surah.englishName}: ${surah.englishNameTranslation}',
-                            style: const TextStyle(
+                            style: GoogleFonts.montserrat(
                               fontSize: 20,
-                              color: Colors.blueGrey,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF222222),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const Divider(color: Colors.black),
+                    const Divider(
+                      color: Color(0xFF222222),
+                      thickness: 0.09,
+                    ),
                     ListView.separated(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -124,25 +153,19 @@ class _Surah extends State<SurahScreen> {
                         return InkWell(
                           child: Container(
                             padding: const EdgeInsets.only(
-                                left: 10, right: 20, bottom: 10),
+                              left: 10,
+                              right: 20,
+                              bottom: 10,
+                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                // if (index == selectedIndex)
-                                //   if (isPlaying)
-                                //     const Icon(
-                                //       Icons.volume_up,
-                                //       color: Colors.blueGrey,
-                                //     ).animate(
-                                //       onPlay: (controller) {
-                                //         controller.repeat(reverse: true);
-                                //       },
-                                //     ).scaleXY()
-                                //   else
-                                //     const Icon(
-                                //       Icons.volume_up,
-                                //       color: Colors.blueGrey,
-                                //     ),
+                                if (index == selectedIndex)
+                                  if (isPlaying)
+                                    const Icon(
+                                      Icons.volume_up_rounded,
+                                      color: Colors.blueGrey,
+                                    ),
                                 Expanded(
                                   child: Text.rich(
                                     textDirection: TextDirection.rtl,
@@ -151,16 +174,17 @@ class _Surah extends State<SurahScreen> {
                                         TextSpan(
                                           text: ayah.text,
                                           style: const TextStyle(
-                                            color: Colors.blueGrey,
+                                            color: Color(0xFF000000),
                                             fontSize: 20,
-                                            fontFamily: 'Quran',
+                                            fontFamily: 'Kitab',
                                           ),
                                         ),
                                         TextSpan(
                                           text: makeAyahNumber(
-                                              ayah.numberInSurah),
+                                            ayah.numberInSurah,
+                                          ),
                                           style: const TextStyle(
-                                            color: Colors.blueGrey,
+                                            color: Color(0xFF000000),
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Quran',
@@ -175,16 +199,18 @@ class _Surah extends State<SurahScreen> {
                           ),
                           onLongPress: () async {
                             setState(() => selectedIndex = index);
-                            await audioPlayer.pause();
+
                             await playAudio(ayah.audio);
                           },
                         );
                       },
                       separatorBuilder: (context, index) {
-                        return const Divider(color: Colors.black);
+                        return const Divider(
+                          color: Color(0xFF222222),
+                          thickness: 0.09,
+                        );
                       },
                     ),
-                    const Divider(color: Colors.black),
                   ],
                 ),
             ],

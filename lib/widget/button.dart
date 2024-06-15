@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 enum IconPosition { left, right }
 
@@ -32,11 +33,11 @@ class CustomButton extends StatelessWidget {
     return Container(
       width: width ?? 400,
       height: height ?? 50,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(5),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
+          Radius.circular(10),
         ),
-        color: Colors.blueGrey,
+        color: Colors.white.withOpacity(0.4),
       ),
       child: isLoading
           ? const Center(
@@ -66,6 +67,64 @@ class CustomButton extends StatelessWidget {
                 ],
               ),
             ),
+    );
+  }
+}
+
+class GradientBorderButton extends StatelessWidget {
+  final String text;
+  final Widget? icon;
+  final VoidCallback? onTap;
+
+  const GradientBorderButton({
+    super.key,
+    required this.text,
+    this.icon,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 164,
+        height: 40,
+        padding: const EdgeInsets.all(3.5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xFFFFF5BE),
+              Color(0xFFD0F7EA),
+            ],
+          ),
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                icon!,
+                const SizedBox(width: 5),
+              ],
+              Text(
+                text,
+                style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF004B40),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,4 +1,8 @@
-final juz = [
+List<String> juzList = _juzList;
+
+void setJuz() => juzList = _juzList;
+
+final _juzList = [
   "Alīf-Lām-Mīm",
   "Sayaqūlu",
   "Tilka ’r-Rusulu",
@@ -30,3 +34,13 @@ final juz = [
   "Tabāraka ’lladhī",
   "Amma"
 ];
+
+List<String> searchJuz(String juzName) {
+  if (juzName.trim().isEmpty) {
+    return _juzList;
+  }
+
+  return _juzList
+      .where((juz) => juz.toLowerCase().contains(juzName.toLowerCase()))
+      .toList();
+}

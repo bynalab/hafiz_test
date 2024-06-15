@@ -20,9 +20,11 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_automation: ^2.0.0
   cupertino_icons: ^1.0.5
-  flutter_animate: ^4.2.0+1
   intl: ^0.18.0
   flutter_islamic_icons: ^1.0.2
+  flutter_svg: ^1.0.0
+  marquee: ^2.2.3
+  audio_video_progress_bar: ^2.0.3
 
 dev_dependencies:
   flutter_test:
@@ -37,9 +39,9 @@ flutter:
     - assets/img/
 
   fonts:
-    - family: Pacifico
+    - family: Kitab
       fonts:
-        - asset: assets/fonts/Pacifico-Regular.ttf
+        - asset: assets/fonts/Kitab-Bold.ttf
     - family: Quran
       fonts:
         - asset: assets/fonts/me_quran.ttf
