@@ -74,14 +74,15 @@ class _TestPage extends State<TestByJuz> {
         ),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (isLoading)
-            const Center(
-              child: CircularProgressIndicator.adaptive(
-                strokeWidth: 5,
-                backgroundColor: Colors.blueGrey,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator.adaptive(
+                  strokeWidth: 5,
+                  backgroundColor: Colors.blueGrey,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
               ),
             )
           else

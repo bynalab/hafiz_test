@@ -96,15 +96,13 @@ class _TestPage extends State<TestBySurah> {
                 ),
               ),
             )
-          else ...[
-            const SizedBox(height: 20),
+          else
             TestScreen(
               surah: surah,
               ayah: ayah,
               ayahs: ayahs,
               onRefresh: () async => await init(),
             ),
-          ],
         ],
       ),
     );
