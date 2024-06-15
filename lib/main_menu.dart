@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/juz/juz_list_screen.dart';
+import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';
@@ -15,6 +16,12 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenu extends State<MainMenu> {
+  Future<void> navigateTo(Widget screen) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -87,21 +94,38 @@ class _MainMenu extends State<MainMenu> {
                               ),
                             ),
                             const SizedBox(height: 21),
-                            Text(
-                              'ٱلۡفَاتِحَةِ',
-                              style: GoogleFonts.amiri(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF222222),
-                              ),
-                            ),
-                            Text(
-                              'Ayah no. 1',
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                color: const Color(0xFF222222),
-                              ),
+                            FutureBuilder(
+                              future: StorageServices.getInstance.getLastRead(),
+                              builder: (_, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return const CircularProgressIndicator();
+                                }
+
+                                final (surah, ayah) = snapshot.data!;
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      surah.name.replaceAll('سُورَةُ ', ''),
+                                      style: const TextStyle(
+                                        fontFamily: 'Kitab',
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF222222),
+                                      ),
+                                    ),
+                                    Text(
+                                      'Ayah no. ${ayah.numberInSurah}',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w300,
+                                        color: const Color(0xFF222222),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
                             const SizedBox(height: 26),
                             Container(
@@ -160,15 +184,8 @@ class _MainMenu extends State<MainMenu> {
                       title: 'Quran',
                       image: 'card_quran',
                       color: const Color(0xFF2BFF00),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return const TestBySurah(surahNumber: 0);
-                            },
-                          ),
-                        );
+                      onTap: () async {
+                        navigateTo(const TestBySurah(surahNumber: 0));
                       },
                     ),
                   ),
@@ -178,16 +195,7 @@ class _MainMenu extends State<MainMenu> {
                       title: 'Surah',
                       image: 'card_surah',
                       color: const Color(0xFFFF8E6F),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return const SurahListScreen();
-                            },
-                          ),
-                        );
-                      },
+                      onTap: () => navigateTo(const SurahListScreen()),
                     ),
                   ),
                 ],
@@ -200,16 +208,7 @@ class _MainMenu extends State<MainMenu> {
                       title: 'Juz',
                       image: 'card_juz',
                       color: const Color(0xFFFBBE15),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return const JuzListScreen();
-                            },
-                          ),
-                        );
-                      },
+                      onTap: () => navigateTo(const JuzListScreen()),
                     ),
                   ),
                   const SizedBox(width: 17),
@@ -218,16 +217,7 @@ class _MainMenu extends State<MainMenu> {
                       title: 'Random',
                       image: 'card_random',
                       color: const Color(0xFF6E81F6),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) {
-                              return const JuzListScreen();
-                            },
-                          ),
-                        );
-                      },
+                      onTap: () => navigateTo(const JuzListScreen()),
                     ),
                   ),
                 ],

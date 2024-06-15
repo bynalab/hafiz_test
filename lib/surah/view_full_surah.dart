@@ -1,6 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_animate/flutter_animate.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
