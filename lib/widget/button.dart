@@ -32,11 +32,11 @@ class CustomButton extends StatelessWidget {
     return Container(
       width: width ?? 400,
       height: height ?? 50,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(
-          Radius.circular(5),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(
+          Radius.circular(10),
         ),
-        color: Colors.blueGrey,
+        color: Colors.white.withOpacity(0.4),
       ),
       child: isLoading
           ? const Center(

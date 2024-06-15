@@ -23,6 +23,7 @@ dependencies:
   flutter_animate: ^4.2.0+1
   intl: ^0.18.0
   flutter_islamic_icons: ^1.0.2
+  flutter_svg: ^1.0.0
 
 dev_dependencies:
   flutter_test:
