@@ -1,4 +1,4 @@
-package com.example.hafiz_test
+package com.bynalab.hafiz_test
 
 import io.flutter.embedding.android.FlutterActivity
 
