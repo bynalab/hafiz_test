@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TestMenuCard extends StatelessWidget {
   final String title;
@@ -36,10 +37,10 @@ class TestMenuCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: GoogleFonts.montserrat(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF004B40),
+                      color: const Color(0xFF004B40),
                     ),
                   ),
                   Align(

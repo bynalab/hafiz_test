@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/juz/juz_list_screen.dart';
 import 'package:hafiz_test/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
@@ -78,28 +79,28 @@ class _MainMenu extends State<MainMenu> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Last Read',
-                              style: TextStyle(
+                              style: GoogleFonts.inter(
                                 fontSize: 12,
-                                color: Color(0xFF222222),
+                                color: const Color(0xFF222222),
                               ),
                             ),
-                            const SizedBox(height: 11),
-                            const Text(
-                              'ةحتافلا',
-                              style: TextStyle(
+                            const SizedBox(height: 21),
+                            Text(
+                              'ٱلۡفَاتِحَةِ',
+                              style: GoogleFonts.amiri(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF222222),
+                                color: const Color(0xFF222222),
                               ),
                             ),
-                            const Text(
+                            Text(
                               'Ayah no. 1',
-                              style: TextStyle(
+                              style: GoogleFonts.inter(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w300,
-                                color: Color(0xFF222222),
+                                color: const Color(0xFF222222),
                               ),
                             ),
                             const SizedBox(height: 26),
@@ -117,12 +118,12 @@ class _MainMenu extends State<MainMenu> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Continue',
-                                    style: TextStyle(
+                                    style: GoogleFonts.montserrat(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
-                                      color: Color(0xFF004B40),
+                                      color: const Color(0xFF004B40),
                                     ),
                                   ),
                                   Image.asset(
@@ -143,12 +144,12 @@ class _MainMenu extends State<MainMenu> {
                 ],
               ),
               const SizedBox(height: 34),
-              const Text(
+              Text(
                 'Test',
-                style: TextStyle(
+                style: GoogleFonts.montserrat(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF222222),
+                  color: const Color(0xFF222222),
                 ),
               ),
               const SizedBox(height: 16),
