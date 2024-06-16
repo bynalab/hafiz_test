@@ -19,6 +19,8 @@ class _JuzListScreenState extends State<JuzListScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: const Color(0xFF004B40),
+        scrolledUnderElevation: 10,
         centerTitle: false,
         automaticallyImplyLeading: false,
         title: isSearching

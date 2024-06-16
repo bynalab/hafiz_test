@@ -89,12 +89,13 @@ class _TestPage extends State<TestScreen> {
       setState(() => isPlaying = true);
 
       await playAudio(ayah.audio);
-      StorageServices.getInstance.saveLastRead(surah, ayah);
     } else {
       audioPlayer.pause();
 
       setState(() => isPlaying = false);
     }
+
+    StorageServices.getInstance.saveLastRead(surah, ayah);
   }
 
   @override
@@ -124,7 +125,7 @@ class _TestPage extends State<TestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
@@ -363,19 +364,25 @@ class _TestPage extends State<TestScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GradientBorderButton(
-                text: 'Speed 1x',
-                icon: SvgPicture.asset(
-                  'assets/img/solar_playback-speed-outline.svg',
+              Expanded(
+                child: GradientBorderButton(
+                  text: 'Speed 1x',
+                  icon: SvgPicture.asset(
+                    'assets/img/solar_playback-speed-outline.svg',
+                  ),
                 ),
               ),
-              GradientBorderButton(
-                text: 'Refresh',
-                icon: SvgPicture.asset('assets/img/pepicons-pencil_repeat.svg'),
-                onTap: () async {
-                  await widget.onRefresh?.call();
-                  init();
-                },
+              const SizedBox(width: 20),
+              Expanded(
+                child: GradientBorderButton(
+                  text: 'Refresh',
+                  icon:
+                      SvgPicture.asset('assets/img/pepicons-pencil_repeat.svg'),
+                  onTap: () async {
+                    await widget.onRefresh?.call();
+                    init();
+                  },
+                ),
               ),
             ],
           ),
@@ -414,6 +421,7 @@ class _TestPage extends State<TestScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 30),
         ],
       ),
     );

@@ -53,6 +53,8 @@ class _TestPage extends State<TestByJuz> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: const Color(0xFF004B40),
+        scrolledUnderElevation: 10,
         centerTitle: false,
         automaticallyImplyLeading: false,
         title: Row(
@@ -73,24 +75,24 @@ class _TestPage extends State<TestByJuz> {
           ],
         ),
       ),
-      body: Column(
+      body: Stack(
         children: [
           if (isLoading)
-            const Expanded(
-              child: Center(
-                child: CircularProgressIndicator.adaptive(
-                  strokeWidth: 5,
-                  backgroundColor: Colors.blueGrey,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
+            const Center(
+              child: CircularProgressIndicator.adaptive(
+                strokeWidth: 5,
+                backgroundColor: Colors.blueGrey,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
             )
           else
-            TestScreen(
-              surah: surah,
-              ayah: ayah,
-              ayahs: ayahs,
-              onRefresh: () async => await init(),
+            SingleChildScrollView(
+              child: TestScreen(
+                surah: surah,
+                ayah: ayah,
+                ayahs: ayahs,
+                onRefresh: () async => await init(),
+              ),
             ),
         ],
       ),

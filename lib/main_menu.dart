@@ -93,12 +93,30 @@ class _MainMenu extends State<MainMenu> {
                                 color: const Color(0xFF222222),
                               ),
                             ),
-                            const SizedBox(height: 21),
+                            const SizedBox(height: 15),
                             FutureBuilder(
                               future: StorageServices.getInstance.getLastRead(),
                               builder: (_, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Color(0xFF004B40),
+                                    ),
+                                  );
+                                }
+
                                 if (!snapshot.hasData) {
-                                  return const CircularProgressIndicator();
+                                  return Text(
+                                    'No last read',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF222222),
+                                    ),
+                                  );
                                 }
 
                                 final (surah, ayah) = snapshot.data!;
@@ -127,35 +145,7 @@ class _MainMenu extends State<MainMenu> {
                                 );
                               },
                             ),
-                            const SizedBox(height: 26),
-                            Container(
-                              width: 115,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 11,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFAF6EB),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Continue',
-                                    style: GoogleFonts.montserrat(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: const Color(0xFF004B40),
-                                    ),
-                                  ),
-                                  Image.asset(
-                                    'assets/img/arrow_right_circle.png',
-                                  )
-                                ],
-                              ),
-                            ),
+                            // const SizedBox(height: 26),
                           ],
                         ),
                         Image.asset(
@@ -163,6 +153,37 @@ class _MainMenu extends State<MainMenu> {
                           height: 120,
                         ),
                       ],
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 15,
+                    left: 23,
+                    child: Container(
+                      width: 115,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 11,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFAF6EB),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Continue',
+                            style: GoogleFonts.montserrat(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF004B40),
+                            ),
+                          ),
+                          Image.asset(
+                            'assets/img/arrow_right_circle.png',
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -184,9 +205,8 @@ class _MainMenu extends State<MainMenu> {
                       title: 'Quran',
                       image: 'card_quran',
                       color: const Color(0xFF2BFF00),
-                      onTap: () async {
-                        navigateTo(const TestBySurah(surahNumber: 0));
-                      },
+                      onTap: () =>
+                          navigateTo(const TestBySurah(surahNumber: 0)),
                     ),
                   ),
                   const SizedBox(width: 17),
@@ -217,7 +237,8 @@ class _MainMenu extends State<MainMenu> {
                       title: 'Random',
                       image: 'card_random',
                       color: const Color(0xFF6E81F6),
-                      onTap: () => navigateTo(const JuzListScreen()),
+                      onTap: () =>
+                          navigateTo(const TestBySurah(surahNumber: 0)),
                     ),
                   ),
                 ],
