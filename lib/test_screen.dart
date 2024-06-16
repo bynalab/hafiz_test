@@ -174,24 +174,35 @@ class _TestPage extends State<TestScreen> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 45,
-                    ),
-                    child: Text(
-                      ayah.text,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontFamily: 'Kitab',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Text(
+                          'v${ayah.numberInSurah}',
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.montserrat(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          ayah.text,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontFamily: 'Kitab',
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
                 Positioned(
-                  bottom: 30,
+                  bottom: 20,
                   left: 0,
                   right: 0,
                   child: Column(
