@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/juz/juz_list_screen.dart';
+import 'package:hafiz_test/model/ayah.model.dart';
+import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
@@ -16,6 +18,8 @@ class MainMenu extends StatefulWidget {
 }
 
 class _MainMenu extends State<MainMenu> {
+  (Surah, Ayah)? lastRead;
+
   Future<void> navigateTo(Widget screen) async {
     await Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
 
@@ -119,7 +123,7 @@ class _MainMenu extends State<MainMenu> {
                                   );
                                 }
 
-                                final (surah, ayah) = snapshot.data!;
+                                final (surah, ayah) = lastRead = snapshot.data!;
 
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +149,6 @@ class _MainMenu extends State<MainMenu> {
                                 );
                               },
                             ),
-                            // const SizedBox(height: 26),
                           ],
                         ),
                         Image.asset(
@@ -158,31 +161,46 @@ class _MainMenu extends State<MainMenu> {
                   Positioned(
                     bottom: 15,
                     left: 23,
-                    child: Container(
-                      width: 115,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 11,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFAF6EB),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Continue',
-                            style: GoogleFonts.montserrat(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF004B40),
-                            ),
+                    child: GestureDetector(
+                      onTap: () {
+                        final lastRead = this.lastRead;
+                        if (lastRead == null) return;
+
+                        final (surah, ayah) = lastRead;
+
+                        navigateTo(
+                          TestBySurah(
+                            surahNumber: surah.number,
+                            ayahNumber: ayah.numberInSurah,
                           ),
-                          Image.asset(
-                            'assets/img/arrow_right_circle.png',
-                          )
-                        ],
+                        );
+                      },
+                      child: Container(
+                        width: 115,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 11,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFAF6EB),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Continue',
+                              style: GoogleFonts.montserrat(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xFF004B40),
+                              ),
+                            ),
+                            Image.asset(
+                              'assets/img/arrow_right_circle.png',
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),

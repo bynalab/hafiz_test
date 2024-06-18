@@ -1,72 +1,97 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-enum IconPosition { left, right }
-
-class CustomButton extends StatelessWidget {
-  final Text text;
-  final Widget? icon;
-  final double? height;
+class Button extends StatelessWidget {
+  final Widget? child;
   final double? width;
+  final double height;
+  final bool disabled;
   final bool isLoading;
-  final Widget? prefixIcon;
-  final IconPosition iconPosition;
-  final Function()? onPressed;
-  final Decoration? decoration;
+  final Color? color;
+  final Color? highlightColor;
+  final Color? splashColor;
+  final Gradient? gradient;
+  final BorderRadius radius;
+  final VoidCallback? onPressed;
+  final BoxBorder border;
+  final EdgeInsets padding;
+  final EdgeInsets margin;
 
-  /// This button has a default [height] and [width] of 50 and 400 respectively.
-  const CustomButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-    this.height,
+  const Button({
+    Key? key,
+    required this.child,
     this.width,
-    this.icon,
-    this.iconPosition = IconPosition.left,
-    this.decoration,
+    this.height = 44.0,
+    this.disabled = false,
     this.isLoading = false,
-    this.prefixIcon,
-  });
+    this.color,
+    this.highlightColor,
+    this.splashColor,
+    this.gradient,
+    this.radius = const BorderRadius.all(Radius.circular(8)),
+    this.border = const Border.fromBorderSide(
+      BorderSide(
+        color: Color(0x00000000),
+        width: 0,
+        style: BorderStyle.solid,
+      ),
+    ),
+    this.padding = const EdgeInsets.only(left: 6, right: 6),
+    this.margin = const EdgeInsets.only(),
+    required this.onPressed,
+  }) : super(key: key);
+
+  Color get _color {
+    if (disabled) {
+      return const Color(0xFF004B40).withOpacity(0.5);
+    }
+
+    return color ?? const Color(0xFF004B40);
+  }
+
+  Widget? get _child {
+    if (isLoading) {
+      return const SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation(Colors.white),
+        ),
+      );
+    }
+
+    return child;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width ?? 400,
-      height: height ?? 50,
+      margin: margin,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(
-          Radius.circular(10),
-        ),
-        color: Colors.white.withOpacity(0.4),
+        color: _color,
+        gradient: gradient,
+        borderRadius: radius,
+        border: border,
       ),
-      child: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(Colors.white),
-              ),
-            )
-          : TextButton(
-              onPressed: () {
-                if (!isLoading && onPressed != null) {
-                  onPressed?.call();
-                }
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (icon != null && iconPosition == IconPosition.left) ...[
-                    icon!,
-                    const SizedBox(width: 5)
-                  ],
-                  FittedBox(child: text),
-                  if (icon != null && iconPosition == IconPosition.right) ...[
-                    const SizedBox(width: 5),
-                    icon!
-                  ],
-                ],
-              ),
-            ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: radius,
+          highlightColor: highlightColor ?? Theme.of(context).highlightColor,
+          splashColor: splashColor ?? Theme.of(context).splashColor,
+          onTap: () {
+            if (disabled || isLoading) return;
+
+            onPressed?.call();
+          },
+          child: Padding(
+            padding: padding,
+            child: Center(child: _child),
+          ),
+        ),
+      ),
     );
   }
 }

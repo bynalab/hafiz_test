@@ -123,6 +123,15 @@ class _TestPage extends State<TestScreen> {
     if (mounted) super.setState(fn);
   }
 
+  double playbackRate = 1;
+  void updatePlaybackRate() {
+    playbackRate = (playbackRate == 2.5) ? 0.5 : playbackRate + 0.5;
+
+    audioPlayer.setPlaybackRate(playbackRate);
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -281,9 +290,13 @@ class _TestPage extends State<TestScreen> {
                 onDragUpdate: (details) {
                   audioPlayer.seek(details.timeStamp);
                 },
-                onSeek: (value) {
-                  audioPlayer.seek(value);
-                },
+                onSeek: audioPlayer.seek,
+                timeLabelLocation: TimeLabelLocation.sides,
+                timeLabelTextStyle: GoogleFonts.montserrat(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF004B40),
+                ),
               );
             },
           ),
@@ -377,10 +390,11 @@ class _TestPage extends State<TestScreen> {
             children: [
               Expanded(
                 child: GradientBorderButton(
-                  text: 'Speed 1x',
+                  text: 'Speed ${playbackRate}x',
                   icon: SvgPicture.asset(
                     'assets/img/solar_playback-speed-outline.svg',
                   ),
+                  onTap: updatePlaybackRate,
                 ),
               ),
               const SizedBox(width: 20),

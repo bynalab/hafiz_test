@@ -59,17 +59,4 @@ class AyahServices {
 
     return Ayah();
   }
-
-//  setState(() {
-//         isJuz = true;
-//       });
-//       verse = widget.verse;
-//       var res = await RequestResources().getResources('ayah/$verse/ar.alafasy');
-//       var body = json.decode(res.body);
-//       setState(() {
-//         ayahText = body['data']['text'];
-//         ayahAudioUrl = body['data']['audioSecondary'][0];
-//         surahNumber = body['data']['surah']['number'];
-//       });
-//       //For Juz End
 }

@@ -19,6 +19,16 @@ class Surah {
     this.ayahs = const [],
   });
 
+  Ayah getAyah(int? ayahNumber) {
+    if (ayahNumber == null || ayahNumber == 0) {
+      ayahNumber = 1;
+    }
+
+    final ayah = ayahs.firstWhere((ayah) => ayah.numberInSurah == ayahNumber);
+
+    return ayah;
+  }
+
   factory Surah.fromJson(Map<String, dynamic> json) {
     final ayahsJson = (json['ayahs'] ?? []) as List;
     final ayahs = ayahsJson.map((ayahJson) => Ayah.fromJson(ayahJson)).toList();

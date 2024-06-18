@@ -9,8 +9,13 @@ import 'package:hafiz_test/test_screen.dart';
 
 class TestBySurah extends StatefulWidget {
   final int surahNumber;
+  final int? ayahNumber;
 
-  const TestBySurah({Key? key, required this.surahNumber}) : super(key: key);
+  const TestBySurah({
+    Key? key,
+    required this.surahNumber,
+    this.ayahNumber,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _TestPage();
@@ -53,7 +58,11 @@ class _TestPage extends State<TestBySurah> {
     }
 
     ayahs = surah.ayahs;
-    ayah = ayahServices.getRandomAyahForSurah(ayahs);
+    if (widget.ayahNumber != null) {
+      ayah = surah.getAyah(widget.ayahNumber);
+    } else {
+      ayah = ayahServices.getRandomAyahForSurah(ayahs);
+    }
 
     setState(() => isLoading = false);
   }
