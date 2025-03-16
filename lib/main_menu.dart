@@ -30,7 +30,7 @@ class _MainMenu extends State<MainMenu> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
 
         await showDialog(

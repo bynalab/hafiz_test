@@ -9,7 +9,7 @@ import 'package:intl/intl.dart' hide TextDirection;
 class SurahScreen extends StatefulWidget {
   final Surah surah;
 
-  const SurahScreen({Key? key, required this.surah}) : super(key: key);
+  const SurahScreen({super.key, required this.surah});
 
   @override
   State<SurahScreen> createState() => _SurahScreenState();

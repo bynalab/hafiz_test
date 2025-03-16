@@ -6,31 +6,32 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+5
 
 environment:
-  sdk: ">=3.0.2 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
   http:
-  shared_preferences: ^2.1.2
-  audioplayers: ^5.1.0
+  shared_preferences: ^2.5.2
+  path_provider: ^2.1.5
+  audioplayers: ^6.4.0
   shimmer: ^3.0.0
   google_fonts: ^4.0.4
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.3
   flutter_automation: ^2.0.0
   cupertino_icons: ^1.0.5
-  intl: ^0.18.0
+  intl: ^0.20.2
   flutter_islamic_icons: ^1.0.2
-  flutter_svg: ^1.0.0
-  marquee: ^2.2.3
+  flutter_svg: ^2.0.9
+  marquee: ^2.3.0
   audio_video_progress_bar: ^2.0.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true

@@ -18,7 +18,7 @@ class Button extends StatelessWidget {
   final EdgeInsets margin;
 
   const Button({
-    Key? key,
+    super.key,
     required this.child,
     this.width,
     this.height = 44.0,
@@ -39,11 +39,11 @@ class Button extends StatelessWidget {
     this.padding = const EdgeInsets.only(left: 6, right: 6),
     this.margin = const EdgeInsets.only(),
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   Color get _color {
     if (disabled) {
-      return const Color(0xFF004B40).withOpacity(0.5);
+      return const Color(0xFF004B40).withValues(alpha: 0.5);
     }
 
     return color ?? const Color(0xFF004B40);

@@ -12,10 +12,10 @@ class TestBySurah extends StatefulWidget {
   final int? ayahNumber;
 
   const TestBySurah({
-    Key? key,
+    super.key,
     required this.surahNumber,
     this.ayahNumber,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _TestPage();

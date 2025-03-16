@@ -18,12 +18,12 @@ class TestScreen extends StatefulWidget {
   final Function()? onRefresh;
 
   const TestScreen({
-    Key? key,
+    super.key,
     required this.surah,
     required this.ayah,
     this.ayahs = const [],
     this.onRefresh,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _TestPage();
@@ -277,12 +277,12 @@ class _TestPage extends State<TestScreen> {
           StreamBuilder<AudioEvent>(
             stream: audioPlayer.eventStream,
             builder: (_, durationState) {
-              final progress = durationState.data?.position ?? Duration.zero;
+              final progress = durationState.data?.duration ?? Duration.zero;
 
               return ProgressBar(
                 barHeight: 8,
                 thumbRadius: 0,
-                thumbGlowColor: const Color(0xFF004B40).withOpacity(0.3),
+                thumbGlowColor: const Color(0xFF004B40).withValues(alpha: 0.3),
                 progressBarColor: const Color(0xFF004B40),
                 baseBarColor: const Color(0xFFFAF6EB),
                 progress: progress,

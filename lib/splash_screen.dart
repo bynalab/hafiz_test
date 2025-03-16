@@ -20,8 +20,11 @@ class _SplashScreen extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _splash().then((status) {
-      if (status) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final status = await _splash();
+
+      if (status && mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) {

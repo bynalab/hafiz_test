@@ -11,7 +11,7 @@ import 'package:hafiz_test/test_screen.dart';
 class TestByJuz extends StatefulWidget {
   final int juzNumber;
 
-  const TestByJuz({Key? key, required this.juzNumber}) : super(key: key);
+  const TestByJuz({super.key, required this.juzNumber});
 
   @override
   State<StatefulWidget> createState() => _TestPage();

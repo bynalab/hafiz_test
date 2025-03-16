@@ -91,7 +91,7 @@ class _SurahListScreenState extends State<SurahListScreen> {
                 decoration: BoxDecoration(
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF23364F).withOpacity(0.1),
+                      color: const Color(0xFF23364F).withValues(alpha: 0.1),
                       spreadRadius: 0,
                       blurRadius: 30,
                       offset: const Offset(4, 4),

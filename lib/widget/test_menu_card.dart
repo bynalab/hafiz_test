@@ -28,7 +28,7 @@ class TestMenuCard extends StatelessWidget {
               width: 163,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: color?.withOpacity(0.05),
+                color: color?.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(23),
               ),
               child: Column(
@@ -59,7 +59,10 @@ class TestMenuCard extends StatelessWidget {
                 ),
                 child: SvgPicture.asset(
                   'assets/img/card_bottom_vector.svg',
-                  color: color,
+                  colorFilter: ColorFilter.mode(
+                    color ?? Colors.black,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
