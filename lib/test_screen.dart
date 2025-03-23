@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +38,16 @@ class _TestPage extends State<TestScreen> {
   List<Ayah> ayahs = [];
   Ayah ayah = Ayah();
 
+  bool loop = false;
   bool isPlaying = false;
   bool autoplay = true;
 
   Duration? duration;
+  Duration? _position;
+
+  StreamSubscription? _positionSubscription;
+
+  ReleaseMode releaseMode = ReleaseMode.stop;
 
   Future<void> init() async {
     surah = widget.surah;
@@ -53,6 +61,9 @@ class _TestPage extends State<TestScreen> {
 
   Future<void> playAudio(String url) async {
     try {
+      // Set the release mode to keep the source after playback has completed.
+      audioPlayer.setReleaseMode(releaseMode);
+
       await audioPlayer.play(UrlSource(url));
       duration = await audioPlayer.getDuration();
     } catch (e) {
@@ -109,11 +120,19 @@ class _TestPage extends State<TestScreen> {
         isPlaying = false;
       });
     });
+
+    _positionSubscription = audioPlayer.onPositionChanged.listen(
+      (p) {
+        // print('Current position: $p');
+        setState(() => _position = p);
+      },
+    );
   }
 
   @override
   dispose() {
     audioPlayer.dispose();
+    _positionSubscription?.cancel();
 
     super.dispose();
   }
@@ -278,8 +297,7 @@ class _TestPage extends State<TestScreen> {
               StreamBuilder<AudioEvent>(
                 stream: audioPlayer.eventStream,
                 builder: (_, durationState) {
-                  final progress =
-                      durationState.data?.duration ?? Duration.zero;
+                  final progress = _position ?? Duration.zero;
 
                   return ProgressBar(
                     barHeight: 8,
@@ -389,7 +407,34 @@ class _TestPage extends State<TestScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Loop verse',
+                    style: GoogleFonts.montserrat(
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF222222),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Switch(
+                    value: loop,
+                    onChanged: (_) {
+                      loop = !loop;
+
+                      releaseMode = loop ? ReleaseMode.loop : ReleaseMode.stop;
+                      audioPlayer.setReleaseMode(releaseMode);
+
+                      setState(() {});
+                    },
+                    activeTrackColor: const Color(0xFF004B40),
+                    activeColor: Colors.white,
+                  )
+                ],
+              ),
+              const SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -407,7 +452,8 @@ class _TestPage extends State<TestScreen> {
                     child: GradientBorderButton(
                       text: 'Refresh',
                       icon: SvgPicture.asset(
-                          'assets/img/pepicons-pencil_repeat.svg'),
+                        'assets/img/pepicons-pencil_repeat.svg',
+                      ),
                       onTap: () async {
                         await widget.onRefresh?.call();
                         init();
@@ -451,7 +497,6 @@ class _TestPage extends State<TestScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
             ],
           ),
         ),
