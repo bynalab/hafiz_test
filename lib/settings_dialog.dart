@@ -89,11 +89,18 @@ class _SettingDialogState extends State<SettingDialog> {
               ],
             ),
           const SizedBox(height: 30),
+          Text(
+            'Select your favorite reciter',
+            style: GoogleFonts.montserrat(
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF222222),
+            ),
+          ),
           DropdownButton<Reciter>(
             value: reciters.firstWhereOrNull(
               (reciter) => reciter.identifier == this.reciter,
             ),
-            hint: Text("Select an option"),
+            hint: Text('Select your favorite reciter'),
             items: reciters.map((reciter) {
               return DropdownMenuItem<Reciter>(
                 value: reciter,
