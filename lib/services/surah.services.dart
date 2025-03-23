@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/network.services.dart';
+import 'package:hafiz_test/services/storage.services.dart';
 
 class SurahServices {
   final _networkServices = NetworkServices();
@@ -14,13 +15,19 @@ class SurahServices {
   }
 
   Future<Surah> getSurah(int surahNumber) async {
-    final response =
-        await _networkServices.get('surah/$surahNumber/ar.alafasy');
+    try {
+      final reciter = await StorageServices.getInstance.getReciter();
 
-    final body = json.decode(response.body);
+      final response =
+          await _networkServices.get('surah/$surahNumber/$reciter');
 
-    final surah = Surah.fromJson(body['data']);
+      final body = json.decode(response.body);
 
-    return surah;
+      final surah = Surah.fromJson(body['data']);
+
+      return surah;
+    } catch (e) {
+      return Surah();
+    }
   }
 }

@@ -32,7 +32,7 @@ class _TestPage extends State<TestByJuz> {
     final ayahFromJuz =
         await AyahServices().getRandomAyahFromJuz(widget.juzNumber);
 
-    surah = await SurahServices().getSurah(ayahFromJuz.surah!.number);
+    surah = await SurahServices().getSurah(ayahFromJuz.surah?.number ?? 0);
     ayahs = surah.ayahs;
 
     ayah = ayahs.firstWhere((ayah) => ayah.number == ayahFromJuz.number);
