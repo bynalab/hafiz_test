@@ -4,13 +4,16 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/services/network.services.dart';
+import 'package:hafiz_test/services/storage.services.dart';
 
 class AyahServices {
   final _networkServices = NetworkServices();
 
   Future<List<Ayah>> getSurahAyahs(int surahNumber) async {
     try {
-      final res = await _networkServices.get('surah/$surahNumber/ar.alafasy');
+      final reciter = await StorageServices.getInstance.getReciter();
+
+      final res = await _networkServices.get('surah/$surahNumber/$reciter');
 
       final body = json.decode(res.body);
 

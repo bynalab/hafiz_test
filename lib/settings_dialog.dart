@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hafiz_test/data/reciters.dart';
+import 'package:hafiz_test/model/reciter.model.dart';
 import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/widget/button.dart';
+import 'package:collection/collection.dart';
 
 class SettingDialog extends StatefulWidget {
   const SettingDialog({super.key});
@@ -14,8 +17,11 @@ class _SettingDialogState extends State<SettingDialog> {
   bool autoPlay = true;
   bool isLoading = true;
 
+  String? reciter;
+
   Future<void> init() async {
     autoPlay = await StorageServices.getInstance.checkAutoPlay();
+    reciter = await StorageServices.getInstance.getReciter();
 
     isLoading = false;
     setState(() {});
@@ -83,6 +89,31 @@ class _SettingDialogState extends State<SettingDialog> {
               ],
             ),
           const SizedBox(height: 30),
+          Text(
+            'Select your favorite reciter',
+            style: GoogleFonts.montserrat(
+              fontWeight: FontWeight.w500,
+              color: const Color(0xFF222222),
+            ),
+          ),
+          DropdownButton<Reciter>(
+            value: reciters.firstWhereOrNull(
+              (reciter) => reciter.identifier == this.reciter,
+            ),
+            hint: Text('Select your favorite reciter'),
+            items: reciters.map((reciter) {
+              return DropdownMenuItem<Reciter>(
+                value: reciter,
+                child: Text(reciter.englishName),
+              );
+            }).toList(),
+            onChanged: (reciter) {
+              setState(() {
+                this.reciter = reciter?.identifier;
+              });
+            },
+          ),
+          const SizedBox(height: 30),
           Button(
             height: 36,
             color: const Color(0xFF004B40),
@@ -96,6 +127,7 @@ class _SettingDialogState extends State<SettingDialog> {
             ),
             onPressed: () {
               StorageServices.getInstance.setAutoPlay(autoPlay);
+              StorageServices.getInstance.setReciter(reciter ?? '');
               Navigator.pop(context);
             },
           )
