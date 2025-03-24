@@ -15,7 +15,8 @@ dependencies:
   http:
   shared_preferences: ^2.5.2
   path_provider: ^2.1.5
-  audioplayers: ^6.4.0
+  just_audio: ^0.9.46
+  just_audio_background: ^0.0.1-beta.15
   shimmer: ^3.0.0
   google_fonts: ^4.0.4
   flutter_launcher_icons: ^0.14.3

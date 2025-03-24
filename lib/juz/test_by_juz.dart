@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
+import 'package:hafiz_test/services/audio_services.dart';
 import 'package:hafiz_test/services/ayah.services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
 import 'package:hafiz_test/test_screen.dart';
@@ -18,6 +19,8 @@ class TestByJuz extends StatefulWidget {
 }
 
 class _TestPage extends State<TestByJuz> {
+  final audioServices = AudioServices();
+
   bool isLoading = false;
 
   List<Ayah> ayahs = [];
@@ -36,6 +39,12 @@ class _TestPage extends State<TestByJuz> {
     ayahs = surah.ayahs;
 
     ayah = ayahs.firstWhere((ayah) => ayah.number == ayahFromJuz.number);
+
+    await audioServices.setAudioSource(
+      ayah.audio,
+      id: ayah.number.toString(),
+      title: '${surah.englishName} v ${ayah.numberInSurah}',
+    );
 
     setState(() => isLoading = false);
   }
@@ -91,6 +100,7 @@ class _TestPage extends State<TestByJuz> {
                 surah: surah,
                 ayah: ayah,
                 ayahs: ayahs,
+                audioServices: audioServices,
                 onRefresh: () async => await init(),
               ),
             ),
