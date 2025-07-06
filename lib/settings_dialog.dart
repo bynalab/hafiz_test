@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/data/reciters.dart';
+import 'package:hafiz_test/extension/collection.dart';
 import 'package:hafiz_test/model/reciter.model.dart';
 import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/widget/button.dart';
-import 'package:collection/collection.dart';
 
 class SettingDialog extends StatefulWidget {
   const SettingDialog({super.key});
