@@ -1,16 +1,17 @@
 import 'dart:async';
 
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
+import 'package:hafiz_test/services/audio_services.dart';
 import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/surah/view_full_surah.dart';
 import 'package:hafiz_test/util/util.dart';
 import 'package:hafiz_test/widget/button.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
 
 class TestScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class TestScreen extends StatefulWidget {
   final Ayah ayah;
   final List<Ayah> ayahs;
   final Function()? onRefresh;
+  final AudioServices? audioServices;
 
   const TestScreen({
     super.key,
@@ -25,6 +27,7 @@ class TestScreen extends StatefulWidget {
     required this.ayah,
     this.ayahs = const [],
     this.onRefresh,
+    this.audioServices,
   });
 
   @override
@@ -32,46 +35,34 @@ class TestScreen extends StatefulWidget {
 }
 
 class _TestPage extends State<TestScreen> {
-  final audioPlayer = AudioPlayer();
+  late AudioServices audioServices;
+  late AudioPlayer audioPlayer;
 
+  Ayah ayah = Ayah();
   Surah surah = Surah();
   List<Ayah> ayahs = [];
-  Ayah ayah = Ayah();
 
   bool loop = false;
   bool isPlaying = false;
   bool autoplay = true;
 
-  Duration? duration;
-  Duration? _position;
-
-  StreamSubscription? _positionSubscription;
-
-  ReleaseMode releaseMode = ReleaseMode.stop;
+  LoopMode loopMode = LoopMode.off;
 
   Future<void> init() async {
+    audioServices = widget.audioServices ?? AudioServices();
+    audioPlayer = audioServices.audioPlayer;
+
     surah = widget.surah;
     ayah = widget.ayah;
     ayahs = widget.ayahs;
 
     autoplay = await StorageServices.getInstance.checkAutoPlay();
 
-    handleAudioPlay();
+    audioPlayer.setLoopMode(loopMode);
+    await audioPlayer.play();
   }
 
-  Future<void> playAudio(String url) async {
-    try {
-      // Set the release mode to keep the source after playback has completed.
-      audioPlayer.setReleaseMode(releaseMode);
-
-      await audioPlayer.play(UrlSource(url));
-      duration = await audioPlayer.getDuration();
-    } catch (e) {
-      setState(() => isPlaying = false);
-    }
-  }
-
-  Future<void> playNextAyah() async {
+  void playNextAyah() {
     if (ayah.numberInSurah >= ayahs.length) {
       showSnackBar(context, 'End of Surah');
 
@@ -83,7 +74,7 @@ class _TestPage extends State<TestScreen> {
     handleAudioPlay();
   }
 
-  Future<void> playPreviousAyah() async {
+  void playPreviousAyah() {
     if (ayah.numberInSurah == 1) {
       showSnackBar(context, 'Beginning of Surah');
 
@@ -96,17 +87,21 @@ class _TestPage extends State<TestScreen> {
   }
 
   Future<void> handleAudioPlay() async {
-    if (autoplay) {
-      setState(() => isPlaying = true);
+    try {
+      await audioServices.setAudioSource(
+        ayah.audio,
+        id: ayah.number.toString(),
+        title: '${surah.englishName} v ${ayah.numberInSurah}',
+      );
 
-      await playAudio(ayah.audio);
-    } else {
-      audioPlayer.pause();
-
-      setState(() => isPlaying = false);
+      if (autoplay) {
+        await audioPlayer.play();
+      } else {
+        await audioPlayer.pause();
+      }
+    } catch (e) {
+      debugPrint(e.toString());
     }
-
-    StorageServices.getInstance.saveLastRead(surah, ayah);
   }
 
   @override
@@ -115,38 +110,38 @@ class _TestPage extends State<TestScreen> {
 
     init();
 
-    audioPlayer.onPlayerComplete.listen((_) async {
+    audioPlayer.playerStateStream.listen((state) {
       setState(() {
-        isPlaying = false;
+        isPlaying = state.playing;
       });
-    });
 
-    _positionSubscription = audioPlayer.onPositionChanged.listen(
-      (p) {
-        // print('Current position: $p');
-        setState(() => _position = p);
-      },
-    );
+      if (state.processingState == ProcessingState.completed) {
+        setState(() => isPlaying = false);
+
+        StorageServices.getInstance.saveLastRead(surah, ayah);
+      }
+    });
   }
 
   @override
   dispose() {
-    audioPlayer.dispose();
-    _positionSubscription?.cancel();
+    audioServices.dispose();
 
     super.dispose();
   }
 
   @override
   void setState(fn) {
-    if (mounted) super.setState(fn);
+    if (mounted) {
+      super.setState(fn);
+    }
   }
 
-  double playbackRate = 1;
+  double speed = 1;
   void updatePlaybackRate() {
-    playbackRate = (playbackRate == 2.5) ? 0.5 : playbackRate + 0.5;
+    speed = (speed == 2.5) ? 0.5 : speed + 0.5;
 
-    audioPlayer.setPlaybackRate(playbackRate);
+    audioPlayer.setSpeed(speed);
 
     setState(() {});
   }
@@ -294,10 +289,10 @@ class _TestPage extends State<TestScreen> {
                 ),
               ),
               const SizedBox(height: 31),
-              StreamBuilder<AudioEvent>(
-                stream: audioPlayer.eventStream,
+              StreamBuilder<Duration>(
+                stream: audioPlayer.positionStream,
                 builder: (_, durationState) {
-                  final progress = _position ?? Duration.zero;
+                  final progress = durationState.data ?? Duration.zero;
 
                   return ProgressBar(
                     barHeight: 8,
@@ -307,11 +302,15 @@ class _TestPage extends State<TestScreen> {
                     progressBarColor: const Color(0xFF004B40),
                     baseBarColor: const Color(0xFFFAF6EB),
                     progress: progress,
-                    total: duration ?? Duration.zero,
-                    onDragUpdate: (details) {
-                      audioPlayer.seek(details.timeStamp);
+                    total: audioPlayer.duration ?? Duration.zero,
+                    onDragUpdate: (details) async {
+                      await audioPlayer.pause();
+                      await audioPlayer.seek(details.timeStamp);
                     },
-                    onSeek: audioPlayer.seek,
+                    onSeek: (duration) async {
+                      await audioPlayer.seek(duration);
+                      await audioPlayer.play();
+                    },
                     timeLabelLocation: TimeLabelLocation.sides,
                     timeLabelTextStyle: GoogleFonts.montserrat(
                       fontSize: 12,
@@ -372,14 +371,17 @@ class _TestPage extends State<TestScreen> {
                           size: 50,
                           color: const Color(0xFF004B40),
                         ),
-                        onPressed: () {
-                          isPlaying
-                              ? audioPlayer.pause()
-                              : playAudio(ayah.audio);
+                        onPressed: () async {
+                          if (isPlaying) {
+                            await audioPlayer.pause();
+                          } else {
+                            if (audioPlayer.processingState ==
+                                ProcessingState.completed) {
+                              await audioPlayer.seek(Duration.zero);
+                            }
 
-                          isPlaying = !isPlaying;
-
-                          setState(() {});
+                            await audioPlayer.play();
+                          }
                         },
                       ),
                     ),
@@ -424,8 +426,8 @@ class _TestPage extends State<TestScreen> {
                     onChanged: (_) {
                       loop = !loop;
 
-                      releaseMode = loop ? ReleaseMode.loop : ReleaseMode.stop;
-                      audioPlayer.setReleaseMode(releaseMode);
+                      loopMode = loop ? LoopMode.one : LoopMode.off;
+                      audioPlayer.setLoopMode(loopMode);
 
                       setState(() {});
                     },
@@ -440,7 +442,7 @@ class _TestPage extends State<TestScreen> {
                 children: [
                   Expanded(
                     child: GradientBorderButton(
-                      text: 'Speed ${playbackRate}x',
+                      text: 'Speed ${speed}x',
                       icon: SvgPicture.asset(
                         'assets/img/solar_playback-speed-outline.svg',
                       ),

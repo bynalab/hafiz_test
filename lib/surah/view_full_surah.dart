@@ -5,6 +5,7 @@ import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
 import 'package:intl/intl.dart' hide TextDirection;
+import 'package:just_audio/just_audio.dart';
 
 class SurahScreen extends StatefulWidget {
   final Surah surah;
@@ -113,9 +114,8 @@ class QuranVerseCard extends StatefulWidget {
   State<QuranVerseCard> createState() => QuranVersenCardState();
 }
 
-class QuranVersenCardState extends State<QuranVerseCard>
-    with AutomaticKeepAliveClientMixin {
-  AudioServices get audioServices => AudioServices.getInstance;
+class QuranVersenCardState extends State<QuranVerseCard> {
+  final audioServices = AudioServices();
 
   bool isLoading = false;
   bool isPlaying = false;
@@ -124,17 +124,20 @@ class QuranVersenCardState extends State<QuranVerseCard>
 
   Future<void> handleAudio(String url) async {
     try {
+      audioServices.setAudioSource(
+        widget.ayah.audio,
+        id: widget.ayah.number.toString(),
+        title:
+            '${widget.ayah.surah?.englishName} v ${widget.ayah.numberInSurah}',
+      );
+
       await audioServices.pause();
       widget.onPlayPressed?.call(selectedIndex);
 
       if (isPlaying && widget.isPlaying) {
-        setState(() => isPlaying = false);
-
         await audioServices.pause();
       } else {
-        setState(() => isPlaying = true);
-
-        await audioServices.play(url);
+        await audioServices.play();
       }
     } catch (e) {
       setState(() => isPlaying = false);
@@ -145,10 +148,14 @@ class QuranVersenCardState extends State<QuranVerseCard>
   void initState() {
     super.initState();
 
-    audioServices.audioPlayer.onPlayerComplete.listen((_) async {
+    audioServices.audioPlayer.playerStateStream.listen((state) {
       setState(() {
-        isPlaying = false;
+        isPlaying = state.playing;
       });
+
+      if (state.processingState == ProcessingState.completed) {
+        setState(() => isPlaying = false);
+      }
     });
   }
 
@@ -167,9 +174,14 @@ class QuranVersenCardState extends State<QuranVerseCard>
   }
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Container(
       key: widget.key,
       padding: const EdgeInsets.only(
@@ -219,14 +231,18 @@ class QuranVersenCardState extends State<QuranVerseCard>
                 InkWell(
                   child: Icon(
                     isPlaying && widget.isPlaying
-                        ? Icons.pause_circle_rounded
+                        ? Icons.stop_circle_rounded
                         : Icons.play_circle_rounded,
                   ),
                   onTap: () async {
                     selectedIndex = widget.index;
                     setState(() {});
 
-                    await handleAudio(widget.ayah.audio);
+                    if (isPlaying && widget.isPlaying) {
+                      await audioServices.pause();
+                    } else {
+                      await handleAudio(widget.ayah.audio);
+                    }
                   },
                 )
               ],
@@ -236,7 +252,4 @@ class QuranVersenCardState extends State<QuranVerseCard>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

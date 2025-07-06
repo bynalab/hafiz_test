@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 2.0.0+7
+version: 2.0.0+8
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -13,20 +13,18 @@ dependencies:
     sdk: flutter
 
   http:
-  shared_preferences: ^2.5.2
+  shared_preferences: ^2.5.3
   path_provider: ^2.1.5
-  audioplayers: ^6.4.0
+  just_audio: ^0.10.4
+  just_audio_background: ^0.0.1-beta.15
   shimmer: ^3.0.0
-  google_fonts: ^4.0.4
-  flutter_launcher_icons: ^0.14.3
-  flutter_automation: ^2.0.0
+  google_fonts: ^6.2.1
+  flutter_launcher_icons: ^0.14.4
   cupertino_icons: ^1.0.5
   intl: ^0.20.2
-  flutter_islamic_icons: ^1.0.2
   flutter_svg: ^2.0.9
   marquee: ^2.3.0
   audio_video_progress_bar: ^2.0.3
-  collection: ^1.19.0
 
 dev_dependencies:
   flutter_test:
