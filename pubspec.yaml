@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 2.0.0+8
+version: 2.0.0+9
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -37,6 +37,7 @@ flutter:
 
   assets:
     - assets/img/
+    - shorebird.yaml
 
   fonts:
     - family: Kitab
