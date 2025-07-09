@@ -2,12 +2,13 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
 class AudioServices {
-  final audioPlayer = AudioPlayer();
+  AudioServices._internal();
 
-  static AudioServices? _instance;
-  static AudioServices get getInstance {
-    return _instance ??= AudioServices();
-  }
+  static final AudioServices _instance = AudioServices._internal();
+
+  factory AudioServices() => _instance;
+
+  final audioPlayer = AudioPlayer();
 
   Future<void> setAudioSource(
     String url, {
@@ -38,6 +39,5 @@ class AudioServices {
 
   void dispose() {
     audioPlayer.dispose();
-    _instance = null;
   }
 }
