@@ -37,7 +37,9 @@ class AudioServices {
     await audioPlayer.pause();
   }
 
-  void dispose() {
-    audioPlayer.dispose();
+  Future<void> stop() async {
+    await audioPlayer.stop();
   }
+
+  void dispose() => stop();
 }

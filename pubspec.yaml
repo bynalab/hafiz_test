@@ -25,6 +25,7 @@ dependencies:
   flutter_svg: ^2.0.9
   marquee: ^2.3.0
   audio_video_progress_bar: ^2.0.3
+  showcaseview: ^4.0.1
 
 dev_dependencies:
   flutter_test:
