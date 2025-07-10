@@ -47,8 +47,8 @@ class _MainMenuState extends State<_MainMenu> {
   }
 
   void startShowcase() {
-    StorageServices.getInstance.hasViewedUserGuide().then((value) {
-      if (!mounted || value) return;
+    StorageServices.getInstance.hasViewedShowcase().then((hasViewedShowcase) {
+      if (!mounted || hasViewedShowcase) return;
 
       ShowCaseWidget.of(context).startShowCase([
         _settingKey,

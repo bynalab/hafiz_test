@@ -52,7 +52,7 @@ class StorageServices {
   }
 
   /// Checks if the user has already viewed the guide identified by the storage key.
-  Future<bool> hasViewedUserGuide() async {
+  Future<bool> hasViewedShowcase() async {
     try {
       final value = (await sharedPreferences).getBool('has_view_showcase');
 
