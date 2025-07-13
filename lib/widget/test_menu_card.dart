@@ -25,7 +25,6 @@ class TestMenuCard extends StatelessWidget {
         child: Stack(
           children: [
             Container(
-              width: 163,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: color?.withValues(alpha: 0.05),

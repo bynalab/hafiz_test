@@ -49,4 +49,6 @@ class AudioServices {
       debugPrint('Error stopping audio: ${e.toString()}');
     }
   }
+
+  void dispose() => stop();
 }
