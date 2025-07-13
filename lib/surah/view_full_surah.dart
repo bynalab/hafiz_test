@@ -28,6 +28,8 @@ class _SurahScreenState extends State<SurahScreen> {
     audioService.stop();
   }
 
+  Surah get surah => widget.surah;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,56 +40,35 @@ class _SurahScreenState extends State<SurahScreen> {
         scrolledUnderElevation: 10,
         centerTitle: false,
         automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        title: Column(
           children: [
-            Expanded(
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: SvgPicture.asset('assets/img/arrow_back.svg'),
-                  ),
-                  const SizedBox(width: 13),
-                  Flexible(
-                    child: Text(
-                      '${widget.surah.number}. ${widget.surah.englishName}: ${widget.surah.englishNameTranslation}',
-                      style: GoogleFonts.montserrat(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF222222),
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: SvgPicture.asset('assets/img/arrow_back.svg'),
+                ),
+                Flexible(
+                  child: Text(
+                    '${surah.number}. ${surah.englishName}: ${surah.englishNameTranslation}',
+                    style: GoogleFonts.montserrat(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF222222),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             Text(
-              widget.surah.name,
+              surah.name,
               style: const TextStyle(
                 fontSize: 15,
                 color: Color(0xFF222222),
                 fontFamily: 'Quran',
               ),
             ),
-            // const Icon(
-            //   Icons.play_arrow_rounded,
-            //   color: Color(0xFF004B40),
-            //   // size: 15,
-            // ),
-            InkWell(
-              child: Icon(
-                // isPlaying && widget.isPlaying
-                //     ? Icons.stop_circle_rounded
-                // :
-                Icons.play_circle_rounded,
-              ),
-              onTap: () async {
-                await audioService.setPlaylistAudio(
-                  widget.surah.audioSources,
-                );
-              },
-            )
           ],
         ),
       ),
@@ -100,11 +81,11 @@ class _SurahScreenState extends State<SurahScreen> {
         ),
         child: ListView.separated(
           padding: const EdgeInsets.symmetric(vertical: 30),
-          itemCount: widget.surah.ayahs.length,
+          itemCount: surah.ayahs.length,
           itemBuilder: (_, index) {
             return QuranVerseCard(
               index: index,
-              ayah: widget.surah.ayahs[index],
+              ayah: surah.ayahs[index],
               isPlaying: playingIndex == index,
               onPlayPressed: (index) {
                 setState(() => playingIndex = index);
