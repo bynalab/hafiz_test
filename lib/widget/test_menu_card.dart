@@ -6,6 +6,7 @@ class TestMenuCard extends StatelessWidget {
   final String title;
   final String? image;
   final Color? color;
+  final double? height;
   final VoidCallback? onTap;
 
   const TestMenuCard({
@@ -14,6 +15,7 @@ class TestMenuCard extends StatelessWidget {
     this.image,
     this.color,
     this.onTap,
+    this.height,
   });
 
   @override
@@ -21,7 +23,7 @@ class TestMenuCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        height: 160,
+        height: height,
         child: Stack(
           children: [
             Container(

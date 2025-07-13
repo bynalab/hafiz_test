@@ -28,7 +28,7 @@ class SurahServices {
 
       return surah;
     } catch (e) {
-      return Surah();
+      rethrow;
     }
   }
 }

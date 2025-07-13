@@ -28,6 +28,12 @@ class AudioServices {
 
   Future<void> play() async {
     try {
+      // If playback has completed, restart from beginning
+      if (audioPlayer.processingState == ProcessingState.completed) {
+        await audioPlayer.stop();
+        await audioPlayer.seek(Duration.zero, index: 0);
+      }
+
       await audioPlayer.play();
     } catch (e) {
       debugPrint('Error playing audio: ${e.toString()}');
@@ -50,5 +56,11 @@ class AudioServices {
     }
   }
 
-  void dispose() => stop();
+  void dispose() => resetAudioPlayer();
+
+  Future<void> resetAudioPlayer() async {
+    await audioPlayer.stop();
+    await audioPlayer.seek(Duration.zero);
+    await audioPlayer.setAudioSource(AudioSource.uri(Uri()));
+  }
 }
