@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hafiz_test/extension/quran_extension.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
@@ -17,7 +18,17 @@ class SurahScreen extends StatefulWidget {
 }
 
 class _SurahScreenState extends State<SurahScreen> {
+  final audioService = AudioServices();
   int playingIndex = 0;
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    audioService.stop();
+  }
+
+  Surah get surah => widget.surah;
 
   @override
   Widget build(BuildContext context) {
@@ -29,32 +40,29 @@ class _SurahScreenState extends State<SurahScreen> {
         scrolledUnderElevation: 10,
         centerTitle: false,
         automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        title: Column(
           children: [
-            Expanded(
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: SvgPicture.asset('assets/img/arrow_back.svg'),
-                  ),
-                  const SizedBox(width: 13),
-                  Flexible(
-                    child: Text(
-                      '${widget.surah.number}. ${widget.surah.englishName}: ${widget.surah.englishNameTranslation}',
-                      style: GoogleFonts.montserrat(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF222222),
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: SvgPicture.asset('assets/img/arrow_back.svg'),
+                ),
+                Flexible(
+                  child: Text(
+                    '${surah.number}. ${surah.englishName}: ${surah.englishNameTranslation}',
+                    style: GoogleFonts.montserrat(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF222222),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             Text(
-              widget.surah.name,
+              surah.name,
               style: const TextStyle(
                 fontSize: 15,
                 color: Color(0xFF222222),
@@ -73,11 +81,11 @@ class _SurahScreenState extends State<SurahScreen> {
         ),
         child: ListView.separated(
           padding: const EdgeInsets.symmetric(vertical: 30),
-          itemCount: widget.surah.ayahs.length,
+          itemCount: surah.ayahs.length,
           itemBuilder: (_, index) {
             return QuranVerseCard(
               index: index,
-              ayah: widget.surah.ayahs[index],
+              ayah: surah.ayahs[index],
               isPlaying: playingIndex == index,
               onPlayPressed: (index) {
                 setState(() => playingIndex = index);
@@ -124,12 +132,7 @@ class QuranVersenCardState extends State<QuranVerseCard> {
 
   Future<void> handleAudio(String url) async {
     try {
-      audioServices.setAudioSource(
-        widget.ayah.audio,
-        id: widget.ayah.number.toString(),
-        title:
-            '${widget.ayah.surah?.englishName} v ${widget.ayah.numberInSurah}',
-      );
+      audioServices.setAudioSource(widget.ayah.audioSource);
 
       await audioServices.pause();
       widget.onPlayPressed?.call(selectedIndex);
