@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hafiz_test/enum/surah_select_action.dart';
 import 'package:hafiz_test/services/storage.services.dart';
 import 'package:hafiz_test/widget/last_read_card.dart';
 import 'package:hafiz_test/widget/showcase.dart';
@@ -121,11 +122,16 @@ class _MainMenuState extends State<_MainMenu> {
                       description:
                           'Begin your journey with a randomly chosen verse from the Holy Quran.',
                       child: TestMenuCard(
-                        title: 'Quran',
+                        title: 'Read Quran',
                         image: 'card_quran',
                         color: const Color(0xFF2BFF00),
-                        onTap: () =>
-                            navigateTo(const TestBySurah(surahNumber: 0)),
+                        onTap: () {
+                          navigateTo(
+                            const SurahListScreen(
+                              actionType: SurahSelectionAction.read,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -140,7 +146,13 @@ class _MainMenuState extends State<_MainMenu> {
                         title: 'Surah',
                         image: 'card_surah',
                         color: const Color(0xFFFF8E6F),
-                        onTap: () => navigateTo(const SurahListScreen()),
+                        onTap: () {
+                          navigateTo(
+                            const SurahListScreen(
+                              actionType: SurahSelectionAction.test,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),

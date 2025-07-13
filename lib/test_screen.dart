@@ -467,10 +467,6 @@ class _TestPage extends State<TestScreen> {
                       },
                     ),
                   );
-
-                  //Todo(byna): fix this
-                  await widget.onRefresh?.call();
-                  init();
                 },
                 child: Container(
                   width: double.infinity,

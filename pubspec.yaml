@@ -26,6 +26,7 @@ dependencies:
   marquee: ^2.3.0
   audio_video_progress_bar: ^2.0.3
   showcaseview: ^4.0.1
+  scrollable_positioned_list: ^0.3.8
 
 dev_dependencies:
   flutter_test:
