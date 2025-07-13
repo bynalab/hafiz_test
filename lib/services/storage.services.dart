@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,5 +49,26 @@ class StorageServices {
       Surah.fromJson(decoded['surah']),
       Ayah.fromJson(decoded['ayah']),
     );
+  }
+
+  /// Checks if the user has already viewed the guide identified by the storage key.
+  Future<bool> hasViewedShowcase() async {
+    try {
+      final value = (await sharedPreferences).getBool('has_view_showcase');
+
+      return value ?? false;
+    } catch (e) {
+      debugPrint('Error checking if user guide was viewed: $e');
+      return false;
+    }
+  }
+
+  /// Saves the state of a user guide as viewed in persistent storage.
+  Future<void> saveUserGuide() async {
+    try {
+      (await sharedPreferences).setBool('has_view_showcase', true);
+    } catch (e) {
+      debugPrint('Error saving user guide state: $e');
+    }
   }
 }
