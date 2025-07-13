@@ -41,6 +41,7 @@ class _SurahScreenState extends State<SurahScreen> {
         centerTitle: false,
         automaticallyImplyLeading: false,
         title: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -63,10 +64,10 @@ class _SurahScreenState extends State<SurahScreen> {
             ),
             Text(
               surah.name,
-              style: const TextStyle(
+              style: GoogleFonts.montserrat(
                 fontSize: 15,
-                color: Color(0xFF222222),
-                fontFamily: 'Quran',
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF222222),
               ),
             ),
           ],
