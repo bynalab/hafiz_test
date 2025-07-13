@@ -117,7 +117,7 @@ class _TestPage extends State<TestScreen> {
 
   @override
   dispose() {
-    audioServices.dispose();
+    audioServices.stop();
 
     super.dispose();
   }

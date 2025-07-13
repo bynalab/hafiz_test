@@ -25,7 +25,7 @@ class _SurahScreenState extends State<SurahScreen> {
   void dispose() {
     super.dispose();
 
-    audioService.dispose();
+    audioService.stop();
   }
 
   @override
