@@ -75,6 +75,10 @@ class _MainMenuState extends State<_MainMenu> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: false,
+          backgroundColor: Colors.white,
+          surfaceTintColor: const Color(0xFF004B40),
+          scrolledUnderElevation: 10,
+          automaticallyImplyLeading: false,
           title: SvgPicture.asset('assets/img/logo.svg'),
           actions: [
             ShowCase(
@@ -97,32 +101,23 @@ class _MainMenuState extends State<_MainMenu> {
             ),
           ],
         ),
-        body: Padding(
+        body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               LastReadCard(lastReadKey: _lastReadKey),
               const SizedBox(height: 34),
-              Text(
-                'Test',
-                style: GoogleFonts.montserrat(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF222222),
-                ),
-              ),
-              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
                     child: ShowCase(
                       widgetKey: _quranCardKey,
-                      title: 'By Quran',
+                      title: 'Read Quran',
                       description:
-                          'Begin your journey with a randomly chosen verse from the Holy Quran.',
+                          'Read or listen to the Holy Quran with your preferred reciter.',
                       child: TestMenuCard(
-                        title: 'Read Quran',
+                        title: 'Read/Listen to Quran',
                         image: 'card_quran',
                         color: const Color(0xFF2BFF00),
                         onTap: () {
@@ -135,7 +130,19 @@ class _MainMenuState extends State<_MainMenu> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 17),
+                ],
+              ),
+              const SizedBox(height: 17),
+              Text(
+                'Tests',
+                style: GoogleFonts.montserrat(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF222222),
+                ),
+              ),
+              Row(
+                children: [
                   Expanded(
                     child: ShowCase(
                       widgetKey: _surahCardKey,
@@ -143,7 +150,8 @@ class _MainMenuState extends State<_MainMenu> {
                       description:
                           'Begin your test journey by selecting a specific Surah.',
                       child: TestMenuCard(
-                        title: 'Surah',
+                        height: 160,
+                        title: 'By Surah',
                         image: 'card_surah',
                         color: const Color(0xFFFF8E6F),
                         onTap: () {
@@ -168,7 +176,8 @@ class _MainMenuState extends State<_MainMenu> {
                       description:
                           'Begin your test journey by selecting a specific Juz of the Quran.',
                       child: TestMenuCard(
-                        title: 'Juz',
+                        height: 160,
+                        title: 'By Juz',
                         image: 'card_juz',
                         color: const Color(0xFFFBBE15),
                         onTap: () => navigateTo(const JuzListScreen()),
@@ -183,7 +192,8 @@ class _MainMenuState extends State<_MainMenu> {
                       description:
                           'Challenge yourself with verses selected at random from across the Holy Quran.',
                       child: TestMenuCard(
-                        title: 'Random',
+                        height: 160,
+                        title: 'Randomly',
                         image: 'card_random',
                         color: const Color(0xFF6E81F6),
                         onTap: () =>
