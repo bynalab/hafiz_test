@@ -1,174 +1,108 @@
-import 'package:intl/intl.dart' hide TextDirection;
-
 import 'package:flutter/material.dart';
-import 'package:hafiz_test/extension/quran_extension.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
-import 'package:hafiz_test/services/audio_services.dart';
-import 'package:just_audio/just_audio.dart';
 
-class AyahCard extends StatefulWidget {
+class AyahCard extends StatelessWidget {
   final Ayah ayah;
   final int index;
-  final bool isPlaying;
+  final ValueNotifier<int?> playingIndexNotifier;
   final void Function(int)? onPlayPressed;
 
   const AyahCard({
     super.key,
     required this.ayah,
     required this.index,
-    this.isPlaying = false,
+    required this.playingIndexNotifier,
     this.onPlayPressed,
   });
 
   @override
-  State<AyahCard> createState() => _AyahCardState();
-}
-
-class _AyahCardState extends State<AyahCard> {
-  final audioServices = AudioServices();
-
-  bool isPlayingInternal = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    audioServices.audioPlayer.playerStateStream.listen((state) {
-      setState(() {
-        isPlayingInternal =
-            state.playing && state.processingState != ProcessingState.completed;
-      });
-    });
-  }
-
-  Future<void> handlePlayPause() async {
-    widget.onPlayPressed?.call(widget.index);
-    if (isPlayingInternal && widget.isPlaying) {
-      await audioServices.pause();
-    } else {
-      await audioServices.setAudioSource(widget.ayah.audioSource);
-      await audioServices.play();
-    }
-  }
-
-  String getDecoratedAyahNumber(int number) {
-    final arabicNumber = NumberFormat('#', 'ar_EG').format(number);
-    return String.fromCharCodes(Runes('\u{fd3f}$arabicNumber\u{fd3e}'));
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final isActive = isPlayingInternal && widget.isPlaying;
+    return ValueListenableBuilder<int?>(
+      valueListenable: playingIndexNotifier,
+      builder: (context, currentPlayingIndex, _) {
+        final isActive = currentPlayingIndex == index;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 24),
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
-                center: Alignment.topLeft,
-                radius: 2,
-                colors: isActive
-                    ? [Colors.green.shade50, Colors.green.shade100]
-                    : [Colors.white, Colors.grey.shade100],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                if (isActive)
-                  BoxShadow(
-                    color: Colors.green.shade200.withValues(alpha: 0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 24),
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: Alignment.topLeft,
+                    radius: 2,
+                    colors: isActive
+                        ? [Colors.green.shade50, Colors.green.shade100]
+                        : [Colors.white, Colors.grey.shade100],
                   ),
-              ],
-              border: Border.all(
-                color: Colors.green.shade100,
-                width: 0.5,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Center(
-                  child: Text.rich(
-                    textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.center,
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: widget.ayah.text,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontFamily: 'Quran',
-                            height: 2,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        TextSpan(
-                          text:
-                              "    ${getDecoratedAyahNumber(widget.ayah.numberInSurah)}",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Quran',
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                          ),
-                        ),
-                      ],
-                    ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.green.shade100,
+                    width: 0.5,
                   ),
                 ),
-                // if (widget.ayah.translation != null)
-                //   Padding(
-                //     padding: const EdgeInsets.only(top: 12),
-                //     child: Text(
-                //       widget.ayah.translation!,
-                //       textAlign: TextAlign.center,
-                //       style: const TextStyle(
-                //         fontStyle: FontStyle.italic,
-                //         color: Colors.grey,
-                //         fontSize: 14,
-                //       ),
-                //     ),
-                //   ),
-              ],
-            ),
-          ),
-
-          /// Play Button
-          Positioned(
-            bottom: 5,
-            right: 5,
-            child: GestureDetector(
-              onTap: handlePlayPause,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? Colors.red.shade600.withValues(alpha: 0.5)
-                      : Colors.green.shade500.withValues(alpha: 0.5),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      blurRadius: 4,
-                      offset: const Offset(2, 2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Text.rich(
+                        textDirection: TextDirection.rtl,
+                        textAlign: TextAlign.center,
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: ayah.text,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'Quran',
+                                height: 2,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            TextSpan(
+                              text: "    \u{fd3f}${ayah.numberInSurah}\u{fd3e}",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'Quran',
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                child: Icon(
-                  isActive ? Icons.stop : Icons.play_arrow,
-                  color: Colors.white,
-                  size: 15,
+              ),
+              Positioned(
+                bottom: 5,
+                right: 5,
+                child: GestureDetector(
+                  onTap: () => onPlayPressed?.call(index),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isActive
+                          ? Colors.red.shade600.withValues(alpha: 0.5)
+                          : Colors.green.shade500.withValues(alpha: 0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      isActive ? Icons.stop : Icons.play_arrow,
+                      color: Colors.white,
+                      size: 15,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
