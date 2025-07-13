@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hafiz_test/extension/quran_extension.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
@@ -17,7 +18,15 @@ class SurahScreen extends StatefulWidget {
 }
 
 class _SurahScreenState extends State<SurahScreen> {
+  final audioService = AudioServices();
   int playingIndex = 0;
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    audioService.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +70,24 @@ class _SurahScreenState extends State<SurahScreen> {
                 fontFamily: 'Quran',
               ),
             ),
+            // const Icon(
+            //   Icons.play_arrow_rounded,
+            //   color: Color(0xFF004B40),
+            //   // size: 15,
+            // ),
+            InkWell(
+              child: Icon(
+                // isPlaying && widget.isPlaying
+                //     ? Icons.stop_circle_rounded
+                // :
+                Icons.play_circle_rounded,
+              ),
+              onTap: () async {
+                await audioService.setPlaylistAudio(
+                  widget.surah.audioSources,
+                );
+              },
+            )
           ],
         ),
       ),
@@ -124,12 +151,7 @@ class QuranVersenCardState extends State<QuranVerseCard> {
 
   Future<void> handleAudio(String url) async {
     try {
-      audioServices.setAudioSource(
-        widget.ayah.audio,
-        id: widget.ayah.number.toString(),
-        title:
-            '${widget.ayah.surah?.englishName} v ${widget.ayah.numberInSurah}',
-      );
+      audioServices.setAudioSource(widget.ayah.audioSource);
 
       await audioServices.pause();
       widget.onPlayPressed?.call(selectedIndex);
