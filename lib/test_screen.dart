@@ -4,6 +4,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hafiz_test/extension/quran_extension.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
@@ -19,7 +20,6 @@ class TestScreen extends StatefulWidget {
   final Ayah ayah;
   final List<Ayah> ayahs;
   final Function()? onRefresh;
-  final AudioServices? audioServices;
 
   const TestScreen({
     super.key,
@@ -27,7 +27,6 @@ class TestScreen extends StatefulWidget {
     required this.ayah,
     this.ayahs = const [],
     this.onRefresh,
-    this.audioServices,
   });
 
   @override
@@ -35,8 +34,8 @@ class TestScreen extends StatefulWidget {
 }
 
 class _TestPage extends State<TestScreen> {
-  late AudioServices audioServices;
-  late AudioPlayer audioPlayer;
+  final audioServices = AudioServices();
+  AudioPlayer get audioPlayer => audioServices.audioPlayer;
 
   Ayah ayah = Ayah();
   Surah surah = Surah();
@@ -49,9 +48,6 @@ class _TestPage extends State<TestScreen> {
   LoopMode loopMode = LoopMode.off;
 
   Future<void> init() async {
-    audioServices = widget.audioServices ?? AudioServices();
-    audioPlayer = audioServices.audioPlayer;
-
     surah = widget.surah;
     ayah = widget.ayah;
     ayahs = widget.ayahs;
@@ -88,11 +84,7 @@ class _TestPage extends State<TestScreen> {
 
   Future<void> handleAudioPlay() async {
     try {
-      await audioServices.setAudioSource(
-        ayah.audio,
-        id: ayah.number.toString(),
-        title: '${surah.englishName} v ${ayah.numberInSurah}',
-      );
+      await audioServices.setAudioSource(ayah.audioSource);
 
       if (autoplay) {
         await audioPlayer.play();
@@ -125,7 +117,7 @@ class _TestPage extends State<TestScreen> {
 
   @override
   dispose() {
-    audioServices.dispose();
+    audioServices.stop();
 
     super.dispose();
   }
@@ -466,8 +458,8 @@ class _TestPage extends State<TestScreen> {
               ),
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) {

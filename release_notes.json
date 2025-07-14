@@ -1,0 +1,7 @@
+[
+  {
+    "language": "en-GB",
+    "text": "• 📖 New Quran reading view with scrollable ayah list\n• 🔊 Audio playback for full Surahs and individual ayahs\n• 🧠 Smart memory: resumes from last played verse\n• 🎛 Read vs Test mode support\n• 📋 Ayah with per-verse controls\n• 🎨 Improved app bar and title styling using GoogleFonts\n• 📱 Updated main menu layout and TestMenuCard flexibility\n• 🐞 Fixed alignment and added error handling for Surah loading",
+    "whatsNew": "• 📖 New Quran reading view with scrollable ayah list\n• 🔊 Audio playback for full Surahs and individual ayahs\n• 🧠 Smart memory: resumes from last played verse\n• 🎛 Read vs Test mode support\n• 📋 Ayah with per-verse controls\n• 🎨 Improved app bar and title styling using GoogleFonts\n• 📱 Updated main menu layout and TestMenuCard flexibility\n• 🐞 Fixed alignment and added error handling for Surah loading"
+  }
+]

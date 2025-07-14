@@ -1,15 +1,16 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/network.services.dart';
 import 'package:hafiz_test/services/storage.services.dart';
+import 'package:hafiz_test/util/surah_picker.dart';
 
 class SurahServices {
   final _networkServices = NetworkServices();
+  final surahPicker = SurahPicker();
 
   int getRandomSurahNumber() {
-    final surahNumber = 1 + Random().nextInt(114 - 1);
+    final surahNumber = surahPicker.getNextSurah();
 
     return surahNumber;
   }
@@ -27,7 +28,7 @@ class SurahServices {
 
       return surah;
     } catch (e) {
-      return Surah();
+      rethrow;
     }
   }
 }

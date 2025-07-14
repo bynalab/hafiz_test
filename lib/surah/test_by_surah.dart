@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hafiz_test/extension/quran_extension.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
@@ -30,8 +31,8 @@ class _TestPage extends State<TestBySurah> {
   bool isLoading = false;
   bool isPlaying = false;
 
-  List<Ayah> ayahs = [];
   late Ayah ayah;
+  List<Ayah> ayahs = [];
 
   int surahNumber = 1;
   bool get isRandomSurah => widget.surahNumber == 0;
@@ -66,11 +67,7 @@ class _TestPage extends State<TestBySurah> {
       ayah = ayahServices.getRandomAyahForSurah(ayahs);
     }
 
-    await audioServices.setAudioSource(
-      ayah.audio,
-      id: ayah.number.toString(),
-      title: '${surah.englishName} v ${ayah.numberInSurah}',
-    );
+    await audioServices.setAudioSource(ayah.audioSource);
 
     setState(() => isLoading = false);
   }
@@ -119,7 +116,6 @@ class _TestPage extends State<TestBySurah> {
                 surah: surah,
                 ayah: ayah,
                 ayahs: ayahs,
-                audioServices: audioServices,
                 onRefresh: () async => await init(),
               ),
             ),

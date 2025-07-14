@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/data/surah_list.dart';
+import 'package:hafiz_test/enum/surah_select_action.dart';
+import 'package:hafiz_test/quran/quran_view.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';
 
 class SurahListScreen extends StatefulWidget {
-  const SurahListScreen({super.key});
+  final SurahSelectionAction actionType;
+
+  const SurahListScreen({super.key, required this.actionType});
 
   @override
   State<SurahListScreen> createState() => _SurahListScreenState();
@@ -120,14 +124,27 @@ class _SurahListScreenState extends State<SurahListScreen> {
                 ),
               ),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) {
-                      return TestBySurah(surahNumber: surahNumber);
-                    },
-                  ),
-                );
+                switch (widget.actionType) {
+                  case SurahSelectionAction.read:
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) {
+                          return QuranView(surah: surah);
+                        },
+                      ),
+                    );
+                    break;
+                  default:
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) {
+                          return TestBySurah(surahNumber: surahNumber);
+                        },
+                      ),
+                    );
+                }
               },
             );
           },

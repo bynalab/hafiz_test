@@ -1,0 +1,1 @@
+enum SurahSelectionAction { read, test }
