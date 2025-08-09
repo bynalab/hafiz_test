@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/data/reciters.dart';
 import 'package:hafiz_test/extension/collection.dart';
+import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/model/reciter.model.dart';
-import 'package:hafiz_test/services/storage.services.dart';
+import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 import 'package:hafiz_test/widget/button.dart';
 
 class SettingDialog extends StatefulWidget {
@@ -14,14 +15,16 @@ class SettingDialog extends StatefulWidget {
 }
 
 class _SettingDialogState extends State<SettingDialog> {
+  final storageServices = getIt<IStorageService>();
+
   bool autoPlay = true;
   bool isLoading = true;
 
   String? reciter;
 
   Future<void> init() async {
-    autoPlay = await StorageServices.getInstance.checkAutoPlay();
-    reciter = await StorageServices.getInstance.getReciter();
+    autoPlay = storageServices.checkAutoPlay();
+    reciter = storageServices.getReciter();
 
     isLoading = false;
     setState(() {});
@@ -126,8 +129,8 @@ class _SettingDialogState extends State<SettingDialog> {
               ),
             ),
             onPressed: () {
-              StorageServices.getInstance.setAutoPlay(autoPlay);
-              StorageServices.getInstance.setReciter(reciter ?? '');
+              storageServices.setAutoPlay(autoPlay);
+              storageServices.setReciter(reciter ?? '');
               Navigator.pop(context);
             },
           )

@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/extension/quran_extension.dart';
+import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
-import 'package:hafiz_test/services/storage.services.dart';
+import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 import 'package:hafiz_test/surah/view_full_surah.dart';
 import 'package:hafiz_test/util/util.dart';
 import 'package:hafiz_test/widget/button.dart';
@@ -19,6 +20,7 @@ class TestScreen extends StatefulWidget {
   final Surah surah;
   final Ayah ayah;
   final List<Ayah> ayahs;
+  final bool isLoading;
   final Function()? onRefresh;
 
   const TestScreen({
@@ -27,6 +29,7 @@ class TestScreen extends StatefulWidget {
     required this.ayah,
     this.ayahs = const [],
     this.onRefresh,
+    this.isLoading = false,
   });
 
   @override
@@ -47,12 +50,14 @@ class _TestPage extends State<TestScreen> {
 
   LoopMode loopMode = LoopMode.off;
 
+  final storageServices = getIt<IStorageService>();
+
   Future<void> init() async {
     surah = widget.surah;
     ayah = widget.ayah;
     ayahs = widget.ayahs;
 
-    autoplay = await StorageServices.getInstance.checkAutoPlay();
+    autoplay = storageServices.checkAutoPlay();
 
     audioPlayer.setLoopMode(loopMode);
     await audioPlayer.play();
@@ -110,7 +115,7 @@ class _TestPage extends State<TestScreen> {
       if (state.processingState == ProcessingState.completed) {
         setState(() => isPlaying = false);
 
-        StorageServices.getInstance.saveLastRead(surah, ayah);
+        storageServices.saveLastRead(surah, ayah);
       }
     });
   }

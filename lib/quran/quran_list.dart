@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/model/surah.model.dart';
-import 'package:hafiz_test/quran/ayah_card.dart';
+import 'package:hafiz_test/quran/widgets/ayah_card.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class QuranAyahList extends StatelessWidget {

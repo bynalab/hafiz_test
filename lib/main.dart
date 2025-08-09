@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/splash_screen.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
@@ -10,6 +11,8 @@ void main() async {
     androidNotificationChannelName: 'Audio playback',
     androidNotificationOngoing: true,
   );
+
+  setupLocator();
 
   runApp(
     const MaterialApp(

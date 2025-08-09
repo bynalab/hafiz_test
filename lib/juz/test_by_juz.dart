@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/extension/quran_extension.dart';
+import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
@@ -34,9 +35,10 @@ class _TestPage extends State<TestByJuz> {
     setState(() => isLoading = true);
 
     final ayahFromJuz =
-        await AyahServices().getRandomAyahFromJuz(widget.juzNumber);
+        await getIt<AyahServices>().getRandomAyahFromJuz(widget.juzNumber);
 
-    surah = await SurahServices().getSurah(ayahFromJuz.surah?.number ?? 0);
+    surah =
+        await getIt<SurahServices>().getSurah(ayahFromJuz.surah?.number ?? 0);
     ayahs = surah.ayahs;
 
     ayah = ayahs.firstWhere((ayah) => ayah.number == ayahFromJuz.number);

@@ -1,43 +1,46 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/services/network.services.dart';
-import 'package:hafiz_test/services/storage.services.dart';
+import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 
 class AyahServices {
-  final _networkServices = NetworkServices();
+  final NetworkServices networkServices;
+  final IStorageService storageServices;
+
+  AyahServices({
+    required this.networkServices,
+    required this.storageServices,
+  });
 
   Future<List<Ayah>> getSurahAyahs(int surahNumber) async {
     try {
-      final reciter = await StorageServices.getInstance.getReciter();
+      final reciter = storageServices.getReciter();
+      final response = await networkServices.get('surah/$surahNumber/$reciter');
 
-      final res = await _networkServices.get('surah/$surahNumber/$reciter');
-
-      final body = json.decode(res.body);
-
-      final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
-
-      return ayahs;
-    } catch (error) {
-      if (kDebugMode) {
-        print(error);
+      if (response != null && response.data != null) {
+        final ayahs = Ayah.fromJsonList(response.data['data']['ayahs']);
+        return ayahs;
       }
-
-      return [];
+    } catch (error) {
+      if (kDebugMode) print('getSurahAyahs error: $error');
     }
+
+    return [];
   }
 
   Future<Ayah> getRandomAyahFromJuz(int juzNumber) async {
-    final res = await _networkServices.get('juz/$juzNumber/quran-uthmani');
-    final body = json.decode(res.body);
+    try {
+      final response =
+          await networkServices.get('juz/$juzNumber/quran-uthmani');
 
-    if (body != null) {
-      final ayahs = Ayah.fromJsonList(body['data']['ayahs']);
-      final ayah = AyahServices().getRandomAyahForSurah(ayahs);
-
-      return ayah;
+      if (response != null && response.data != null) {
+        final ayahs = Ayah.fromJsonList(response.data['data']['ayahs']);
+        return getRandomAyahForSurah(ayahs);
+      }
+    } catch (error) {
+      if (kDebugMode) print('getRandomAyahFromJuz error: $error');
     }
 
     return Ayah();
@@ -45,19 +48,11 @@ class AyahServices {
 
   Ayah getRandomAyahForSurah(List<Ayah> ayahs) {
     try {
-      int min = 0;
-      int max = ayahs.length - 1;
-
       final random = Random();
-      final range = min + random.nextInt(max - min);
-
-      final ayah = ayahs[range];
-
+      final ayah = ayahs[random.nextInt(ayahs.length)];
       return ayah;
     } catch (error) {
-      if (kDebugMode) {
-        print(error);
-      }
+      if (kDebugMode) print('getRandomAyahForSurah error: $error');
     }
 
     return Ayah();

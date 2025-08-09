@@ -1,39 +1,35 @@
-import 'dart:io';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 
 class NetworkServices {
-  final String _baseUrl = 'https://api.alquran.cloud/v1/';
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: 'https://api.alquran.cloud/v1/',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      connectTimeout: Duration(seconds: 10),
+      receiveTimeout: Duration(seconds: 10),
+    ),
+  );
 
-  Future get(url) async {
-    var link = Uri.parse(_baseUrl + url);
-
+  Future<Response?> get(String url) async {
     try {
-      return await http.get(link, headers: _setHeaders());
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
+      return await _dio.get(url);
+    } on DioException catch (e, stackTrace) {
+      _logError('DioException', e.message, stackTrace);
+    } catch (e, stackTrace) {
+      _logError('UnknownException', e.toString(), stackTrace);
     }
+
+    return null;
   }
 
-  _setHeaders() {
-    return {
-      'content-type': 'application/json',
-      'Accept': 'application/json',
-    };
-  }
-
-  Future<bool> hasInternetConnection() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return Future.value(true);
-      }
-    } on SocketException catch (_) {
-      return Future.value(false);
+  void _logError(String type, String? message, StackTrace stackTrace) {
+    if (kDebugMode) {
+      print('[$type] $message');
+      print(stackTrace);
     }
-    return false;
   }
 }

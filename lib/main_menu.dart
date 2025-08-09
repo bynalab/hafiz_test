@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/enum/surah_select_action.dart';
-import 'package:hafiz_test/services/storage.services.dart';
+import 'package:hafiz_test/locator.dart';
+import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 import 'package:hafiz_test/widget/last_read_card.dart';
 import 'package:hafiz_test/widget/showcase.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -20,7 +21,7 @@ class MainMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShowCaseWidget(
       builder: (_) => _MainMenu(key: key),
-      onFinish: StorageServices.getInstance.saveUserGuide,
+      onFinish: getIt<IStorageService>().saveUserGuide,
     );
   }
 }
@@ -48,18 +49,18 @@ class _MainMenuState extends State<_MainMenu> {
   }
 
   void startShowcase() {
-    StorageServices.getInstance.hasViewedShowcase().then((hasViewedShowcase) {
-      if (!mounted || hasViewedShowcase) return;
+    final hasViewedShowcase = getIt<IStorageService>().hasViewedShowcase();
 
-      ShowCaseWidget.of(context).startShowCase([
-        _settingKey,
-        _lastReadKey,
-        _quranCardKey,
-        _surahCardKey,
-        _juzCardKey,
-        _randomCardKey,
-      ]);
-    });
+    if (!mounted || hasViewedShowcase) return;
+
+    ShowCaseWidget.of(context).startShowCase([
+      _settingKey,
+      _lastReadKey,
+      _quranCardKey,
+      _surahCardKey,
+      _juzCardKey,
+      _randomCardKey,
+    ]);
   }
 
   Future<void> navigateTo(Widget screen) async {
@@ -196,8 +197,7 @@ class _MainMenuState extends State<_MainMenu> {
                         title: 'Randomly',
                         image: 'card_random',
                         color: const Color(0xFF6E81F6),
-                        onTap: () =>
-                            navigateTo(const TestBySurah(surahNumber: 0)),
+                        onTap: () => navigateTo(const TestBySurah()),
                       ),
                     ),
                   ),

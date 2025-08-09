@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/model/surah.model.dart';
-import 'package:hafiz_test/quran/error.dart';
+import 'package:hafiz_test/quran/widgets/error.dart';
 import 'package:hafiz_test/quran/quran_list.dart';
 import 'package:hafiz_test/quran/quran_viewmodel.dart';
 import 'package:hafiz_test/quran/surah_loader.dart';
+import 'package:hafiz_test/services/audio_services.dart';
+import 'package:hafiz_test/services/surah.services.dart';
 
 class QuranView extends StatefulWidget {
   final Surah surah;
@@ -15,7 +18,10 @@ class QuranView extends StatefulWidget {
 }
 
 class _QuranViewState extends State<QuranView> {
-  final viewModel = QuranViewModel();
+  final viewModel = QuranViewModel(
+    audioService: getIt<AudioServices>(),
+    surahService: getIt<SurahServices>(),
+  );
 
   @override
   void initState() {

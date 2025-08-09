@@ -8,8 +8,12 @@ import 'package:just_audio/just_audio.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class QuranViewModel {
-  final audioService = AudioServices();
+  final AudioServices audioService;
+  final SurahServices surahService;
+
   final itemScrollController = ItemScrollController();
+
+  QuranViewModel({required this.audioService, required this.surahService});
 
   late Surah surah;
   bool isLoading = true;
@@ -26,7 +30,7 @@ class QuranViewModel {
   Future<void> initialize(int surahNumber) async {
     try {
       isLoading = true;
-      surah = await SurahServices().getSurah(surahNumber);
+      surah = await surahService.getSurah(surahNumber);
       await audioService.setPlaylistAudio(surah.audioSources);
       hasError = false;
     } catch (e) {
