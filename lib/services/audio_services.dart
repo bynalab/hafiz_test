@@ -48,11 +48,35 @@ class AudioServices {
     }
   }
 
+  Future<void> seek(Duration duration) async {
+    try {
+      await audioPlayer.seek(duration);
+    } catch (e) {
+      debugPrint('Error pausing audio: ${e.toString()}');
+    }
+  }
+
   Future<void> stop() async {
     try {
       await audioPlayer.stop();
     } catch (e) {
       debugPrint('Error stopping audio: ${e.toString()}');
+    }
+  }
+
+  Future<void> setLoopMode(LoopMode mode) async {
+    try {
+      await audioPlayer.setLoopMode(mode);
+    } catch (e) {
+      debugPrint('Error setting loop mode: ${e.toString()}');
+    }
+  }
+
+  Future<void> setSpeed(double speed) async {
+    try {
+      await audioPlayer.setSpeed(speed);
+    } catch (e) {
+      debugPrint('Error setting speed: ${e.toString()}');
     }
   }
 

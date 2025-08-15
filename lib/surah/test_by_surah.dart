@@ -14,30 +14,19 @@ class TestBySurah extends StatefulWidget {
   final int? surahNumber;
   final int? ayahNumber;
 
-  const TestBySurah({
-    super.key,
-    this.surahNumber,
-    this.ayahNumber,
-  });
+  const TestBySurah({super.key, this.surahNumber, this.ayahNumber});
 
   @override
   State<StatefulWidget> createState() => _TestPage();
 }
 
 class _TestPage extends State<TestBySurah> {
-  final audioServices = AudioServices();
   final surahServices = getIt<SurahServices>();
 
-  final ayahServices = getIt<AyahServices>();
-
   bool isLoading = false;
-  bool isPlaying = false;
-
-  late Ayah ayah;
-  List<Ayah> ayahs = [];
 
   late int surahNumber;
-  bool get isRandomSurah => widget.surahNumber == null;
+  late Ayah currentAyah;
 
   @override
   void initState() {
@@ -46,32 +35,33 @@ class _TestPage extends State<TestBySurah> {
     init();
   }
 
-  bool autoplay = true;
   Surah surah = Surah();
 
   Future<void> init() async {
     setState(() => isLoading = true);
 
-    if (widget.surahNumber != null) {
-      surahNumber = widget.surahNumber!;
-    } else {
+    if (widget.surahNumber == null) {
       surahNumber = surahServices.getRandomSurahNumber();
-
-      if (ayahs.isEmpty) {
-        surah = await surahServices.getSurah(surahNumber);
-      }
-    }
-
-    ayahs = surah.ayahs;
-    if (widget.ayahNumber != null) {
-      ayah = surah.getAyah(widget.ayahNumber);
     } else {
-      ayah = ayahServices.getRandomAyahForSurah(ayahs);
+      surahNumber = widget.surahNumber!;
     }
 
-    await audioServices.setAudioSource(ayah.audioSource);
+    if (surah.ayahs.isEmpty) {
+      // Avoid refetching surah if it's ayahs are already loaded
+      surah = await surahServices.getSurah(surahNumber);
+    }
+
+    currentAyah = _getAyahForSurah();
+
+    await getIt<AudioServices>().setAudioSource(currentAyah.audioSource);
 
     setState(() => isLoading = false);
+  }
+
+  Ayah _getAyahForSurah() {
+    return widget.ayahNumber != null
+        ? surah.getAyah(widget.ayahNumber)
+        : getIt<AyahServices>().getRandomAyahForSurah(surah.ayahs);
   }
 
   @override
@@ -116,8 +106,7 @@ class _TestPage extends State<TestBySurah> {
             SingleChildScrollView(
               child: TestScreen(
                 surah: surah,
-                ayah: ayah,
-                ayahs: ayahs,
+                currentAyah: currentAyah,
                 isLoading: isLoading,
                 onRefresh: () async => await init(),
               ),

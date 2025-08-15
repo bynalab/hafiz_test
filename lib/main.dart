@@ -12,26 +12,26 @@ void main() async {
     androidNotificationOngoing: true,
   );
 
-  setupLocator();
+  await setupLocator();
 
   runApp(
     const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Afeez(),
+      home: Hafiz(),
     ),
   );
 }
 
-class Afeez extends StatefulWidget {
-  const Afeez({super.key});
+class Hafiz extends StatefulWidget {
+  const Hafiz({super.key});
 
   @override
-  State<StatefulWidget> createState() => _Afeez();
+  State<StatefulWidget> createState() => _Hafiz();
 }
 
-class _Afeez extends State<Afeez> {
+class _Hafiz extends State<Hafiz> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: SplashScreen());
+    return const SplashScreen();
   }
 }

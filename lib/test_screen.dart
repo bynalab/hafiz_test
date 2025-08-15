@@ -18,16 +18,15 @@ import 'package:marquee/marquee.dart';
 
 class TestScreen extends StatefulWidget {
   final Surah surah;
-  final Ayah ayah;
-  final List<Ayah> ayahs;
+  final Ayah currentAyah;
+
   final bool isLoading;
   final Function()? onRefresh;
 
   const TestScreen({
     super.key,
     required this.surah,
-    required this.ayah,
-    this.ayahs = const [],
+    required this.currentAyah,
     this.onRefresh,
     this.isLoading = false,
   });
@@ -37,64 +36,66 @@ class TestScreen extends StatefulWidget {
 }
 
 class _TestPage extends State<TestScreen> {
-  final audioServices = AudioServices();
+  final audioServices = getIt<AudioServices>();
+  final storageServices = getIt<IStorageService>();
+
   AudioPlayer get audioPlayer => audioServices.audioPlayer;
 
-  Ayah ayah = Ayah();
-  Surah surah = Surah();
-  List<Ayah> ayahs = [];
+  Surah get surah => widget.surah;
+  Ayah currentAyah = Ayah();
+
+  List<Ayah> get ayahs => surah.ayahs;
 
   bool loop = false;
-  bool isPlaying = false;
   bool autoplay = true;
+  bool isPlaying = false;
 
   LoopMode loopMode = LoopMode.off;
 
-  final storageServices = getIt<IStorageService>();
-
   Future<void> init() async {
-    surah = widget.surah;
-    ayah = widget.ayah;
-    ayahs = widget.ayahs;
+    currentAyah = widget.currentAyah;
 
     autoplay = storageServices.checkAutoPlay();
 
-    audioPlayer.setLoopMode(loopMode);
-    await audioPlayer.play();
+    audioServices.setLoopMode(loopMode);
+
+    if (autoplay) {
+      await audioServices.play();
+    }
   }
 
   void playNextAyah() {
-    if (ayah.numberInSurah >= ayahs.length) {
+    if (currentAyah.numberInSurah >= ayahs.length) {
       showSnackBar(context, 'End of Surah');
 
       return;
     }
 
-    ayah = ayahs[ayah.numberInSurah];
+    currentAyah = ayahs[currentAyah.numberInSurah];
 
     handleAudioPlay();
   }
 
   void playPreviousAyah() {
-    if (ayah.numberInSurah == 1) {
+    if (currentAyah.numberInSurah == 1) {
       showSnackBar(context, 'Beginning of Surah');
 
       return;
     }
 
-    ayah = ayahs[ayah.numberInSurah - 2];
+    currentAyah = ayahs[currentAyah.numberInSurah - 2];
 
     handleAudioPlay();
   }
 
   Future<void> handleAudioPlay() async {
     try {
-      await audioServices.setAudioSource(ayah.audioSource);
+      await audioServices.setAudioSource(currentAyah.audioSource);
 
       if (autoplay) {
-        await audioPlayer.play();
+        await audioServices.play();
       } else {
-        await audioPlayer.pause();
+        await audioServices.pause();
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -115,7 +116,7 @@ class _TestPage extends State<TestScreen> {
       if (state.processingState == ProcessingState.completed) {
         setState(() => isPlaying = false);
 
-        storageServices.saveLastRead(surah, ayah);
+        storageServices.saveLastRead(surah, currentAyah);
       }
     });
   }
@@ -138,7 +139,7 @@ class _TestPage extends State<TestScreen> {
   void updatePlaybackRate() {
     speed = (speed == 2.5) ? 0.5 : speed + 0.5;
 
-    audioPlayer.setSpeed(speed);
+    audioServices.setSpeed(speed);
 
     setState(() {});
   }
@@ -147,7 +148,7 @@ class _TestPage extends State<TestScreen> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (ayah.numberInSurah < ayahs.length)
+        if (currentAyah.numberInSurah < ayahs.length)
           Container(
             height: 40,
             decoration: const BoxDecoration(
@@ -199,7 +200,7 @@ class _TestPage extends State<TestScreen> {
                         child: Column(
                           children: [
                             Text(
-                              'v${ayah.numberInSurah}',
+                              'v${currentAyah.numberInSurah}',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.montserrat(
                                 fontSize: 12,
@@ -209,7 +210,7 @@ class _TestPage extends State<TestScreen> {
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              ayah.text,
+                              currentAyah.text,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontFamily: 'Kitab',
@@ -301,12 +302,12 @@ class _TestPage extends State<TestScreen> {
                     progress: progress,
                     total: audioPlayer.duration ?? Duration.zero,
                     onDragUpdate: (details) async {
-                      await audioPlayer.pause();
-                      await audioPlayer.seek(details.timeStamp);
+                      await audioServices.pause();
+                      await audioServices.seek(details.timeStamp);
                     },
                     onSeek: (duration) async {
-                      await audioPlayer.seek(duration);
-                      await audioPlayer.play();
+                      await audioServices.seek(duration);
+                      await audioServices.play();
                     },
                     timeLabelLocation: TimeLabelLocation.sides,
                     timeLabelTextStyle: GoogleFonts.montserrat(
@@ -370,14 +371,9 @@ class _TestPage extends State<TestScreen> {
                         ),
                         onPressed: () async {
                           if (isPlaying) {
-                            await audioPlayer.pause();
+                            await audioServices.pause();
                           } else {
-                            if (audioPlayer.processingState ==
-                                ProcessingState.completed) {
-                              await audioPlayer.seek(Duration.zero);
-                            }
-
-                            await audioPlayer.play();
+                            await audioServices.play();
                           }
                         },
                       ),
@@ -424,7 +420,7 @@ class _TestPage extends State<TestScreen> {
                       loop = !loop;
 
                       loopMode = loop ? LoopMode.one : LoopMode.off;
-                      audioPlayer.setLoopMode(loopMode);
+                      audioServices.setLoopMode(loopMode);
 
                       setState(() {});
                     },

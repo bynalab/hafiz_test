@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/network.services.dart';
 import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
@@ -23,7 +21,7 @@ class SurahServices {
   Future<Surah> getSurah(int surahNumber) async {
     final reciter = storageServices.getReciter();
     final response = await networkServices.get('surah/$surahNumber/$reciter');
-    final body = json.decode(response?.data);
+    final body = response?.data;
 
     return Surah.fromJson(body['data']);
   }
