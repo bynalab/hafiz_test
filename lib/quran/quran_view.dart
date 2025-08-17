@@ -41,6 +41,13 @@ class _QuranViewState extends State<QuranView> {
   }
 
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (viewModel.isLoading) {
       return Scaffold(body: SurahLoader());
@@ -55,6 +62,7 @@ class _QuranViewState extends State<QuranView> {
           icon: Icons.menu_book_rounded,
           color: Colors.green.shade700,
           onRetry: () async {
+            setState(() {});
             await viewModel.initialize(widget.surah.number);
             setState(() {});
           },
@@ -149,24 +157,6 @@ class _QuranViewState extends State<QuranView> {
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Tooltip(
-                          message: 'Scroll to verse',
-                          child: IconButton(
-                            style: IconButton.styleFrom(
-                              backgroundColor: Colors.green.shade300,
-                            ),
-                            icon: const Icon(
-                              Icons.my_location,
-                              size: 25,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              viewModel.scrollToVerse(
-                                viewModel.playingIndexNotifier.value,
-                              );
-                            },
                           ),
                         ),
                         GestureDetector(

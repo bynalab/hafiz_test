@@ -28,11 +28,11 @@ dependencies:
   showcaseview: ^4.0.1
   scrollable_positioned_list: ^0.3.8
   get_it: ^8.1.0
-  mocktail: ^1.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mocktail: ^1.0.4
 
   flutter_lints: ^5.0.0
 

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 class AudioServices {
   AudioServices._internal();
@@ -85,6 +86,9 @@ class AudioServices {
   Future<void> resetAudioPlayer() async {
     await audioPlayer.stop();
     await audioPlayer.seek(Duration.zero);
-    await audioPlayer.setAudioSource(AudioSource.uri(Uri()));
+    await audioPlayer.setAudioSource(
+      preload: false,
+      AudioSource.uri(Uri(), tag: MediaItem(id: '', title: '')),
+    );
   }
 }

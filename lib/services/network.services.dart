@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 class NetworkServices {
   final Dio _dio = Dio(
@@ -14,22 +13,10 @@ class NetworkServices {
     ),
   );
 
-  Future<Response?> get(String url) async {
-    try {
-      return await _dio.get(url);
-    } on DioException catch (e, stackTrace) {
-      _logError('DioException', e.message, stackTrace);
-    } catch (e, stackTrace) {
-      _logError('UnknownException', e.toString(), stackTrace);
-    }
-
-    return null;
-  }
-
-  void _logError(String type, String? message, StackTrace stackTrace) {
-    if (kDebugMode) {
-      print('[$type] $message');
-      print(stackTrace);
-    }
+  Future<Response> get(
+    String url, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    return await _dio.get(url, queryParameters: queryParameters);
   }
 }

@@ -51,6 +51,7 @@ class _TestPage extends State<TestScreen> {
   bool isPlaying = false;
 
   LoopMode loopMode = LoopMode.off;
+  StreamSubscription<PlayerState>? _playerStateSub;
 
   Future<void> init() async {
     currentAyah = widget.currentAyah;
@@ -108,7 +109,7 @@ class _TestPage extends State<TestScreen> {
 
     init();
 
-    audioPlayer.playerStateStream.listen((state) {
+    _playerStateSub = audioPlayer.playerStateStream.listen((state) {
       setState(() {
         isPlaying = state.playing;
       });
@@ -124,6 +125,7 @@ class _TestPage extends State<TestScreen> {
   @override
   dispose() {
     audioServices.stop();
+    _playerStateSub?.cancel();
 
     super.dispose();
   }

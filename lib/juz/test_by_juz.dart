@@ -44,7 +44,9 @@ class _TestPage extends State<TestByJuz> {
 
     await getIt<AudioServices>().setAudioSource(currentAyah.audioSource);
 
-    setState(() => isLoading = false);
+    if (mounted) {
+      setState(() => isLoading = false);
+    }
   }
 
   @override
@@ -97,7 +99,7 @@ class _TestPage extends State<TestByJuz> {
               child: TestScreen(
                 surah: surah,
                 currentAyah: currentAyah,
-                onRefresh: () async => await init(),
+                onRefresh: init,
               ),
             ),
         ],

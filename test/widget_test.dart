@@ -9,22 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:hafiz_test/main.dart';
+import 'package:hafiz_test/splash_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const Hafiz());
+  testWidgets('Smoke test: SplashScreen renders', (WidgetTester tester) async {
+    // If your SplashScreen or its children use GetIt, ensure locator is initialized
+    // or register test doubles here using get_it + mocktail.
+    await tester.pumpWidget(const MaterialApp(home: Hafiz()));
+    await tester.pump(); // allow one frame
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.byType(SplashScreen), findsOneWidget);
   });
 }

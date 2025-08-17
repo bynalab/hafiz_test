@@ -19,7 +19,12 @@ class LastReadCard extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(23),
-          child: Image.asset('assets/img/banner.png'),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: 200,
+            ),
+            child: Image.asset('assets/img/banner.png'),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(23),

@@ -6,6 +6,11 @@ abstract class IStorageService {
   Future<bool> setAutoPlay(bool autoPlay);
 
   Future<bool> setReciter(String identifier);
+
+  /// Get the reciter identifier from shared preferences.
+  ///
+  /// Returns the reciter identifier as a string. If no identifier is found,
+  /// returns 'ar.alafasy' as the default.
   String getReciter();
 
   Future<bool> saveLastRead(Surah surah, Ayah ayah);

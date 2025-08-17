@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/extension/quran_extension.dart';
 import 'package:hafiz_test/model/memory.model.dart';
@@ -20,6 +22,9 @@ class QuranViewModel {
   bool hasError = false;
   bool isPlaylist = false;
 
+  StreamSubscription<PlayerState>? _playerStateSub;
+  StreamSubscription<int?>? _currentIndexSub;
+
   PlaylistMemory playlistMemory = PlaylistMemory();
 
   final playingIndexNotifier = ValueNotifier<int?>(null);
@@ -31,6 +36,8 @@ class QuranViewModel {
     try {
       isLoading = true;
       surah = await surahService.getSurah(surahNumber);
+      if (surah.ayahs.isEmpty) return;
+
       await audioService.setPlaylistAudio(surah.audioSources);
       hasError = false;
     } catch (e) {
@@ -42,16 +49,17 @@ class QuranViewModel {
   }
 
   void initiateListeners() {
-    audioPlayer.playerStateStream.listen((state) {
+    _playerStateSub = audioPlayer.playerStateStream.listen((state) {
       isPlayingNotifier.value = state.playing;
       if (state.processingState == ProcessingState.completed) {
         isPlayingNotifier.value = false;
       }
     });
 
-    audioPlayer.currentIndexStream.listen((index) {
+    _currentIndexSub = audioPlayer.currentIndexStream.listen((index) {
       if (index != null && isPlaylist) {
         playingIndexNotifier.value = index;
+        scrollToVerse(index);
       }
     });
   }
@@ -122,7 +130,10 @@ class QuranViewModel {
   }
 
   void dispose() {
-    audioService.dispose();
+    audioService.resetAudioPlayer();
+
+    _playerStateSub?.cancel();
+    _currentIndexSub?.cancel();
   }
 
   bool get isPlayingPlaylist => isPlaylist && isPlayingNotifier.value;

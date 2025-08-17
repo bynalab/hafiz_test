@@ -32,10 +32,15 @@ class SharedPrefsStorageService implements IStorageService {
 
   @override
   Future<bool> saveLastRead(Surah surah, Ayah ayah) async {
-    return prefs.setString(
-      'last_read',
-      jsonEncode({'surah': surah, 'ayah': ayah}),
-    );
+    try {
+      return prefs.setString(
+        'last_read',
+        jsonEncode({'surah': surah.toJson(), 'ayah': ayah.toJson()}),
+      );
+    } catch (e) {
+      debugPrint('Error saving last read: $e');
+      return false;
+    }
   }
 
   @override

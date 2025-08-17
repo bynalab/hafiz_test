@@ -4,9 +4,9 @@ import 'package:hafiz_test/services/ayah.services.dart';
 import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 import 'package:hafiz_test/services/storage/shared_prefs_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'services/network.services.dart';
-import 'services/surah.services.dart';
-import 'util/surah_picker.dart';
+import 'package:hafiz_test/services/network.services.dart';
+import 'package:hafiz_test/services/surah.services.dart';
+import 'package:hafiz_test/util/surah_picker.dart';
 
 final getIt = GetIt.instance;
 

@@ -21,7 +21,7 @@ class MainMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return ShowCaseWidget(
       builder: (_) => _MainMenu(key: key),
-      onFinish: getIt<IStorageService>().saveUserGuide,
+      onFinish: () => getIt<IStorageService>().saveUserGuide(),
     );
   }
 }

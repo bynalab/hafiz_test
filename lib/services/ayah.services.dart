@@ -19,7 +19,7 @@ class AyahServices {
       final reciter = storageServices.getReciter();
       final response = await networkServices.get('surah/$surahNumber/$reciter');
 
-      if (response != null && response.data != null) {
+      if (response.data != null) {
         final ayahs = Ayah.fromJsonList(response.data['data']['ayahs']);
         return ayahs;
       }
@@ -35,7 +35,7 @@ class AyahServices {
       final response =
           await networkServices.get('juz/$juzNumber/quran-uthmani');
 
-      if (response != null && response.data != null) {
+      if (response.data != null) {
         final ayahs = Ayah.fromJsonList(response.data['data']['ayahs']);
         return getRandomAyahForSurah(ayahs);
       }
@@ -48,6 +48,8 @@ class AyahServices {
 
   Ayah getRandomAyahForSurah(List<Ayah> ayahs) {
     try {
+      if (ayahs.isEmpty) return Ayah();
+
       final random = Random();
       final ayah = ayahs[random.nextInt(ayahs.length)];
       return ayah;

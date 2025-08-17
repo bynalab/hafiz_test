@@ -22,12 +22,15 @@ class _SettingDialogState extends State<SettingDialog> {
 
   String? reciter;
 
-  Future<void> init() async {
-    autoPlay = storageServices.checkAutoPlay();
-    reciter = storageServices.getReciter();
-
-    isLoading = false;
-    setState(() {});
+  void init() {
+    try {
+      autoPlay = storageServices.checkAutoPlay();
+      reciter = storageServices.getReciter();
+    } catch (e) {
+      debugPrint('Error $e');
+    } finally {
+      setState(() => isLoading = false);
+    }
   }
 
   @override

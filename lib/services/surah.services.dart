@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/network.services.dart';
 import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
@@ -19,10 +20,19 @@ class SurahServices {
   }
 
   Future<Surah> getSurah(int surahNumber) async {
-    final reciter = storageServices.getReciter();
-    final response = await networkServices.get('surah/$surahNumber/$reciter');
-    final body = response?.data;
+    try {
+      final reciter = storageServices.getReciter();
+      final response = await networkServices.get('surah/$surahNumber/$reciter');
+      final body = response.data;
 
-    return Surah.fromJson(body['data']);
+      if (body != null) {
+        return Surah.fromJson(body['data']);
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      rethrow;
+    }
+
+    return Surah();
   }
 }
