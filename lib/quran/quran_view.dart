@@ -92,7 +92,7 @@ class _QuranViewState extends State<QuranView> {
           valueListenable: viewModel.playingIndexNotifier,
           builder: (context, index, _) {
             final verseText = index != null
-                ? ' - Verse ${viewModel.surah.ayahs[index].numberInSurah}'
+                ? ' - Verse ${viewModel.surah.ayahs[index].numberInSurah} of ${viewModel.surah.numberOfAyahs}'
                 : '';
             return Text(
               '${viewModel.surah.englishName}$verseText',

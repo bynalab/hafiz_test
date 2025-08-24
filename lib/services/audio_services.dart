@@ -22,6 +22,7 @@ class AudioServices {
   Future<void> setPlaylistAudio(List<AudioSource> audioSources) async {
     try {
       await audioPlayer.setAudioSources(audioSources);
+      await stop();
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -31,8 +32,8 @@ class AudioServices {
     try {
       // If playback has completed, restart from beginning
       if (audioPlayer.processingState == ProcessingState.completed) {
-        await audioPlayer.stop();
-        await audioPlayer.seek(Duration.zero, index: 0);
+        await stop();
+        await seek(Duration.zero, index: 0);
       }
 
       await audioPlayer.play();
@@ -49,9 +50,9 @@ class AudioServices {
     }
   }
 
-  Future<void> seek(Duration duration) async {
+  Future<void> seek(Duration duration, {int? index}) async {
     try {
-      await audioPlayer.seek(duration);
+      await audioPlayer.seek(duration, index: index);
     } catch (e) {
       debugPrint('Error pausing audio: ${e.toString()}');
     }
@@ -83,12 +84,16 @@ class AudioServices {
 
   void dispose() => resetAudioPlayer();
 
-  Future<void> resetAudioPlayer() async {
+  Future<void> resetAudioPlayer({
+    AudioSource? audioSource,
+    Duration? position,
+    int? index,
+  }) async {
     await audioPlayer.stop();
-    await audioPlayer.seek(Duration.zero);
+    await audioPlayer.seek(position ?? Duration.zero, index: index);
     await audioPlayer.setAudioSource(
       preload: false,
-      AudioSource.uri(Uri(), tag: MediaItem(id: '', title: '')),
+      audioSource ?? AudioSource.uri(Uri(), tag: MediaItem(id: '', title: '')),
     );
   }
 }
