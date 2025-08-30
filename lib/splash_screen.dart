@@ -97,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen>
                   baseColor: Colors.amber.shade200,
                   highlightColor: Colors.greenAccent,
                   child: const Text(
-                    "HafizPro",
+                    "Quran Hafiz",
                     style: TextStyle(
                       fontSize: 52,
                       fontWeight: FontWeight.bold,

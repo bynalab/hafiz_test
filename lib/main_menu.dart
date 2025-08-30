@@ -35,6 +35,7 @@ class _MainMenu extends StatefulWidget {
 
 class _MainMenuState extends State<_MainMenu> {
   final _settingKey = GlobalKey();
+  final _bugReportKey = GlobalKey();
   final _lastReadKey = GlobalKey();
   final _quranCardKey = GlobalKey();
   final _surahCardKey = GlobalKey();
@@ -54,6 +55,7 @@ class _MainMenuState extends State<_MainMenu> {
     if (!mounted || hasViewedShowcase) return;
 
     ShowCaseWidget.of(context).startShowCase([
+      _bugReportKey,
       _settingKey,
       _lastReadKey,
       _quranCardKey,
