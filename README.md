@@ -40,7 +40,7 @@ A Flutter application designed to help Muslims test and improve their Quran memo
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone [<repository-url>](https://github.com/bynalab/hafiz_test.git)
    cd hafiz_test
    ```
 
@@ -186,7 +186,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you encounter any issues or have questions:
 
-1. Check the [Issues](https://github.com/your-repo/issues) page
+1. Check the [Issues](https://github.com/bynalab/hafiz_test/issues) page
 2. Create a new issue with detailed information
 3. Contact the development team
 
