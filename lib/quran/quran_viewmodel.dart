@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/extension/quran_extension.dart';
-import 'package:hafiz_test/model/memory.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
@@ -24,8 +23,6 @@ class QuranViewModel {
 
   StreamSubscription<PlayerState>? _playerStateSub;
   StreamSubscription<int?>? _currentIndexSub;
-
-  PlaylistMemory playlistMemory = PlaylistMemory();
 
   final playingIndexNotifier = ValueNotifier<int?>(null);
   final isPlayingNotifier = ValueNotifier<bool>(false);
@@ -53,6 +50,7 @@ class QuranViewModel {
       isPlayingNotifier.value = state.playing;
       if (state.processingState == ProcessingState.completed) {
         isPlayingNotifier.value = false;
+        isPlaylist = false;
       }
     });
 
@@ -84,13 +82,10 @@ class QuranViewModel {
 
   Future<void> _initializePlaylist() async {
     isPlaylist = true;
-    playingIndexNotifier.value = playlistMemory.index;
+    playingIndexNotifier.value = 0;
 
     await audioService.setPlaylistAudio(surah.audioSources);
-    await audioPlayer.seek(
-      playlistMemory.position,
-      index: playlistMemory.index,
-    );
+    await audioPlayer.seek(Duration.zero, index: 0);
 
     await audioService.play();
   }
@@ -106,13 +101,6 @@ class QuranViewModel {
     );
   }
 
-  void savePlaylistState() {
-    playlistMemory = PlaylistMemory(
-      index: audioPlayer.currentIndex,
-      position: audioPlayer.position,
-    );
-  }
-
   void playSingleAyah(int index) {
     isPlaylist = false;
     playingIndexNotifier.value = index;
@@ -121,12 +109,13 @@ class QuranViewModel {
     _togglePlayback();
   }
 
-  void onAyahControlPressed(int index) {
+  void onAyahControlPressed(int index) async {
     if (isPlaylist) {
-      savePlaylistState();
+      await audioPlayer.seek(Duration.zero, index: index);
+      await audioService.play();
+    } else {
+      playSingleAyah(index);
     }
-
-    playSingleAyah(index);
   }
 
   void dispose() {

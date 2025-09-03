@@ -211,16 +211,25 @@ class _TestPage extends State<TestScreen> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            Text(
-                              currentAyah.text,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontFamily: 'Kitab',
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                            SizedBox(
+                              height: 150,
+                              child: Scrollbar(
+                                thumbVisibility: true,
+                                thickness: 2,
+                                child: SingleChildScrollView(
+                                  child: Text(
+                                    currentAyah.text,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontFamily: 'Kitab',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),
