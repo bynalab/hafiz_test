@@ -91,17 +91,22 @@ class LastReadCard extends StatelessWidget {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    'Continue',
-                    style: GoogleFonts.montserrat(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF004B40),
+                  Flexible(
+                    child: Text(
+                      'Continue',
+                      style: GoogleFonts.montserrat(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFF004B40),
+                      ),
                     ),
                   ),
                   Image.asset(
                     'assets/img/arrow_right_circle.png',
+                    width: 16,
+                    height: 16,
                   )
                 ],
               ),
