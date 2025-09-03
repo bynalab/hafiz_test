@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/extension/quran_extension.dart';
-import 'package:hafiz_test/model/memory.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
@@ -8,15 +9,20 @@ import 'package:just_audio/just_audio.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class QuranViewModel {
-  final audioService = AudioServices();
+  final AudioServices audioService;
+  final SurahServices surahService;
+
   final itemScrollController = ItemScrollController();
+
+  QuranViewModel({required this.audioService, required this.surahService});
 
   late Surah surah;
   bool isLoading = true;
   bool hasError = false;
   bool isPlaylist = false;
 
-  PlaylistMemory playlistMemory = PlaylistMemory();
+  StreamSubscription<PlayerState>? _playerStateSub;
+  StreamSubscription<int?>? _currentIndexSub;
 
   final playingIndexNotifier = ValueNotifier<int?>(null);
   final isPlayingNotifier = ValueNotifier<bool>(false);
@@ -26,7 +32,9 @@ class QuranViewModel {
   Future<void> initialize(int surahNumber) async {
     try {
       isLoading = true;
-      surah = await SurahServices().getSurah(surahNumber);
+      surah = await surahService.getSurah(surahNumber);
+      if (surah.ayahs.isEmpty) return;
+
       await audioService.setPlaylistAudio(surah.audioSources);
       hasError = false;
     } catch (e) {
@@ -38,16 +46,18 @@ class QuranViewModel {
   }
 
   void initiateListeners() {
-    audioPlayer.playerStateStream.listen((state) {
+    _playerStateSub = audioPlayer.playerStateStream.listen((state) {
       isPlayingNotifier.value = state.playing;
       if (state.processingState == ProcessingState.completed) {
         isPlayingNotifier.value = false;
+        isPlaylist = false;
       }
     });
 
-    audioPlayer.currentIndexStream.listen((index) {
+    _currentIndexSub = audioPlayer.currentIndexStream.listen((index) {
       if (index != null && isPlaylist) {
         playingIndexNotifier.value = index;
+        scrollToVerse(index);
       }
     });
   }
@@ -72,13 +82,10 @@ class QuranViewModel {
 
   Future<void> _initializePlaylist() async {
     isPlaylist = true;
-    playingIndexNotifier.value = playlistMemory.index;
+    playingIndexNotifier.value = 0;
 
     await audioService.setPlaylistAudio(surah.audioSources);
-    await audioPlayer.seek(
-      playlistMemory.position,
-      index: playlistMemory.index,
-    );
+    await audioPlayer.seek(Duration.zero, index: 0);
 
     await audioService.play();
   }
@@ -94,13 +101,6 @@ class QuranViewModel {
     );
   }
 
-  void savePlaylistState() {
-    playlistMemory = PlaylistMemory(
-      index: audioPlayer.currentIndex,
-      position: audioPlayer.position,
-    );
-  }
-
   void playSingleAyah(int index) {
     isPlaylist = false;
     playingIndexNotifier.value = index;
@@ -109,16 +109,20 @@ class QuranViewModel {
     _togglePlayback();
   }
 
-  void onAyahControlPressed(int index) {
+  void onAyahControlPressed(int index) async {
     if (isPlaylist) {
-      savePlaylistState();
+      await audioPlayer.seek(Duration.zero, index: index);
+      await audioService.play();
+    } else {
+      playSingleAyah(index);
     }
-
-    playSingleAyah(index);
   }
 
   void dispose() {
-    audioService.dispose();
+    audioService.resetAudioPlayer();
+
+    _playerStateSub?.cancel();
+    _currentIndexSub?.cancel();
   }
 
   bool get isPlayingPlaylist => isPlaylist && isPlayingNotifier.value;

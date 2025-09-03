@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/model/surah.model.dart';
-import 'package:hafiz_test/quran/ayah_card.dart';
+import 'package:hafiz_test/quran/widgets/ayah_card.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class QuranAyahList extends StatelessWidget {
@@ -19,7 +19,7 @@ class QuranAyahList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScrollablePositionedList.builder(
+    return ScrollablePositionedList.separated(
       padding: const EdgeInsets.symmetric(vertical: 30),
       itemCount: surah.ayahs.length,
       itemScrollController: scrollController,
@@ -31,6 +31,7 @@ class QuranAyahList extends StatelessWidget {
           onPlayPressed: (_) => onControlPressed(index),
         );
       },
+      separatorBuilder: (_, __) => const SizedBox(height: 5),
     );
   }
 }

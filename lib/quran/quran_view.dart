@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/model/surah.model.dart';
-import 'package:hafiz_test/quran/error.dart';
+import 'package:hafiz_test/quran/widgets/error.dart';
 import 'package:hafiz_test/quran/quran_list.dart';
 import 'package:hafiz_test/quran/quran_viewmodel.dart';
 import 'package:hafiz_test/quran/surah_loader.dart';
+import 'package:hafiz_test/services/audio_services.dart';
+import 'package:hafiz_test/services/surah.services.dart';
 
 class QuranView extends StatefulWidget {
   final Surah surah;
@@ -15,7 +18,10 @@ class QuranView extends StatefulWidget {
 }
 
 class _QuranViewState extends State<QuranView> {
-  final viewModel = QuranViewModel();
+  final viewModel = QuranViewModel(
+    audioService: getIt<AudioServices>(),
+    surahService: getIt<SurahServices>(),
+  );
 
   @override
   void initState() {
@@ -35,6 +41,13 @@ class _QuranViewState extends State<QuranView> {
   }
 
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (viewModel.isLoading) {
       return Scaffold(body: SurahLoader());
@@ -49,6 +62,7 @@ class _QuranViewState extends State<QuranView> {
           icon: Icons.menu_book_rounded,
           color: Colors.green.shade700,
           onRetry: () async {
+            setState(() {});
             await viewModel.initialize(widget.surah.number);
             setState(() {});
           },
@@ -78,7 +92,7 @@ class _QuranViewState extends State<QuranView> {
           valueListenable: viewModel.playingIndexNotifier,
           builder: (context, index, _) {
             final verseText = index != null
-                ? ' - Verse ${viewModel.surah.ayahs[index].numberInSurah}'
+                ? ' - Verse ${viewModel.surah.ayahs[index].numberInSurah} of ${viewModel.surah.numberOfAyahs}'
                 : '';
             return Text(
               '${viewModel.surah.englishName}$verseText',
@@ -143,24 +157,6 @@ class _QuranViewState extends State<QuranView> {
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Tooltip(
-                          message: 'Scroll to verse',
-                          child: IconButton(
-                            style: IconButton.styleFrom(
-                              backgroundColor: Colors.green.shade300,
-                            ),
-                            icon: const Icon(
-                              Icons.my_location,
-                              size: 25,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              viewModel.scrollToVerse(
-                                viewModel.playingIndexNotifier.value,
-                              );
-                            },
                           ),
                         ),
                         GestureDetector(

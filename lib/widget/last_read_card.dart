@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
-import 'package:hafiz_test/services/storage.services.dart';
+import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';
 import 'package:hafiz_test/widget/showcase.dart';
 
@@ -12,13 +13,18 @@ class LastReadCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    (Surah, Ayah)? lastRead;
+    final lastRead = getIt<IStorageService>().getLastRead();
 
     return Stack(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(23),
-          child: Image.asset('assets/img/banner.png'),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: 200,
+            ),
+            child: Image.asset('assets/img/banner.png'),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(23),
@@ -41,57 +47,7 @@ class LastReadCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    FutureBuilder(
-                      future: StorageServices.getInstance.getLastRead(),
-                      builder: (_, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              color: Color(0xFF004B40),
-                            ),
-                          );
-                        }
-
-                        if (!snapshot.hasData) {
-                          return Text(
-                            'No last read',
-                            style: GoogleFonts.inter(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF222222),
-                            ),
-                          );
-                        }
-
-                        final (surah, ayah) = lastRead = snapshot.data!;
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              surah.name.replaceAll('سُورَةُ ', ''),
-                              style: const TextStyle(
-                                fontFamily: 'Kitab',
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF222222),
-                              ),
-                            ),
-                            Text(
-                              'Ayah no. ${ayah.numberInSurah}',
-                              style: GoogleFonts.inter(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                color: const Color(0xFF222222),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                    LastReadWidget(lastRead: lastRead),
                   ],
                 ),
               ),
@@ -109,16 +65,19 @@ class LastReadCard extends StatelessWidget {
             onTap: () async {
               if (lastRead == null) return;
 
-              final (surah, ayah) = lastRead!;
+              final (surah, ayah) = lastRead;
 
-              await Navigator.push(context, MaterialPageRoute(
-                builder: (_) {
-                  return TestBySurah(
-                    surahNumber: surah.number,
-                    ayahNumber: ayah.numberInSurah,
-                  );
-                },
-              ));
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) {
+                    return TestBySurah(
+                      surahNumber: surah.number,
+                      ayahNumber: ayah.numberInSurah,
+                    );
+                  },
+                ),
+              );
             },
             child: Container(
               width: 115,
@@ -147,6 +106,51 @@ class LastReadCard extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class LastReadWidget extends StatelessWidget {
+  final (Surah, Ayah)? lastRead;
+
+  const LastReadWidget({super.key, this.lastRead});
+
+  @override
+  Widget build(BuildContext context) {
+    if (lastRead == null) {
+      return Text(
+        'No last read',
+        style: GoogleFonts.inter(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: const Color(0xFF222222),
+        ),
+      );
+    }
+
+    final (surah, ayah) = lastRead!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          surah.name.replaceAll('سُورَةُ ', ''),
+          style: const TextStyle(
+            fontFamily: 'Kitab',
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF222222),
+          ),
+        ),
+        Text(
+          'Ayah no. ${ayah.numberInSurah}',
+          style: GoogleFonts.inter(
+            fontSize: 12,
+            fontWeight: FontWeight.w300,
+            color: const Color(0xFF222222),
           ),
         ),
       ],

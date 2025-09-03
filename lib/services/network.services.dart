@@ -1,39 +1,22 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 
 class NetworkServices {
-  final String _baseUrl = 'https://api.alquran.cloud/v1/';
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: 'https://api.alquran.cloud/v1/',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      connectTimeout: Duration(seconds: 10),
+      receiveTimeout: Duration(seconds: 10),
+    ),
+  );
 
-  Future get(url) async {
-    var link = Uri.parse(_baseUrl + url);
-
-    try {
-      return await http.get(link, headers: _setHeaders());
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
-
-  _setHeaders() {
-    return {
-      'content-type': 'application/json',
-      'Accept': 'application/json',
-    };
-  }
-
-  Future<bool> hasInternetConnection() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return Future.value(true);
-      }
-    } on SocketException catch (_) {
-      return Future.value(false);
-    }
-    return false;
+  Future<Response> get(
+    String url, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    return await _dio.get(url, queryParameters: queryParameters);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 class AudioServices {
   AudioServices._internal();
@@ -21,6 +22,7 @@ class AudioServices {
   Future<void> setPlaylistAudio(List<AudioSource> audioSources) async {
     try {
       await audioPlayer.setAudioSources(audioSources);
+      await stop();
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -30,8 +32,8 @@ class AudioServices {
     try {
       // If playback has completed, restart from beginning
       if (audioPlayer.processingState == ProcessingState.completed) {
-        await audioPlayer.stop();
-        await audioPlayer.seek(Duration.zero, index: 0);
+        await stop();
+        await seek(Duration.zero, index: 0);
       }
 
       await audioPlayer.play();
@@ -48,6 +50,14 @@ class AudioServices {
     }
   }
 
+  Future<void> seek(Duration duration, {int? index}) async {
+    try {
+      await audioPlayer.seek(duration, index: index);
+    } catch (e) {
+      debugPrint('Error pausing audio: ${e.toString()}');
+    }
+  }
+
   Future<void> stop() async {
     try {
       await audioPlayer.stop();
@@ -56,11 +66,34 @@ class AudioServices {
     }
   }
 
+  Future<void> setLoopMode(LoopMode mode) async {
+    try {
+      await audioPlayer.setLoopMode(mode);
+    } catch (e) {
+      debugPrint('Error setting loop mode: ${e.toString()}');
+    }
+  }
+
+  Future<void> setSpeed(double speed) async {
+    try {
+      await audioPlayer.setSpeed(speed);
+    } catch (e) {
+      debugPrint('Error setting speed: ${e.toString()}');
+    }
+  }
+
   void dispose() => resetAudioPlayer();
 
-  Future<void> resetAudioPlayer() async {
+  Future<void> resetAudioPlayer({
+    AudioSource? audioSource,
+    Duration? position,
+    int? index,
+  }) async {
     await audioPlayer.stop();
-    await audioPlayer.seek(Duration.zero);
-    await audioPlayer.setAudioSource(AudioSource.uri(Uri()));
+    await audioPlayer.seek(position ?? Duration.zero, index: index);
+    await audioPlayer.setAudioSource(
+      preload: false,
+      audioSource ?? AudioSource.uri(Uri(), tag: MediaItem(id: '', title: '')),
+    );
   }
 }

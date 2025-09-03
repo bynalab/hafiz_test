@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/extension/quran_extension.dart';
+import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
@@ -20,30 +21,32 @@ class TestByJuz extends StatefulWidget {
 }
 
 class _TestPage extends State<TestByJuz> {
-  final audioServices = AudioServices();
-
   bool isLoading = false;
 
-  List<Ayah> ayahs = [];
-  late Ayah ayah;
+  late Ayah currentAyah;
 
-  bool autoplay = true;
   Surah surah = Surah();
 
   Future<void> init() async {
     setState(() => isLoading = true);
 
+    // The Ayah returned from this function does not contain `audioSource`
     final ayahFromJuz =
-        await AyahServices().getRandomAyahFromJuz(widget.juzNumber);
+        await getIt<AyahServices>().getRandomAyahFromJuz(widget.juzNumber);
 
-    surah = await SurahServices().getSurah(ayahFromJuz.surah?.number ?? 0);
-    ayahs = surah.ayahs;
+    final surahNumber = ayahFromJuz.surah?.number ?? 0;
+    surah = await getIt<SurahServices>().getSurah(surahNumber);
 
-    ayah = ayahs.firstWhere((ayah) => ayah.number == ayahFromJuz.number);
+    // Hence, the need to loop through surah ayahs to get audioSource for `ayahFromJuz`
+    currentAyah = surah.ayahs.firstWhere(
+      (ayah) => ayah.number == ayahFromJuz.number,
+    );
 
-    await audioServices.setAudioSource(ayah.audioSource);
+    await getIt<AudioServices>().setAudioSource(currentAyah.audioSource);
 
-    setState(() => isLoading = false);
+    if (mounted) {
+      setState(() => isLoading = false);
+    }
   }
 
   @override
@@ -95,9 +98,8 @@ class _TestPage extends State<TestByJuz> {
             SingleChildScrollView(
               child: TestScreen(
                 surah: surah,
-                ayah: ayah,
-                ayahs: ayahs,
-                onRefresh: () async => await init(),
+                currentAyah: currentAyah,
+                onRefresh: init,
               ),
             ),
         ],
