@@ -40,7 +40,7 @@ A Flutter application designed to help Muslims test and improve their Quran memo
 
 1. **Clone the repository**
    ```bash
-   git clone [<repository-url>](https://github.com/bynalab/hafiz_test.git)
+   git clone https://github.com/bynalab/hafiz_test.git
    cd hafiz_test
    ```
 
