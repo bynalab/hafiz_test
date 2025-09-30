@@ -19,4 +19,16 @@ class NetworkServices {
   }) async {
     return await _dio.get(url, queryParameters: queryParameters);
   }
+
+  Future<Response> post(
+    String url, {
+    Map<String, dynamic>? body,
+    Map<String, dynamic>? headers,
+  }) async {
+    return await _dio.post(
+      url,
+      data: body,
+      options: Options(headers: headers),
+    );
+  }
 }
