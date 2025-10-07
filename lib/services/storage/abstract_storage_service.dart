@@ -22,4 +22,8 @@ abstract class IStorageService {
   /// Theme mode persistence
   Future<bool> setThemeMode(String mode);
   String getThemeMode();
+
+  /// User identification persistence (simplified)
+  Future<bool> setString(String key, String value);
+  String? getString(String key);
 }

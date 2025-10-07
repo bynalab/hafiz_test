@@ -82,4 +82,14 @@ class SharedPrefsStorageService implements IStorageService {
         ? raw ?? 'system'
         : 'system';
   }
+
+  @override
+  Future<bool> setString(String key, String value) async {
+    return prefs.setString(key, value);
+  }
+
+  @override
+  String? getString(String key) {
+    return prefs.getString(key);
+  }
 }
