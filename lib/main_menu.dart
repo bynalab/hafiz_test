@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/enum/surah_select_action.dart';
 import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:hafiz_test/widget/last_read_card.dart';
 import 'package:hafiz_test/widget/showcase.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -46,6 +47,9 @@ class _MainMenuState extends State<_MainMenu> {
   @override
   void initState() {
     super.initState();
+
+    // Track main menu screen view
+    AnalyticsService.trackScreenView('Main Menu');
 
     WidgetsBinding.instance.addPostFrameCallback((_) => startShowcase());
   }
@@ -117,6 +121,7 @@ class _MainMenuState extends State<_MainMenu> {
                   'Change autoplay settings and select your favorite reciter',
               child: IconButton(
                 onPressed: () {
+                  AnalyticsService.trackEvent('Settings Opened');
                   showDialog(
                     barrierDismissible: false,
                     context: context,
@@ -158,6 +163,7 @@ class _MainMenuState extends State<_MainMenu> {
                         image: 'card_quran',
                         color: const Color(0xFF2BFF00),
                         onTap: () {
+                          AnalyticsService.trackEvent('Read Quran Selected');
                           navigateTo(
                             const SurahListScreen(
                               actionType: SurahSelectionAction.read,
@@ -194,6 +200,7 @@ class _MainMenuState extends State<_MainMenu> {
                         image: 'card_surah',
                         color: const Color(0xFFFF8E6F),
                         onTap: () {
+                          AnalyticsService.trackEvent('Test By Surah Selected');
                           navigateTo(
                             const SurahListScreen(
                               actionType: SurahSelectionAction.test,
@@ -219,7 +226,10 @@ class _MainMenuState extends State<_MainMenu> {
                         title: 'By Juz',
                         image: 'card_juz',
                         color: const Color(0xFFFBBE15),
-                        onTap: () => navigateTo(const JuzListScreen()),
+                        onTap: () {
+                          AnalyticsService.trackEvent('Test By Juz Selected');
+                          navigateTo(const JuzListScreen());
+                        },
                       ),
                     ),
                   ),
@@ -235,7 +245,10 @@ class _MainMenuState extends State<_MainMenu> {
                         title: 'Randomly',
                         image: 'card_random',
                         color: const Color(0xFF6E81F6),
-                        onTap: () => navigateTo(const TestBySurah()),
+                        onTap: () {
+                          AnalyticsService.trackEvent('Random Test Selected');
+                          navigateTo(const TestBySurah());
+                        },
                       ),
                     ),
                   ),

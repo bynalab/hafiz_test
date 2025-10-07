@@ -6,6 +6,7 @@ import 'package:hafiz_test/extension/collection.dart';
 import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/model/reciter.model.dart';
 import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:hafiz_test/widget/button.dart';
 import 'package:hafiz_test/util/theme_controller.dart';
 import 'package:hafiz_test/util/rating_debug.dart';
@@ -42,6 +43,9 @@ class _SettingDialogState extends State<SettingDialog> {
   @override
   void initState() {
     super.initState();
+
+    // Track settings dialog opened
+    AnalyticsService.trackScreenView('Settings Dialog');
 
     init();
   }
@@ -98,7 +102,10 @@ class _SettingDialogState extends State<SettingDialog> {
                     Switch(
                       value: autoPlay,
                       onChanged: (_) {
+                        final oldValue = autoPlay;
                         setState(() => autoPlay = !autoPlay);
+                        AnalyticsService.trackSettingsChanged(
+                            'autoplay', oldValue, !oldValue);
                       },
                       activeTrackColor: Theme.of(context).colorScheme.primary,
                       activeColor: Colors.white,
@@ -134,7 +141,10 @@ class _SettingDialogState extends State<SettingDialog> {
                       ],
                       onChanged: (mode) {
                         if (mode == null) return;
+                        final oldValue = themeMode;
                         setState(() => themeMode = mode);
+                        AnalyticsService.trackSettingsChanged(
+                            'theme', oldValue.name, mode.name);
                       },
                     )
                   ],
@@ -161,9 +171,12 @@ class _SettingDialogState extends State<SettingDialog> {
               );
             }).toList(),
             onChanged: (reciter) {
+              final oldValue = this.reciter;
               setState(() {
                 this.reciter = reciter?.identifier;
               });
+              AnalyticsService.trackSettingsChanged(
+                  'reciter', oldValue, reciter?.identifier);
             },
           ),
           const SizedBox(height: 20),
@@ -202,6 +215,11 @@ class _SettingDialogState extends State<SettingDialog> {
               ),
             ),
             onPressed: () {
+              AnalyticsService.trackEvent('Settings Saved', properties: {
+                'autoplay': autoPlay,
+                'theme': themeMode.name,
+                'reciter': reciter ?? 'none',
+              });
               storageServices.setAutoPlay(autoPlay);
               storageServices.setReciter(reciter ?? '');
               themeController.setMode(themeMode.name);

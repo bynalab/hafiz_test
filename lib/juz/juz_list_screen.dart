@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/data/juz_list.dart';
 import 'package:hafiz_test/juz/test_by_juz.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 
 class JuzListScreen extends StatefulWidget {
   const JuzListScreen({super.key});
@@ -13,6 +14,14 @@ class JuzListScreen extends StatefulWidget {
 
 class _JuzListScreenState extends State<JuzListScreen> {
   bool isSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Track juz list screen view
+    AnalyticsService.trackScreenView('Juz List Screen');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +128,9 @@ class _JuzListScreenState extends State<JuzListScreen> {
                 ),
               ),
               onTap: () {
+                // Track juz selection
+                AnalyticsService.trackJuzSelected(juzNumber);
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(

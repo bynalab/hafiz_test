@@ -6,6 +6,7 @@ import 'package:hafiz_test/enum/surah_select_action.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/quran/quran_view.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 
 class SurahListScreen extends StatefulWidget {
   final SurahSelectionAction actionType;
@@ -19,6 +20,14 @@ class SurahListScreen extends StatefulWidget {
 class _SurahListScreenState extends State<SurahListScreen> {
   bool isSearching = false;
   Surah? selectedSurah;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Track surah list screen view
+    AnalyticsService.trackScreenView('Surah List Screen');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +82,9 @@ class _SurahListScreenState extends State<SurahListScreen> {
             ),
           ),
           onTap: () {
+            // Track surah selection
+            AnalyticsService.trackSurahSelected(surah.englishName, surahNumber);
+
             if (isWideScreen) {
               setState(() {
                 selectedSurah = surah;
