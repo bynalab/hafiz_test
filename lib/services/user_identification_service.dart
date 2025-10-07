@@ -37,7 +37,7 @@ class UserIdentificationService {
     final anonymousId = generateAnonymousId();
 
     // Store the anonymous ID
-    _storage.setString(_userIdKey, anonymousId);
+    await _storage.setString(_userIdKey, anonymousId);
 
     // Identify with Mixpanel
     AnalyticsService.identifyUser(anonymousId);

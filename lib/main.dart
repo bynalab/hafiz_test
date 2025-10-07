@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/splash_screen.dart';
@@ -19,17 +20,23 @@ void main() async {
 
   await setupLocator();
 
-  // Initialize analytics
-  await AnalyticsService.initialize();
+  try {
+    // Initialize analytics
+    await AnalyticsService.initialize();
 
-  // Initialize user identification
-  await UserIdentificationService.initializeUserIdentification();
+    // Initialize user identification
+    await UserIdentificationService.initializeUserIdentification();
 
-  // Initialize rating service
-  await RatingService.initializeAppLaunch();
+    // Initialize rating service
+    await RatingService.initializeAppLaunch();
 
-  // Track app launch
-  AnalyticsService.trackAppLaunch();
+    // Track app launch
+    AnalyticsService.trackAppLaunch();
+  } catch (e) {
+    if (kDebugMode) {
+      print('Error initializing services: $e');
+    }
+  }
 
   runApp(const QuranHafiz());
 }
