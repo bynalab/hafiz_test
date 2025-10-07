@@ -153,11 +153,14 @@ class _TestPage extends State<TestScreen> {
         if (currentAyah.numberInSurah < ayahs.length)
           Container(
             height: 40,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFFFFF5BE),
-                  Color(0xFFD0F7EA),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+                  Theme.of(context)
+                      .colorScheme
+                      .secondary
+                      .withValues(alpha: 0.15),
                 ],
               ),
             ),
@@ -167,7 +170,7 @@ class _TestPage extends State<TestScreen> {
               style: GoogleFonts.montserrat(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF004B40),
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
@@ -181,10 +184,10 @@ class _TestPage extends State<TestScreen> {
                 height: 293,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(23),
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                     colors: [
-                      Color(0xFF004B40),
-                      Color(0xFF00B197),
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).colorScheme.secondary,
                     ],
                   ),
                 ),
@@ -306,10 +309,15 @@ class _TestPage extends State<TestScreen> {
                   return ProgressBar(
                     barHeight: 8,
                     thumbRadius: 0,
-                    thumbGlowColor:
-                        const Color(0xFF004B40).withValues(alpha: 0.3),
-                    progressBarColor: const Color(0xFF004B40),
-                    baseBarColor: const Color(0xFFFAF6EB),
+                    thumbGlowColor: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.3),
+                    progressBarColor: Theme.of(context).colorScheme.primary,
+                    baseBarColor: Theme.of(context)
+                        .colorScheme
+                        .surface
+                        .withValues(alpha: 0.4),
                     progress: progress,
                     total: audioPlayer.duration ?? Duration.zero,
                     onDragUpdate: (details) async {
@@ -324,7 +332,7 @@ class _TestPage extends State<TestScreen> {
                     timeLabelTextStyle: GoogleFonts.montserrat(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
-                      color: const Color(0xFF004B40),
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   );
                 },
@@ -336,17 +344,17 @@ class _TestPage extends State<TestScreen> {
                   IconButton(
                     icon: Column(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.skip_previous_rounded,
                           size: 50,
-                          color: Color(0xFF004B40),
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         Text(
                           'Previous',
                           style: GoogleFonts.montserrat(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFF004B40),
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
                       ],
@@ -394,17 +402,17 @@ class _TestPage extends State<TestScreen> {
                   IconButton(
                     icon: Column(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.skip_next_rounded,
                           size: 50,
-                          color: Color(0xFF004B40),
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         Text(
                           'Next',
                           style: GoogleFonts.montserrat(
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
-                            color: const Color(0xFF004B40),
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                         ),
                       ],
@@ -421,7 +429,7 @@ class _TestPage extends State<TestScreen> {
                     'Loop verse',
                     style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.w500,
-                      color: const Color(0xFF222222),
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -435,7 +443,7 @@ class _TestPage extends State<TestScreen> {
 
                       setState(() {});
                     },
-                    activeTrackColor: const Color(0xFF004B40),
+                    activeTrackColor: Theme.of(context).colorScheme.primary,
                     activeColor: Colors.white,
                   )
                 ],
@@ -484,7 +492,10 @@ class _TestPage extends State<TestScreen> {
                   width: double.infinity,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3F3F5),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHigh
+                        .withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -496,7 +507,7 @@ class _TestPage extends State<TestScreen> {
                         'See Full List',
                         style: GoogleFonts.montserrat(
                           fontWeight: FontWeight.w500,
-                          color: const Color(0xFF004B40),
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ],

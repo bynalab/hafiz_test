@@ -6,6 +6,7 @@ import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/model/reciter.model.dart';
 import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 import 'package:hafiz_test/widget/button.dart';
+import 'package:hafiz_test/util/theme_controller.dart';
 
 class SettingDialog extends StatefulWidget {
   const SettingDialog({super.key});
@@ -16,16 +17,19 @@ class SettingDialog extends StatefulWidget {
 
 class _SettingDialogState extends State<SettingDialog> {
   final storageServices = getIt<IStorageService>();
+  final themeController = getIt<ThemeController>();
 
   bool autoPlay = true;
   bool isLoading = true;
 
   String? reciter;
+  late ThemeMode themeMode;
 
   void init() {
     try {
       autoPlay = storageServices.checkAutoPlay();
       reciter = storageServices.getReciter();
+      themeMode = ThemeMode.values.byName(themeController.mode);
     } catch (e) {
       debugPrint('Error $e');
     } finally {
@@ -54,14 +58,17 @@ class _SettingDialogState extends State<SettingDialog> {
             style: GoogleFonts.montserrat(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF222222),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           GestureDetector(
-            child: const Icon(
+            child: Icon(
               Icons.close,
               size: 30,
-              color: Color(0xFF626262),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.7),
             ),
             onTap: () => Navigator.pop(context),
           )
@@ -74,24 +81,62 @@ class _SettingDialogState extends State<SettingDialog> {
           if (isLoading)
             const Center(child: CircularProgressIndicator.adaptive())
           else
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
               children: [
-                Text(
-                  'Autoplay verse',
-                  style: GoogleFonts.montserrat(
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF222222),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Autoplay verse',
+                      style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    Switch(
+                      value: autoPlay,
+                      onChanged: (_) {
+                        setState(() => autoPlay = !autoPlay);
+                      },
+                      activeTrackColor: Theme.of(context).colorScheme.primary,
+                      activeColor: Colors.white,
+                    )
+                  ],
                 ),
-                Switch(
-                  value: autoPlay,
-                  onChanged: (_) {
-                    setState(() => autoPlay = !autoPlay);
-                  },
-                  activeTrackColor: const Color(0xFF004B40),
-                  activeColor: Colors.white,
-                )
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Theme',
+                      style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                    DropdownButton<ThemeMode>(
+                      value: themeMode,
+                      items: const [
+                        DropdownMenuItem(
+                          value: ThemeMode.system,
+                          child: Text('System'),
+                        ),
+                        DropdownMenuItem(
+                          value: ThemeMode.light,
+                          child: Text('Light'),
+                        ),
+                        DropdownMenuItem(
+                          value: ThemeMode.dark,
+                          child: Text('Dark'),
+                        ),
+                      ],
+                      onChanged: (mode) {
+                        if (mode == null) return;
+                        setState(() => themeMode = mode);
+                      },
+                    )
+                  ],
+                ),
               ],
             ),
           const SizedBox(height: 30),
@@ -99,7 +144,7 @@ class _SettingDialogState extends State<SettingDialog> {
             'Select your favorite reciter',
             style: GoogleFonts.montserrat(
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF222222),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
           DropdownButton<Reciter>(
@@ -122,18 +167,19 @@ class _SettingDialogState extends State<SettingDialog> {
           const SizedBox(height: 30),
           Button(
             height: 36,
-            color: const Color(0xFF004B40),
+            color: Theme.of(context).colorScheme.primary,
             child: Text(
               'Save',
               style: GoogleFonts.montserrat(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
             onPressed: () {
               storageServices.setAutoPlay(autoPlay);
               storageServices.setReciter(reciter ?? '');
+              themeController.setMode(themeMode.name);
               Navigator.pop(context);
             },
           )

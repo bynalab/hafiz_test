@@ -35,12 +35,35 @@ class AyahCard extends StatelessWidget {
                     center: Alignment.topLeft,
                     radius: 2,
                     colors: isActive
-                        ? [Colors.green.shade50, Colors.green.shade100]
-                        : [Colors.white, Colors.grey.shade100],
+                        ? Theme.of(context).brightness == Brightness.dark
+                            ? [
+                                Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: 0.1),
+                                Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withValues(alpha: 0.2)
+                              ]
+                            : [Colors.green.shade50, Colors.green.shade100]
+                        : Theme.of(context).brightness == Brightness.dark
+                            ? [
+                                Theme.of(context).colorScheme.surface,
+                                Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHighest
+                              ]
+                            : [Colors.white, Colors.grey.shade100],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: Colors.green.shade100,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Theme.of(context)
+                            .colorScheme
+                            .outline
+                            .withValues(alpha: 0.3)
+                        : Colors.green.shade100,
                     width: 0.5,
                   ),
                 ),
@@ -55,20 +78,20 @@ class AyahCard extends StatelessWidget {
                           children: [
                             TextSpan(
                               text: ayah.text,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 18,
                                 fontFamily: 'Quran',
                                 height: 2,
-                                color: Colors.black87,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
                             TextSpan(
                               text: "    \u{fd3f}${ayah.numberInSurah}\u{fd3e}",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
                                 fontFamily: 'Quran',
                                 fontWeight: FontWeight.bold,
-                                color: Colors.green,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
                           ],
@@ -87,8 +110,11 @@ class AyahCard extends StatelessWidget {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: isActive
-                          ? Colors.red.shade600.withValues(alpha: 0.5)
-                          : Colors.green.shade500.withValues(alpha: 0.5),
+                          ? Colors.red.shade600.withValues(alpha: 0.8)
+                          : Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.8),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(

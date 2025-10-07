@@ -29,7 +29,9 @@ class TestMenuCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: color?.withValues(alpha: 0.05),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).cardColor
+                    : color?.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(23),
               ),
               child: Column(
@@ -41,7 +43,9 @@ class TestMenuCard extends StatelessWidget {
                     style: GoogleFonts.montserrat(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF004B40),
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Theme.of(context).colorScheme.onSurface
+                          : const Color(0xFF004B40),
                     ),
                   ),
                   Align(
@@ -61,7 +65,10 @@ class TestMenuCard extends StatelessWidget {
                 child: SvgPicture.asset(
                   'assets/img/card_bottom_vector.svg',
                   colorFilter: ColorFilter.mode(
-                    color ?? Colors.black,
+                    Theme.of(context).brightness == Brightness.dark
+                        ? (color ?? Theme.of(context).colorScheme.onSurface)
+                            .withValues(alpha: 0.25)
+                        : (color ?? Colors.black).withValues(alpha: 0.25),
                     BlendMode.srcIn,
                   ),
                 ),

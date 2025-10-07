@@ -18,4 +18,8 @@ abstract class IStorageService {
 
   bool hasViewedShowcase();
   Future<void> saveUserGuide();
+
+  /// Theme mode persistence
+  Future<bool> setThemeMode(String mode);
+  String getThemeMode();
 }

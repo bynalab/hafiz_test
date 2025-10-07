@@ -78,11 +78,23 @@ class _MainMenuState extends State<_MainMenu> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: false,
-          backgroundColor: Colors.white,
-          surfaceTintColor: const Color(0xFF004B40),
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.surface
+              : Colors.white,
+          surfaceTintColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.primary
+              : const Color(0xFF004B40),
           scrolledUnderElevation: 10,
           automaticallyImplyLeading: false,
-          title: SvgPicture.asset('assets/img/logo.svg'),
+          title: SvgPicture.asset(
+            'assets/img/logo.svg',
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Theme.of(context).colorScheme.onSurface
+                  : const Color(0xFF222222),
+              BlendMode.srcIn,
+            ),
+          ),
           actions: [
             ShowCase(
               widgetKey: _settingKey,
@@ -99,7 +111,15 @@ class _MainMenuState extends State<_MainMenu> {
                     },
                   );
                 },
-                icon: SvgPicture.asset('assets/img/settings.svg'),
+                icon: SvgPicture.asset(
+                  'assets/img/settings.svg',
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Theme.of(context).colorScheme.onSurface
+                        : const Color(0xFF222222),
+                    BlendMode.srcIn,
+                  ),
+                ),
               ),
             ),
           ],
@@ -141,7 +161,9 @@ class _MainMenuState extends State<_MainMenu> {
                 style: GoogleFonts.montserrat(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF222222),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.onSurface
+                      : const Color(0xFF222222),
                 ),
               ),
               Row(
