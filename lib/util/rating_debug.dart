@@ -60,8 +60,10 @@ class _RatingDebugDialogState extends State<RatingDebugDialog> {
         TextButton(
           onPressed: () async {
             if (await RatingService.shouldShowRatingDialog()) {
+              if (!context.mounted) return;
               await RatingService.showRatingDialog(context);
             } else {
+              if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                     content: Text('Rating dialog conditions not met')),

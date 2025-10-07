@@ -15,7 +15,7 @@ void main() {
   testWidgets('Smoke test: SplashScreen renders', (WidgetTester tester) async {
     // If your SplashScreen or its children use GetIt, ensure locator is initialized
     // or register test doubles here using get_it + mocktail.
-    await tester.pumpWidget(const MaterialApp(home: Hafiz()));
+    await tester.pumpWidget(const MaterialApp(home: QuranHafiz()));
     await tester.pump(); // allow one frame
 
     expect(find.byType(SplashScreen), findsOneWidget);
