@@ -13,6 +13,7 @@ import 'package:hafiz_test/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';
 import 'package:hafiz_test/widget/test_menu_card.dart';
+import 'package:hafiz_test/services/rating_service.dart';
 
 class MainMenu extends StatelessWidget {
   const MainMenu({super.key});
@@ -68,6 +69,19 @@ class _MainMenuState extends State<_MainMenu> {
   Future<void> navigateTo(Widget screen) async {
     await Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
     setState(() {});
+
+    // Check if we should show rating dialog after user returns
+    _checkAndShowRatingDialog();
+  }
+
+  Future<void> _checkAndShowRatingDialog() async {
+    if (await RatingService.shouldShowRatingDialog()) {
+      // Small delay to ensure UI is ready
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (mounted) {
+        await RatingService.showRatingDialog(context);
+      }
+    }
   }
 
   @override

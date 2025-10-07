@@ -3,6 +3,7 @@ import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/splash_screen.dart';
 import 'package:hafiz_test/util/app_theme.dart';
 import 'package:hafiz_test/util/theme_controller.dart';
+import 'package:hafiz_test/services/rating_service.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
 void main() async {
@@ -15,6 +16,9 @@ void main() async {
   );
 
   await setupLocator();
+
+  // Initialize rating service
+  await RatingService.initializeAppLaunch();
 
   runApp(const QuranHafiz());
 }

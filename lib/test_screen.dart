@@ -13,6 +13,7 @@ import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 import 'package:hafiz_test/surah/view_full_surah.dart';
 import 'package:hafiz_test/util/util.dart';
 import 'package:hafiz_test/widget/button.dart';
+import 'package:hafiz_test/services/rating_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
 
@@ -109,7 +110,7 @@ class _TestPage extends State<TestScreen> {
 
     init();
 
-    _playerStateSub = audioPlayer.playerStateStream.listen((state) {
+    _playerStateSub = audioPlayer.playerStateStream.listen((state) async {
       setState(() {
         isPlaying = state.playing;
       });
@@ -118,6 +119,9 @@ class _TestPage extends State<TestScreen> {
         setState(() => isPlaying = false);
 
         storageServices.saveLastRead(surah, currentAyah);
+
+        // Track test session completion for rating system
+        await RatingService.trackTestSessionCompleted();
       }
     });
   }

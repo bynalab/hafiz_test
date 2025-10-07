@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/data/reciters.dart';
 import 'package:hafiz_test/extension/collection.dart';
@@ -7,6 +8,7 @@ import 'package:hafiz_test/model/reciter.model.dart';
 import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 import 'package:hafiz_test/widget/button.dart';
 import 'package:hafiz_test/util/theme_controller.dart';
+import 'package:hafiz_test/util/rating_debug.dart';
 
 class SettingDialog extends StatefulWidget {
   const SettingDialog({super.key});
@@ -164,7 +166,30 @@ class _SettingDialogState extends State<SettingDialog> {
               });
             },
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
+          if (kDebugMode) ...[
+            // Debug button for rating system (remove in production)
+            Button(
+              height: 32,
+              color: Colors.orange,
+              child: Text(
+                'Debug Rating System',
+                style: GoogleFonts.montserrat(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                showDialog(
+                  context: context,
+                  builder: (_) => const RatingDebugDialog(),
+                );
+              },
+            ),
+            const SizedBox(height: 10),
+          ],
           Button(
             height: 36,
             color: Theme.of(context).colorScheme.primary,
