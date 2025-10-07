@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hafiz_test/enum/surah_select_action.dart';
 import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:hafiz_test/widget/last_read_card.dart';
 import 'package:hafiz_test/widget/showcase.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -13,6 +14,7 @@ import 'package:hafiz_test/settings_dialog.dart';
 import 'package:hafiz_test/surah/surah_list_screen.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';
 import 'package:hafiz_test/widget/test_menu_card.dart';
+import 'package:hafiz_test/services/rating_service.dart';
 
 class MainMenu extends StatelessWidget {
   const MainMenu({super.key});
@@ -46,6 +48,9 @@ class _MainMenuState extends State<_MainMenu> {
   void initState() {
     super.initState();
 
+    // Track main menu screen view
+    AnalyticsService.trackScreenView('Main Menu');
+
     WidgetsBinding.instance.addPostFrameCallback((_) => startShowcase());
   }
 
@@ -68,6 +73,19 @@ class _MainMenuState extends State<_MainMenu> {
   Future<void> navigateTo(Widget screen) async {
     await Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
     setState(() {});
+
+    // Check if we should show rating dialog after user returns
+    _checkAndShowRatingDialog();
+  }
+
+  Future<void> _checkAndShowRatingDialog() async {
+    if (await RatingService.shouldShowRatingDialog()) {
+      // Small delay to ensure UI is ready
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (mounted) {
+        await RatingService.showRatingDialog(context);
+      }
+    }
   }
 
   @override
@@ -78,11 +96,23 @@ class _MainMenuState extends State<_MainMenu> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: false,
-          backgroundColor: Colors.white,
-          surfaceTintColor: const Color(0xFF004B40),
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.surface
+              : Colors.white,
+          surfaceTintColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.primary
+              : const Color(0xFF004B40),
           scrolledUnderElevation: 10,
           automaticallyImplyLeading: false,
-          title: SvgPicture.asset('assets/img/logo.svg'),
+          title: SvgPicture.asset(
+            'assets/img/logo.svg',
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).brightness == Brightness.dark
+                  ? Theme.of(context).colorScheme.onSurface
+                  : const Color(0xFF222222),
+              BlendMode.srcIn,
+            ),
+          ),
           actions: [
             ShowCase(
               widgetKey: _settingKey,
@@ -91,6 +121,7 @@ class _MainMenuState extends State<_MainMenu> {
                   'Change autoplay settings and select your favorite reciter',
               child: IconButton(
                 onPressed: () {
+                  AnalyticsService.trackEvent('Settings Opened');
                   showDialog(
                     barrierDismissible: false,
                     context: context,
@@ -99,7 +130,15 @@ class _MainMenuState extends State<_MainMenu> {
                     },
                   );
                 },
-                icon: SvgPicture.asset('assets/img/settings.svg'),
+                icon: SvgPicture.asset(
+                  'assets/img/settings.svg',
+                  colorFilter: ColorFilter.mode(
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Theme.of(context).colorScheme.onSurface
+                        : const Color(0xFF222222),
+                    BlendMode.srcIn,
+                  ),
+                ),
               ),
             ),
           ],
@@ -124,6 +163,7 @@ class _MainMenuState extends State<_MainMenu> {
                         image: 'card_quran',
                         color: const Color(0xFF2BFF00),
                         onTap: () {
+                          AnalyticsService.trackEvent('Read Quran Selected');
                           navigateTo(
                             const SurahListScreen(
                               actionType: SurahSelectionAction.read,
@@ -141,7 +181,9 @@ class _MainMenuState extends State<_MainMenu> {
                 style: GoogleFonts.montserrat(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF222222),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.onSurface
+                      : const Color(0xFF222222),
                 ),
               ),
               Row(
@@ -158,6 +200,7 @@ class _MainMenuState extends State<_MainMenu> {
                         image: 'card_surah',
                         color: const Color(0xFFFF8E6F),
                         onTap: () {
+                          AnalyticsService.trackEvent('Test By Surah Selected');
                           navigateTo(
                             const SurahListScreen(
                               actionType: SurahSelectionAction.test,
@@ -183,7 +226,10 @@ class _MainMenuState extends State<_MainMenu> {
                         title: 'By Juz',
                         image: 'card_juz',
                         color: const Color(0xFFFBBE15),
-                        onTap: () => navigateTo(const JuzListScreen()),
+                        onTap: () {
+                          AnalyticsService.trackEvent('Test By Juz Selected');
+                          navigateTo(const JuzListScreen());
+                        },
                       ),
                     ),
                   ),
@@ -199,7 +245,10 @@ class _MainMenuState extends State<_MainMenu> {
                         title: 'Randomly',
                         image: 'card_random',
                         color: const Color(0xFF6E81F6),
-                        onTap: () => navigateTo(const TestBySurah()),
+                        onTap: () {
+                          AnalyticsService.trackEvent('Random Test Selected');
+                          navigateTo(const TestBySurah());
+                        },
                       ),
                     ),
                   ),

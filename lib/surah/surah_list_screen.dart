@@ -6,6 +6,7 @@ import 'package:hafiz_test/enum/surah_select_action.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/quran/quran_view.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 
 class SurahListScreen extends StatefulWidget {
   final SurahSelectionAction actionType;
@@ -19,6 +20,14 @@ class SurahListScreen extends StatefulWidget {
 class _SurahListScreenState extends State<SurahListScreen> {
   bool isSearching = false;
   Surah? selectedSurah;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Track surah list screen view
+    AnalyticsService.trackScreenView('Surah List Screen');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +54,8 @@ class _SurahListScreenState extends State<SurahListScreen> {
                 ),
               ],
               color: selectedSurah?.number == surah.number
-                  ? const Color(0xFF004B40)
-                  : Colors.white,
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
@@ -58,21 +67,24 @@ class _SurahListScreenState extends State<SurahListScreen> {
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                     color: selectedSurah?.number == surah.number
-                        ? Colors.white
-                        : const Color(0xFF181817),
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 Icon(
                   Icons.arrow_forward_ios,
                   size: 15,
                   color: selectedSurah?.number == surah.number
-                      ? Colors.white
-                      : const Color(0xFF181817),
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : Theme.of(context).colorScheme.onSurface,
                 ),
               ],
             ),
           ),
           onTap: () {
+            // Track surah selection
+            AnalyticsService.trackSurahSelected(surah.englishName, surahNumber);
+
             if (isWideScreen) {
               setState(() {
                 selectedSurah = surah;
@@ -104,15 +116,21 @@ class _SurahListScreenState extends State<SurahListScreen> {
     if (isWideScreen) {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          surfaceTintColor: const Color(0xFF004B40),
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.surface
+              : Colors.white,
+          surfaceTintColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.primary
+              : const Color(0xFF004B40),
           scrolledUnderElevation: 10,
           title: Text(
             'Surah List',
             style: GoogleFonts.montserrat(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF222222),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Theme.of(context).colorScheme.onSurface
+                  : const Color(0xFF222222),
             ),
           ),
         ),
@@ -135,7 +153,9 @@ class _SurahListScreenState extends State<SurahListScreen> {
             Expanded(
               flex: 3,
               child: Container(
-                color: Colors.grey[100],
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).colorScheme.surface
+                    : Colors.grey[100],
                 child: selectedSurah == null
                     ? const Center(child: Text("Select a Surah"))
                     : widget.actionType == SurahSelectionAction.read
@@ -156,8 +176,12 @@ class _SurahListScreenState extends State<SurahListScreen> {
       // Original small-screen view
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          surfaceTintColor: const Color(0xFF004B40),
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.surface
+              : Colors.white,
+          surfaceTintColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.primary
+              : const Color(0xFF004B40),
           scrolledUnderElevation: 10,
           centerTitle: false,
           automaticallyImplyLeading: false,
@@ -182,7 +206,9 @@ class _SurahListScreenState extends State<SurahListScreen> {
                       style: GoogleFonts.montserrat(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF222222),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onSurface
+                            : const Color(0xFF222222),
                       ),
                     ),
                   ],

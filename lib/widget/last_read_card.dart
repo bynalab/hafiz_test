@@ -26,6 +26,24 @@ class LastReadCard extends StatelessWidget {
             child: Image.asset('assets/img/banner.png'),
           ),
         ),
+        if (Theme.of(context).brightness == Brightness.dark)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color(0xB3000000),
+                      Color(0x1A000000),
+                      Color(0x00000000),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         Padding(
           padding: const EdgeInsets.all(23),
           child: Row(
@@ -43,7 +61,9 @@ class LastReadCard extends StatelessWidget {
                       'Last Read',
                       style: GoogleFonts.inter(
                         fontSize: 12,
-                        color: const Color(0xFF222222),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -86,7 +106,9 @@ class LastReadCard extends StatelessWidget {
                 vertical: 8,
               ),
               decoration: BoxDecoration(
-                color: const Color(0xFFFAF6EB),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black.withValues(alpha: 0.5)
+                    : const Color(0xFFFAF6EB),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
@@ -99,7 +121,9 @@ class LastReadCard extends StatelessWidget {
                       style: GoogleFonts.montserrat(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
-                        color: const Color(0xFF004B40),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ),
@@ -131,7 +155,9 @@ class LastReadWidget extends StatelessWidget {
         style: GoogleFonts.inter(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFF222222),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Theme.of(context).colorScheme.onSurface,
         ),
       );
     }
@@ -143,11 +169,13 @@ class LastReadWidget extends StatelessWidget {
       children: [
         Text(
           surah.name.replaceAll('سُورَةُ ', ''),
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Kitab',
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF222222),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Theme.of(context).colorScheme.onSurface,
           ),
         ),
         Text(
@@ -155,7 +183,9 @@ class LastReadWidget extends StatelessWidget {
           style: GoogleFonts.inter(
             fontSize: 12,
             fontWeight: FontWeight.w300,
-            color: const Color(0xFF222222),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white70
+                : Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],

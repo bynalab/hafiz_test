@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hafiz_test/services/network.services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
 import 'package:hafiz_test/util/surah_picker.dart';
+import 'package:hafiz_test/util/theme_controller.dart';
 
 final getIt = GetIt.instance;
 
@@ -19,6 +20,7 @@ Future<void> setupLocator() async {
   getIt.registerSingleton<NetworkServices>(NetworkServices());
   getIt.registerSingleton<SurahPicker>(SurahPicker());
   getIt.registerSingleton<AudioServices>(AudioServices());
+  getIt.registerSingleton<ThemeController>(ThemeController());
 
   getIt.registerSingleton<SurahServices>(
     SurahServices(

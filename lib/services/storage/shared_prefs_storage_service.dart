@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
@@ -38,7 +37,6 @@ class SharedPrefsStorageService implements IStorageService {
         jsonEncode({'surah': surah.toJson(), 'ayah': ayah.toJson()}),
       );
     } catch (e) {
-      debugPrint('Error saving last read: $e');
       return false;
     }
   }
@@ -55,7 +53,6 @@ class SharedPrefsStorageService implements IStorageService {
         Ayah.fromJson(decoded['ayah']),
       );
     } catch (e) {
-      debugPrint('Error parsing last read: $e');
       return null;
     }
   }
@@ -68,5 +65,31 @@ class SharedPrefsStorageService implements IStorageService {
   @override
   Future<void> saveUserGuide() async {
     await prefs.setBool('has_view_showcase', true);
+  }
+
+  @override
+  Future<bool> setThemeMode(String mode) async {
+    final serialized =
+        ['light', 'dark', 'system'].contains(mode) ? mode : 'system';
+
+    return prefs.setString('theme_mode', serialized);
+  }
+
+  @override
+  String getThemeMode() {
+    final raw = prefs.getString('theme_mode');
+    return ['light', 'dark', 'system'].contains(raw)
+        ? raw ?? 'system'
+        : 'system';
+  }
+
+  @override
+  Future<bool> setString(String key, String value) async {
+    return prefs.setString(key, value);
+  }
+
+  @override
+  String? getString(String key) {
+    return prefs.getString(key);
   }
 }

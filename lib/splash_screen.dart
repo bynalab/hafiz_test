@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/main_menu.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,6 +18,10 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+
+    // Track splash screen view
+    AnalyticsService.trackScreenView('Splash Screen');
+
     _iconController =
         AnimationController(vsync: this, duration: const Duration(seconds: 3))
           ..repeat(reverse: true);

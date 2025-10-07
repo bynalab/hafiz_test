@@ -73,15 +73,16 @@ class _QuranViewState extends State<QuranView> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.green.shade500.withValues(alpha: 0.5),
+        backgroundColor:
+            Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
         elevation: 0,
-        foregroundColor: Colors.black,
+        foregroundColor: Theme.of(context).colorScheme.onSurface,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.white.withValues(alpha: 0.9),
-                Colors.white.withValues(alpha: 0.0),
+                Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+                Theme.of(context).colorScheme.surface.withValues(alpha: 0.0),
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -96,10 +97,10 @@ class _QuranViewState extends State<QuranView> {
                 : '';
             return Text(
               '${viewModel.surah.englishName}$verseText',
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
-                color: Colors.black87,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             );
           },
@@ -114,11 +115,18 @@ class _QuranViewState extends State<QuranView> {
           children: [
             Container(
               padding: const EdgeInsets.only(bottom: 80),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
+              decoration: BoxDecoration(
+                image: const DecorationImage(
                   image: AssetImage('assets/img/surah_background.png'),
                   fit: BoxFit.cover,
                 ),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black.withValues(alpha: 0.3)
+                    : null,
+                backgroundBlendMode:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? BlendMode.multiply
+                        : null,
               ),
               child: QuranAyahList(
                 surah: viewModel.surah,
@@ -137,11 +145,14 @@ class _QuranViewState extends State<QuranView> {
                     margin: const EdgeInsets.all(12),
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
-                      color: Colors.white.withAlpha(230),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .surface
+                          .withValues(alpha: 0.9),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withAlpha(25),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -154,9 +165,10 @@ class _QuranViewState extends State<QuranView> {
                           viewModel.isPlayingPlaylist
                               ? 'Playing Full Surah'
                               : 'Play Full Surah',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         GestureDetector(
@@ -166,11 +178,11 @@ class _QuranViewState extends State<QuranView> {
                             decoration: BoxDecoration(
                               color: viewModel.isPlayingPlaylist
                                   ? Colors.red.shade600
-                                  : Colors.green.shade300,
+                                  : Theme.of(context).colorScheme.primary,
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withAlpha(13),
+                                  color: Colors.black.withValues(alpha: 0.05),
                                   blurRadius: 4,
                                   offset: const Offset(2, 2),
                                 ),
