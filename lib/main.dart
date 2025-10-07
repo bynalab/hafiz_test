@@ -7,6 +7,7 @@ import 'package:hafiz_test/util/theme_controller.dart';
 import 'package:hafiz_test/services/rating_service.dart';
 import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:hafiz_test/services/user_identification_service.dart';
+import 'package:hafiz_test/services/notification_service.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
 void main() async {
@@ -29,6 +30,12 @@ void main() async {
 
     // Initialize rating service
     await RatingService.initializeAppLaunch();
+
+    // Initialize notification service
+    await NotificationService.initialize();
+
+    // Schedule daily motivational notifications with fallback for exact alarm restrictions
+    await NotificationService.scheduleDailyNotificationsWithFallback();
 
     // Track app launch
     AnalyticsService.trackAppLaunch();

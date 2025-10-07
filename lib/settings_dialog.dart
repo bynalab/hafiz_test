@@ -10,6 +10,7 @@ import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:hafiz_test/widget/button.dart';
 import 'package:hafiz_test/util/theme_controller.dart';
 import 'package:hafiz_test/util/rating_debug.dart';
+import 'package:hafiz_test/notification_settings_screen.dart';
 
 class SettingDialog extends StatefulWidget {
   const SettingDialog({super.key});
@@ -179,6 +180,90 @@ class _SettingDialogState extends State<SettingDialog> {
                   'reciter', oldValue, reciter?.identifier);
             },
           ),
+          const SizedBox(height: 20),
+          Button(
+            height: 36,
+            color: Colors.blue.shade600,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.notifications_active,
+                  color: Colors.white,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Notification Settings',
+                  style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+            onPressed: () {
+              AnalyticsService.trackEvent('Notification Settings Opened');
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const NotificationSettingsScreen(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 20),
+          // Button(
+          //   height: 36,
+          //   color: Colors.green.shade600,
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       const Icon(
+          //         Icons.notifications_active,
+          //         color: Colors.white,
+          //         size: 20,
+          //       ),
+          //       const SizedBox(width: 8),
+          //       Text(
+          //         'Test Notification',
+          //         style: GoogleFonts.montserrat(
+          //           fontSize: 16,
+          //           fontWeight: FontWeight.w600,
+          //           color: Colors.white,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          //   onPressed: () async {
+          //     AnalyticsService.trackEvent('Test Notification Sent');
+          //     try {
+          //       await NotificationService.sendTestNotification();
+
+          //       if (!context.mounted) return;
+          //       if (mounted) {
+          //         ScaffoldMessenger.of(context).showSnackBar(
+          //           const SnackBar(
+          //             content: Text(
+          //                 'Test notification sent! Check your notification panel.'),
+          //             backgroundColor: Colors.green,
+          //           ),
+          //         );
+          //       }
+          //     } catch (e) {
+          //       if (mounted) {
+          //         ScaffoldMessenger.of(context).showSnackBar(
+          //           SnackBar(
+          //             content: Text('Error sending test notification: $e'),
+          //             backgroundColor: Colors.red,
+          //           ),
+          //         );
+          //       }
+          //     }
+          //   },
+          // ),
           const SizedBox(height: 20),
           if (kDebugMode) ...[
             // Debug button for rating system (remove in production)
