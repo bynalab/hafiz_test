@@ -430,7 +430,7 @@ class _TestPage extends State<TestScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Loop verse',
+                    'Repeat Ayah',
                     style: GoogleFonts.montserrat(
                       fontWeight: FontWeight.w500,
                       color: Theme.of(context).colorScheme.onSurface,
