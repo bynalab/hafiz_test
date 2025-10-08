@@ -142,7 +142,7 @@ class GradientBorderButton extends StatelessWidget {
                 text,
                 style: GoogleFonts.montserrat(
                   fontWeight: FontWeight.w500,
-                  color: const Color(0xFF004B40),
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ],

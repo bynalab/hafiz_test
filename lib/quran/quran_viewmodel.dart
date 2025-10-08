@@ -5,6 +5,7 @@ import 'package:hafiz_test/extension/quran_extension.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
+import 'package:hafiz_test/services/rating_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -51,6 +52,9 @@ class QuranViewModel {
       if (state.processingState == ProcessingState.completed) {
         isPlayingNotifier.value = false;
         isPlaylist = false;
+
+        // Track surah listening completion for rating system
+        RatingService.trackSurahListened();
       }
     });
 

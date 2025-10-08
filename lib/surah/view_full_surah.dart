@@ -33,10 +33,10 @@ class _SurahScreenState extends State<SurahScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: const Color(0xFF004B40),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        surfaceTintColor: Theme.of(context).colorScheme.primary,
         scrolledUnderElevation: 10,
         centerTitle: false,
         automaticallyImplyLeading: false,
@@ -56,7 +56,7 @@ class _SurahScreenState extends State<SurahScreen> {
                     style: GoogleFonts.montserrat(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF222222),
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -67,7 +67,7 @@ class _SurahScreenState extends State<SurahScreen> {
               style: GoogleFonts.montserrat(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF222222),
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],

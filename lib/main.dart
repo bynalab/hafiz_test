@@ -1,6 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/locator.dart';
 import 'package:hafiz_test/splash_screen.dart';
+import 'package:hafiz_test/util/app_theme.dart';
+import 'package:hafiz_test/util/theme_controller.dart';
+import 'package:hafiz_test/services/rating_service.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
+import 'package:hafiz_test/services/user_identification_service.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
 void main() async {
@@ -14,24 +20,62 @@ void main() async {
 
   await setupLocator();
 
-  runApp(
-    const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Hafiz(),
-    ),
-  );
+  try {
+    // Initialize analytics
+    await AnalyticsService.initialize();
+
+    // Initialize user identification
+    await UserIdentificationService.initializeUserIdentification();
+
+    // Initialize rating service
+    await RatingService.initializeAppLaunch();
+
+    // Track app launch
+    AnalyticsService.trackAppLaunch();
+  } catch (e) {
+    if (kDebugMode) {
+      print('Error initializing services: $e');
+    }
+  }
+
+  runApp(const QuranHafiz());
 }
 
-class Hafiz extends StatefulWidget {
-  const Hafiz({super.key});
+class QuranHafiz extends StatefulWidget {
+  const QuranHafiz({super.key});
 
   @override
-  State<StatefulWidget> createState() => _Hafiz();
+  State<QuranHafiz> createState() => _QuranHafizState();
 }
 
-class _Hafiz extends State<Hafiz> {
+class _QuranHafizState extends State<QuranHafiz> {
+  late final ThemeController _themeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _themeController = getIt<ThemeController>();
+    _themeController.addListener(_onThemeChanged);
+  }
+
+  void _onThemeChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _themeController.removeListener(_onThemeChanged);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const SplashScreen();
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: ThemeMode.values.byName(_themeController.mode),
+      home: const SplashScreen(),
+    );
   }
 }

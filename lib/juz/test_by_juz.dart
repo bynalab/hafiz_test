@@ -59,10 +59,16 @@ class _TestPage extends State<TestByJuz> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark
+          ? Theme.of(context).colorScheme.surface
+          : Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: const Color(0xFF004B40),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).colorScheme.surface
+            : Colors.white,
+        surfaceTintColor: Theme.of(context).brightness == Brightness.dark
+            ? Theme.of(context).colorScheme.primary
+            : const Color(0xFF004B40),
         scrolledUnderElevation: 10,
         centerTitle: false,
         automaticallyImplyLeading: false,
@@ -78,7 +84,9 @@ class _TestPage extends State<TestByJuz> {
               style: GoogleFonts.montserrat(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF222222),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Theme.of(context).colorScheme.onSurface
+                    : const Color(0xFF222222),
               ),
             ),
           ],

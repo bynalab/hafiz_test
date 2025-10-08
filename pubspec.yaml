@@ -28,6 +28,9 @@ dependencies:
   showcaseview: ^4.0.1
   scrollable_positioned_list: ^0.3.8
   get_it: ^8.1.0
+  in_app_review: ^2.0.9
+  mixpanel_flutter: ^2.4.4
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
