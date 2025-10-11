@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 
 class AyahCard extends StatelessWidget {
   final Ayah ayah;
@@ -105,7 +106,13 @@ class AyahCard extends StatelessWidget {
                 bottom: 5,
                 right: 5,
                 child: GestureDetector(
-                  onTap: () => onPlayPressed?.call(index),
+                  onTap: () {
+                    // Track individual ayah play
+                    AnalyticsService.trackAudioControl(
+                        'play', 'Ayah ${ayah.numberInSurah}',
+                        audioType: 'recitation');
+                    onPlayPressed?.call(index);
+                  },
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(

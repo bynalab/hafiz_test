@@ -14,6 +14,7 @@ import 'package:hafiz_test/surah/view_full_surah.dart';
 import 'package:hafiz_test/util/util.dart';
 import 'package:hafiz_test/widget/button.dart';
 import 'package:hafiz_test/services/rating_service.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
 
@@ -47,6 +48,9 @@ class _TestPage extends State<TestScreen> {
 
   List<Ayah> get ayahs => surah.ayahs;
 
+  String get currentAudioName =>
+      '${surah.englishName} - Ayah ${currentAyah.numberInSurah}';
+
   bool loop = false;
   bool autoplay = true;
   bool isPlaying = false;
@@ -73,7 +77,17 @@ class _TestPage extends State<TestScreen> {
       return;
     }
 
+    // Store previous ayah for tracking
+    final previousAyah = currentAyah.numberInSurah;
     currentAyah = ayahs[currentAyah.numberInSurah];
+
+    // Track navigation from previous to next verse
+    AnalyticsService.trackEvent('Audio Navigation', properties: {
+      'action': 'next',
+      'from_ayah': previousAyah,
+      'to_ayah': currentAyah.numberInSurah,
+      'surah_name': surah.englishName,
+    });
 
     handleAudioPlay();
   }
@@ -85,7 +99,17 @@ class _TestPage extends State<TestScreen> {
       return;
     }
 
+    // Store previous ayah for tracking
+    final previousAyah = currentAyah.numberInSurah;
     currentAyah = ayahs[currentAyah.numberInSurah - 2];
+
+    // Track navigation from next to previous verse
+    AnalyticsService.trackEvent('Audio Navigation', properties: {
+      'action': 'previous',
+      'from_ayah': previousAyah,
+      'to_ayah': currentAyah.numberInSurah,
+      'surah_name': surah.englishName,
+    });
 
     handleAudioPlay();
   }
@@ -96,8 +120,16 @@ class _TestPage extends State<TestScreen> {
 
       if (autoplay) {
         await audioServices.play();
+
+        // Track audio navigation
+        AnalyticsService.trackAudioControl('play', currentAudioName,
+            audioType: 'recitation');
       } else {
         await audioServices.pause();
+
+        // Track audio navigation
+        AnalyticsService.trackAudioControl('pause', currentAudioName,
+            audioType: 'recitation');
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -395,8 +427,16 @@ class _TestPage extends State<TestScreen> {
                         onPressed: () async {
                           if (isPlaying) {
                             await audioServices.pause();
+                            // Track audio pause
+                            AnalyticsService.trackAudioControl(
+                                'pause', currentAudioName,
+                                audioType: 'recitation');
                           } else {
                             await audioServices.play();
+                            // Track audio play
+                            AnalyticsService.trackAudioControl(
+                                'play', currentAudioName,
+                                audioType: 'recitation');
                           }
                         },
                       ),
@@ -445,6 +485,10 @@ class _TestPage extends State<TestScreen> {
                       loopMode = loop ? LoopMode.one : LoopMode.off;
                       audioServices.setLoopMode(loopMode);
 
+                      // Track repeat switch
+                      AnalyticsService.trackRepeatSwitch(loop,
+                          audioName: currentAudioName);
+
                       setState(() {});
                     },
                     activeTrackColor: Theme.of(context).colorScheme.primary,
@@ -473,6 +517,12 @@ class _TestPage extends State<TestScreen> {
                         'assets/img/pepicons-pencil_repeat.svg',
                       ),
                       onTap: () async {
+                        // Track test refresh
+                        AnalyticsService.trackTestRefresh('surah', context: {
+                          'surah_name': widget.surah.englishName,
+                          'ayah_number': widget.currentAyah.numberInSurah,
+                        });
+
                         await widget.onRefresh?.call();
                         init();
                       },

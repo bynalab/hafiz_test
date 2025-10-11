@@ -51,7 +51,9 @@ class _MainMenuState extends State<_MainMenu> {
     // Track main menu screen view
     AnalyticsService.trackScreenView('Main Menu');
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => startShowcase());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      startShowcase();
+    });
   }
 
   void startShowcase() {
@@ -121,7 +123,8 @@ class _MainMenuState extends State<_MainMenu> {
                   'Change autoplay settings and select your favorite reciter',
               child: IconButton(
                 onPressed: () {
-                  AnalyticsService.trackEvent('Settings Opened');
+                  AnalyticsService.trackButtonClick('Settings',
+                      screen: 'Main Menu');
                   showDialog(
                     barrierDismissible: false,
                     context: context,
@@ -163,7 +166,8 @@ class _MainMenuState extends State<_MainMenu> {
                         image: 'card_quran',
                         color: const Color(0xFF2BFF00),
                         onTap: () {
-                          AnalyticsService.trackEvent('Read Quran Selected');
+                          AnalyticsService.trackButtonClick('Read Quran',
+                              screen: 'Main Menu');
                           navigateTo(
                             const SurahListScreen(
                               actionType: SurahSelectionAction.read,
@@ -200,7 +204,8 @@ class _MainMenuState extends State<_MainMenu> {
                         image: 'card_surah',
                         color: const Color(0xFFFF8E6F),
                         onTap: () {
-                          AnalyticsService.trackEvent('Test By Surah Selected');
+                          AnalyticsService.trackButtonClick('Test By Surah',
+                              screen: 'Main Menu');
                           navigateTo(
                             const SurahListScreen(
                               actionType: SurahSelectionAction.test,
@@ -227,7 +232,8 @@ class _MainMenuState extends State<_MainMenu> {
                         image: 'card_juz',
                         color: const Color(0xFFFBBE15),
                         onTap: () {
-                          AnalyticsService.trackEvent('Test By Juz Selected');
+                          AnalyticsService.trackButtonClick('Test By Juz',
+                              screen: 'Main Menu');
                           navigateTo(const JuzListScreen());
                         },
                       ),
@@ -246,7 +252,8 @@ class _MainMenuState extends State<_MainMenu> {
                         image: 'card_random',
                         color: const Color(0xFF6E81F6),
                         onTap: () {
-                          AnalyticsService.trackEvent('Random Test Selected');
+                          AnalyticsService.trackButtonClick('Random Test',
+                              screen: 'Main Menu');
                           navigateTo(const TestBySurah());
                         },
                       ),

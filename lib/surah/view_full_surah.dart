@@ -5,6 +5,7 @@ import 'package:hafiz_test/extension/quran_extension.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:just_audio/just_audio.dart';
 
@@ -244,8 +245,16 @@ class QuranVersenCardState extends State<QuranVerseCard> {
 
                     if (isPlaying && widget.isPlaying) {
                       await audioServices.pause();
+                      // Track audio pause
+                      AnalyticsService.trackAudioControl(
+                          'pause', 'Ayah ${widget.ayah.numberInSurah}',
+                          audioType: 'recitation');
                     } else {
                       await handleAudio(widget.ayah.audio);
+                      // Track audio play
+                      AnalyticsService.trackAudioControl(
+                          'play', 'Ayah ${widget.ayah.numberInSurah}',
+                          audioType: 'recitation');
                     }
                   },
                 )

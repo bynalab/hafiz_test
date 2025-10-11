@@ -25,6 +25,7 @@ class _SplashScreenState extends State<SplashScreen>
     _iconController =
         AnimationController(vsync: this, duration: const Duration(seconds: 3))
           ..repeat(reverse: true);
+
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         Navigator.pushReplacement(
@@ -127,7 +128,7 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Column(
                     children: [
                       Text(
-                        "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ",
+                        "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 20,
@@ -146,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen>
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 30),
                         child: Text(
-                          "“And We have certainly made the Qur’an easy for remembrance, so is there any who will remember?” (Q54:17)",
+                          "\"And We have certainly made the Qur'an easy for remembrance, so is there any who will remember?\" (Q54:17)",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,

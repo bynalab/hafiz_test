@@ -6,6 +6,7 @@ import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
 import 'package:hafiz_test/services/rating_service.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -69,8 +70,14 @@ class QuranViewModel {
   Future<void> _togglePlayback() async {
     if (isPlayingNotifier.value) {
       await audioService.pause();
+      // Track audio pause
+      AnalyticsService.trackAudioControl('pause', surah.englishName,
+          audioType: 'recitation');
     } else {
       await audioService.play();
+      // Track audio play
+      AnalyticsService.trackAudioControl('play', surah.englishName,
+          audioType: 'recitation');
     }
   }
 

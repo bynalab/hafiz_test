@@ -8,6 +8,7 @@ import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
 import 'package:hafiz_test/services/ayah.services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:hafiz_test/test_screen.dart';
 
 class TestBySurah extends StatefulWidget {
@@ -66,60 +67,68 @@ class _TestPage extends State<TestBySurah> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? Theme.of(context).colorScheme.surface
-          : Colors.white,
-      appBar: AppBar(
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          // Track back press
+          AnalyticsService.trackBackPress(fromScreen: 'Test By Surah');
+        }
+      },
+      child: Scaffold(
         backgroundColor: Theme.of(context).brightness == Brightness.dark
             ? Theme.of(context).colorScheme.surface
             : Colors.white,
-        surfaceTintColor: Theme.of(context).brightness == Brightness.dark
-            ? Theme.of(context).colorScheme.primary
-            : const Color(0xFF004B40),
-        scrolledUnderElevation: 10,
-        centerTitle: false,
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: SvgPicture.asset('assets/img/arrow_back.svg'),
-            ),
-            const SizedBox(width: 13),
-            Text(
-              surah.englishName,
-              style: GoogleFonts.montserrat(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Theme.of(context).colorScheme.onSurface
-                    : const Color(0xFF222222),
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.surface
+              : Colors.white,
+          surfaceTintColor: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).colorScheme.primary
+              : const Color(0xFF004B40),
+          scrolledUnderElevation: 10,
+          centerTitle: false,
+          automaticallyImplyLeading: false,
+          title: Row(
+            children: [
+              GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: SvgPicture.asset('assets/img/arrow_back.svg'),
               ),
-            ),
+              const SizedBox(width: 13),
+              Text(
+                surah.englishName,
+                style: GoogleFonts.montserrat(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.onSurface
+                      : const Color(0xFF222222),
+                ),
+              ),
+            ],
+          ),
+        ),
+        body: Stack(
+          children: [
+            if (isLoading)
+              const Center(
+                child: CircularProgressIndicator.adaptive(
+                  strokeWidth: 5,
+                  backgroundColor: Colors.blueGrey,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            else
+              SingleChildScrollView(
+                child: TestScreen(
+                  surah: surah,
+                  currentAyah: currentAyah,
+                  isLoading: isLoading,
+                  onRefresh: () async => await init(),
+                ),
+              ),
           ],
         ),
-      ),
-      body: Stack(
-        children: [
-          if (isLoading)
-            const Center(
-              child: CircularProgressIndicator.adaptive(
-                strokeWidth: 5,
-                backgroundColor: Colors.blueGrey,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            )
-          else
-            SingleChildScrollView(
-              child: TestScreen(
-                surah: surah,
-                currentAyah: currentAyah,
-                isLoading: isLoading,
-                onRefresh: () async => await init(),
-              ),
-            ),
-        ],
       ),
     );
   }
