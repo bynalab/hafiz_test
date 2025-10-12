@@ -66,7 +66,7 @@ class _TestPage extends State<TestScreen> {
     audioServices.setLoopMode(loopMode);
 
     if (autoplay) {
-      await audioServices.play();
+      await audioServices.play(audioName: currentAudioName);
     }
   }
 
@@ -119,17 +119,9 @@ class _TestPage extends State<TestScreen> {
       await audioServices.setAudioSource(currentAyah.audioSource);
 
       if (autoplay) {
-        await audioServices.play();
-
-        // Track audio navigation
-        AnalyticsService.trackAudioControl('play', currentAudioName,
-            audioType: 'recitation');
+        await audioServices.play(audioName: currentAudioName);
       } else {
-        await audioServices.pause();
-
-        // Track audio navigation
-        AnalyticsService.trackAudioControl('pause', currentAudioName,
-            audioType: 'recitation');
+        await audioServices.pause(audioName: currentAudioName);
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -147,8 +139,24 @@ class _TestPage extends State<TestScreen> {
         isPlaying = state.playing;
       });
 
+      // Track audio start
+      if (state.playing && state.processingState == ProcessingState.ready) {
+        AnalyticsService.trackAudioStart(
+          currentAudioName,
+          surahName: surah.englishName,
+          ayahNumber: currentAyah.numberInSurah,
+        );
+      }
+
       if (state.processingState == ProcessingState.completed) {
         setState(() => isPlaying = false);
+
+        // Track audio completion
+        AnalyticsService.trackAudioComplete(
+          currentAudioName,
+          surahName: surah.englishName,
+          ayahNumber: currentAyah.numberInSurah,
+        );
 
         storageServices.saveLastRead(surah, currentAyah);
 
@@ -426,17 +434,11 @@ class _TestPage extends State<TestScreen> {
                         ),
                         onPressed: () async {
                           if (isPlaying) {
-                            await audioServices.pause();
-                            // Track audio pause
-                            AnalyticsService.trackAudioControl(
-                                'pause', currentAudioName,
-                                audioType: 'recitation');
+                            await audioServices.pause(
+                                audioName: currentAudioName);
                           } else {
-                            await audioServices.play();
-                            // Track audio play
-                            AnalyticsService.trackAudioControl(
-                                'play', currentAudioName,
-                                audioType: 'recitation');
+                            await audioServices.play(
+                                audioName: currentAudioName);
                           }
                         },
                       ),

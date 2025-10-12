@@ -246,4 +246,69 @@ class AnalyticsService {
       'timestamp': DateTime.now().toIso8601String(),
     });
   }
+
+  // ===== AUDIO LIFECYCLE TRACKING =====
+
+  /// Track audio lifecycle events (start/complete)
+  static void trackAudioLifecycle(
+    String event,
+    String audioName, {
+    String? audioType,
+    String? surahName,
+    int? ayahNumber,
+    bool? isPlaylist,
+    Map<String, dynamic>? additionalProperties,
+  }) {
+    final properties = <String, dynamic>{
+      'audio_name': audioName,
+      'audio_type': audioType ?? 'recitation',
+      'timestamp': DateTime.now().toIso8601String(),
+      if (surahName != null) 'surah_name': surahName,
+      if (ayahNumber != null) 'ayah_number': ayahNumber,
+      if (isPlaylist != null) 'is_playlist': isPlaylist,
+      ...?additionalProperties,
+    };
+
+    trackEvent(event, properties: properties);
+  }
+
+  /// Track audio start
+  static void trackAudioStart(
+    String audioName, {
+    String? audioType,
+    String? surahName,
+    int? ayahNumber,
+    bool? isPlaylist,
+    Map<String, dynamic>? additionalProperties,
+  }) {
+    trackAudioLifecycle(
+      'Audio Started',
+      audioName,
+      audioType: audioType,
+      surahName: surahName,
+      ayahNumber: ayahNumber,
+      isPlaylist: isPlaylist,
+      additionalProperties: additionalProperties,
+    );
+  }
+
+  /// Track audio completion
+  static void trackAudioComplete(
+    String audioName, {
+    String? audioType,
+    String? surahName,
+    int? ayahNumber,
+    bool? wasPlaylist,
+    Map<String, dynamic>? additionalProperties,
+  }) {
+    trackAudioLifecycle(
+      'Audio Completed',
+      audioName,
+      audioType: audioType,
+      surahName: surahName,
+      ayahNumber: ayahNumber,
+      isPlaylist: wasPlaylist,
+      additionalProperties: additionalProperties,
+    );
+  }
 }
