@@ -6,6 +6,7 @@ import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 import 'package:hafiz_test/surah/test_by_surah.dart';
 import 'package:hafiz_test/widget/showcase.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 
 class LastReadCard extends StatelessWidget {
   final GlobalKey lastReadKey;
@@ -86,6 +87,13 @@ class LastReadCard extends StatelessWidget {
               if (lastRead == null) return;
 
               final (surah, ayah) = lastRead;
+
+              AnalyticsService.trackEvent('Last Read Continued', properties: {
+                'surah_name': surah.englishName,
+                'surah_number': surah.number,
+                'ayah_number': ayah.numberInSurah,
+                'timestamp': DateTime.now().toIso8601String(),
+              });
 
               await Navigator.push(
                 context,
