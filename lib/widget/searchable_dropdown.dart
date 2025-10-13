@@ -88,7 +88,7 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
                 color: Theme.of(context)
                     .colorScheme
                     .outline
-                    .withValues(alpha: 0.3),
+                    .withValues(alpha: 0.5),
               ),
               borderRadius: BorderRadius.circular(8),
             ),
@@ -143,6 +143,7 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
+                      isDense: true,
                       hintText: widget.searchHint,
                       hintStyle: GoogleFonts.montserrat(
                         color: Theme.of(context)

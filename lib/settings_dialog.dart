@@ -194,8 +194,9 @@ class _SettingDialogState extends State<SettingDialog> {
             LinkButton(
               icon: Icons.language,
               title: 'Visit Our Website',
-              onTap: () =>
-                  _launchUrl(context, 'https://bynalab.com', 'Website'),
+              onTap: () {
+                launchInBrowser(context, 'https://hafizpro.com', 'Website');
+              },
             ),
             const SizedBox(height: 12),
             LinkButton(
@@ -256,27 +257,26 @@ class _SettingDialogState extends State<SettingDialog> {
     );
   }
 
-  Future<void> _launchUrl(
+  Future<void> launchInBrowser(
       BuildContext context, String url, String linkName) async {
     try {
-      final Uri uri = Uri.parse(url);
-
       // Track link click
-      AnalyticsService.trackEvent('Settings Link Clicked', properties: {
+      AnalyticsService.trackEvent('Website Link Clicked', properties: {
         'link_name': linkName,
         'link_url': url,
       });
 
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } else {
-        if (context.mounted) {
-          _showErrorSnackBar(context, 'Could not open the link');
-        }
+      final Uri uri = Uri.parse(url);
+
+      if (!await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      )) {
+        debugPrint('Failed to launch $url');
       }
     } catch (e) {
       if (context.mounted) {
-        _showErrorSnackBar(context, 'Error opening link: $e');
+        _showErrorSnackBar(context, 'Error launching URL: $url. Error: $e');
       }
     }
   }
