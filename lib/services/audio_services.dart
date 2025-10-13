@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 
 class AudioServices {
   AudioServices._internal();
@@ -28,7 +29,7 @@ class AudioServices {
     }
   }
 
-  Future<void> play() async {
+  Future<void> play({String? audioName}) async {
     try {
       // If playback has completed, restart from beginning
       if (audioPlayer.processingState == ProcessingState.completed) {
@@ -37,14 +38,22 @@ class AudioServices {
       }
 
       await audioPlayer.play();
+
+      // Track audio play with context
+      AnalyticsService.trackAudioControl('play', audioName ?? 'Audio Playback',
+          audioType: 'recitation');
     } catch (e) {
       debugPrint('Error playing audio: ${e.toString()}');
     }
   }
 
-  Future<void> pause() async {
+  Future<void> pause({String? audioName}) async {
     try {
       await audioPlayer.pause();
+
+      // Track audio pause with context
+      AnalyticsService.trackAudioControl('pause', audioName ?? 'Audio Playback',
+          audioType: 'recitation');
     } catch (e) {
       debugPrint('Error pausing audio: ${e.toString()}');
     }
@@ -58,9 +67,13 @@ class AudioServices {
     }
   }
 
-  Future<void> stop() async {
+  Future<void> stop({String? audioName}) async {
     try {
       await audioPlayer.stop();
+
+      // Track audio stop with context
+      AnalyticsService.trackAudioControl('stop', audioName ?? 'Audio Playback',
+          audioType: 'recitation');
     } catch (e) {
       debugPrint('Error stopping audio: ${e.toString()}');
     }

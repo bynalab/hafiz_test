@@ -5,6 +5,7 @@ import 'package:hafiz_test/extension/quran_extension.dart';
 import 'package:hafiz_test/model/ayah.model.dart';
 import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:just_audio/just_audio.dart';
 
@@ -131,17 +132,27 @@ class QuranVersenCardState extends State<QuranVerseCard> {
 
   int selectedIndex = 0;
 
+  String get audioName => 'Ayah ${widget.ayah.numberInSurah}';
+
+  Future<void> playAudio() async {
+    await audioServices.play(audioName: audioName);
+  }
+
+  Future<void> pauseAudio() async {
+    await audioServices.pause(audioName: audioName);
+  }
+
   Future<void> handleAudio(String url) async {
     try {
       audioServices.setAudioSource(widget.ayah.audioSource);
 
-      await audioServices.pause();
+      await pauseAudio();
       widget.onPlayPressed?.call(selectedIndex);
 
       if (isPlaying && widget.isPlaying) {
-        await audioServices.pause();
+        await pauseAudio();
       } else {
-        await audioServices.play();
+        await playAudio();
       }
     } catch (e) {
       setState(() => isPlaying = false);
@@ -157,8 +168,24 @@ class QuranVersenCardState extends State<QuranVerseCard> {
         isPlaying = state.playing;
       });
 
+      // Track audio start
+      if (state.playing && state.processingState == ProcessingState.ready) {
+        AnalyticsService.trackAudioStart(
+          audioName,
+          surahName: widget.ayah.surah?.englishName ?? 'Unknown',
+          ayahNumber: widget.ayah.numberInSurah,
+        );
+      }
+
       if (state.processingState == ProcessingState.completed) {
         setState(() => isPlaying = false);
+
+        // Track audio completion
+        AnalyticsService.trackAudioComplete(
+          audioName,
+          surahName: widget.ayah.surah?.englishName ?? 'Unknown',
+          ayahNumber: widget.ayah.numberInSurah,
+        );
       }
     });
   }
@@ -243,7 +270,7 @@ class QuranVersenCardState extends State<QuranVerseCard> {
                     setState(() {});
 
                     if (isPlaying && widget.isPlaying) {
-                      await audioServices.pause();
+                      await pauseAudio();
                     } else {
                       await handleAudio(widget.ayah.audio);
                     }
