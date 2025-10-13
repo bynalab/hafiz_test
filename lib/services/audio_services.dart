@@ -87,9 +87,12 @@ class AudioServices {
     }
   }
 
-  Future<void> setSpeed(double speed) async {
+  Future<void> setSpeed(double speed, {String? audioName}) async {
     try {
       await audioPlayer.setSpeed(speed);
+
+      // Track speed change
+      AnalyticsService.trackSpeedChanged(speed, audioName ?? 'Audio Playback');
     } catch (e) {
       debugPrint('Error setting speed: ${e.toString()}');
     }

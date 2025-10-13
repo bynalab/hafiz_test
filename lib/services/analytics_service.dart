@@ -338,4 +338,13 @@ class AnalyticsService {
       additionalProperties: additionalProperties,
     );
   }
+
+  /// Track speed change
+  static void trackSpeedChanged(double newSpeed, String audioName) {
+    trackEvent('Speed Changed', properties: {
+      'new_speed': newSpeed,
+      'audio_name': audioName,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
 }
