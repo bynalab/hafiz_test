@@ -12,6 +12,11 @@ class AnalyticsService {
   static DateTime? _sessionStartTime;
   static String? _currentScreen;
   static DateTime? _screenStartTime;
+  static bool _sessionEnded = false;
+
+  // Audio tracking deduplication
+  static String? _lastTrackedAudio;
+  static DateTime? _lastAudioTrackTime;
 
   /// Initialize Mixpanel with the project token
   static Future<void> initialize() async {
@@ -89,8 +94,7 @@ class AnalyticsService {
   /// Track app lifecycle events
   static void trackAppLifecycle(String lifecycleState) {
     trackEvent('App Lifecycle', properties: {
-      'lifecycle_state':
-          lifecycleState, // 'resumed', 'paused', 'inactive', 'detached'
+      'lifecycle_state': lifecycleState,
       'timestamp': DateTime.now().toIso8601String(),
     });
   }
@@ -98,14 +102,23 @@ class AnalyticsService {
   /// Track session start
   static void trackSessionStart() {
     _sessionStartTime = DateTime.now();
+    _sessionEnded = false; // Reset session ended flag
+    _resetAudioTracking(); // Reset audio tracking state
     trackEvent('Session Started', properties: {
       'timestamp': DateTime.now().toIso8601String(),
     });
   }
 
+  /// Reset audio tracking state
+  static void _resetAudioTracking() {
+    _lastTrackedAudio = null;
+    _lastAudioTrackTime = null;
+  }
+
   /// Track session end
   static void trackSessionEnd() {
-    if (_sessionStartTime != null) {
+    if (_sessionStartTime != null && !_sessionEnded) {
+      _sessionEnded = true; // Prevent duplicate session end events
       final sessionDuration = DateTime.now().difference(_sessionStartTime!);
       trackEvent('Session Ended', properties: {
         'session_duration_seconds': sessionDuration.inSeconds,
@@ -272,7 +285,7 @@ class AnalyticsService {
     trackEvent(event, properties: properties);
   }
 
-  /// Track audio start
+  /// Track audio start with deduplication
   static void trackAudioStart(
     String audioName, {
     String? audioType,
@@ -281,6 +294,20 @@ class AnalyticsService {
     bool? isPlaylist,
     Map<String, dynamic>? additionalProperties,
   }) {
+    final now = DateTime.now();
+    final audioKey = '${audioName}_${surahName ?? ''}_${ayahNumber ?? ''}';
+
+    // Check if this is a duplicate within 2 seconds
+    if (_lastTrackedAudio == audioKey &&
+        _lastAudioTrackTime != null &&
+        now.difference(_lastAudioTrackTime!).inSeconds < 2) {
+      return; // Skip duplicate
+    }
+
+    // Update tracking state
+    _lastTrackedAudio = audioKey;
+    _lastAudioTrackTime = now;
+
     trackAudioLifecycle(
       'Audio Started',
       audioName,

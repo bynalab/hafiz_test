@@ -70,21 +70,21 @@ class _QuranHafizState extends State<QuranHafiz> with WidgetsBindingObserver {
     // Track app lifecycle changes
     switch (state) {
       case AppLifecycleState.resumed:
-        AnalyticsService.trackAppLifecycle('resumed');
+        AnalyticsService.trackAppLifecycle('App opened from minimised');
         break;
       case AppLifecycleState.paused:
-        AnalyticsService.trackAppLifecycle('paused');
+        AnalyticsService.trackAppLifecycle('App sent to background');
         AnalyticsService.trackSessionEnd();
         break;
       case AppLifecycleState.inactive:
-        AnalyticsService.trackAppLifecycle('inactive');
+        AnalyticsService.trackAppLifecycle('App transitioning');
         break;
       case AppLifecycleState.detached:
-        AnalyticsService.trackAppLifecycle('detached');
+        AnalyticsService.trackAppLifecycle('App terminated');
         AnalyticsService.trackSessionEnd();
         break;
       case AppLifecycleState.hidden:
-        AnalyticsService.trackAppLifecycle('hidden');
+        AnalyticsService.trackAppLifecycle('App hidden');
         break;
     }
   }
