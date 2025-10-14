@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/main_menu.dart';
 import 'package:hafiz_test/services/analytics_service.dart';
-import 'package:shimmer/shimmer.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -93,23 +92,10 @@ class _SplashScreenState extends State<SplashScreen>
                         color: Colors.amber.shade300,
                       ),
                       Image.asset(
-                        'assets/img/quran_opened_star.png',
+                        'assets/img/logo.png',
                         height: 200,
                       ),
                     ],
-                  ),
-                ),
-                Shimmer.fromColors(
-                  baseColor: Colors.amber.shade200,
-                  highlightColor: Colors.greenAccent,
-                  child: const Text(
-                    "Quran Hafiz",
-                    style: TextStyle(
-                      fontSize: 52,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 3,
-                      fontFamily: 'serif',
-                    ),
                   ),
                 ),
                 const SizedBox(height: 15),
