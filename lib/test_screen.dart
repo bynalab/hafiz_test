@@ -14,6 +14,7 @@ import 'package:hafiz_test/surah/view_full_surah.dart';
 import 'package:hafiz_test/util/util.dart';
 import 'package:hafiz_test/widget/button.dart';
 import 'package:hafiz_test/services/rating_service.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
 
@@ -47,6 +48,9 @@ class _TestPage extends State<TestScreen> {
 
   List<Ayah> get ayahs => surah.ayahs;
 
+  String get currentAudioName =>
+      '${surah.englishName} - Ayah ${currentAyah.numberInSurah}';
+
   bool loop = false;
   bool autoplay = true;
   bool isPlaying = false;
@@ -62,7 +66,7 @@ class _TestPage extends State<TestScreen> {
     audioServices.setLoopMode(loopMode);
 
     if (autoplay) {
-      await audioServices.play();
+      await audioServices.play(audioName: currentAudioName);
     }
   }
 
@@ -73,7 +77,17 @@ class _TestPage extends State<TestScreen> {
       return;
     }
 
+    // Store previous ayah for tracking
+    final previousAyah = currentAyah.numberInSurah;
     currentAyah = ayahs[currentAyah.numberInSurah];
+
+    // Track navigation from previous to next verse
+    AnalyticsService.trackEvent('Audio Navigation', properties: {
+      'action': 'next',
+      'from_ayah': previousAyah,
+      'to_ayah': currentAyah.numberInSurah,
+      'surah_name': surah.englishName,
+    });
 
     handleAudioPlay();
   }
@@ -85,7 +99,17 @@ class _TestPage extends State<TestScreen> {
       return;
     }
 
+    // Store previous ayah for tracking
+    final previousAyah = currentAyah.numberInSurah;
     currentAyah = ayahs[currentAyah.numberInSurah - 2];
+
+    // Track navigation from next to previous verse
+    AnalyticsService.trackEvent('Audio Navigation', properties: {
+      'action': 'previous',
+      'from_ayah': previousAyah,
+      'to_ayah': currentAyah.numberInSurah,
+      'surah_name': surah.englishName,
+    });
 
     handleAudioPlay();
   }
@@ -95,9 +119,9 @@ class _TestPage extends State<TestScreen> {
       await audioServices.setAudioSource(currentAyah.audioSource);
 
       if (autoplay) {
-        await audioServices.play();
+        await audioServices.play(audioName: currentAudioName);
       } else {
-        await audioServices.pause();
+        await audioServices.pause(audioName: currentAudioName);
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -115,8 +139,24 @@ class _TestPage extends State<TestScreen> {
         isPlaying = state.playing;
       });
 
+      // Track audio start
+      if (state.playing && state.processingState == ProcessingState.ready) {
+        AnalyticsService.trackAudioStart(
+          currentAudioName,
+          surahName: surah.englishName,
+          ayahNumber: currentAyah.numberInSurah,
+        );
+      }
+
       if (state.processingState == ProcessingState.completed) {
         setState(() => isPlaying = false);
+
+        // Track audio completion
+        AnalyticsService.trackAudioComplete(
+          currentAudioName,
+          surahName: surah.englishName,
+          ayahNumber: currentAyah.numberInSurah,
+        );
 
         storageServices.saveLastRead(surah, currentAyah);
 
@@ -145,7 +185,7 @@ class _TestPage extends State<TestScreen> {
   void updatePlaybackRate() {
     speed = (speed == 2.5) ? 0.5 : speed + 0.5;
 
-    audioServices.setSpeed(speed);
+    audioServices.setSpeed(speed, audioName: currentAudioName);
 
     setState(() {});
   }
@@ -394,9 +434,11 @@ class _TestPage extends State<TestScreen> {
                         ),
                         onPressed: () async {
                           if (isPlaying) {
-                            await audioServices.pause();
+                            await audioServices.pause(
+                                audioName: currentAudioName);
                           } else {
-                            await audioServices.play();
+                            await audioServices.play(
+                                audioName: currentAudioName);
                           }
                         },
                       ),
@@ -445,6 +487,10 @@ class _TestPage extends State<TestScreen> {
                       loopMode = loop ? LoopMode.one : LoopMode.off;
                       audioServices.setLoopMode(loopMode);
 
+                      // Track repeat switch
+                      AnalyticsService.trackRepeatSwitch(loop,
+                          audioName: currentAudioName);
+
                       setState(() {});
                     },
                     activeTrackColor: Theme.of(context).colorScheme.primary,
@@ -473,6 +519,12 @@ class _TestPage extends State<TestScreen> {
                         'assets/img/pepicons-pencil_repeat.svg',
                       ),
                       onTap: () async {
+                        // Track test refresh
+                        AnalyticsService.trackTestRefresh('surah', context: {
+                          'surah_name': widget.surah.englishName,
+                          'ayah_number': widget.currentAyah.numberInSurah,
+                        });
+
                         await widget.onRefresh?.call();
                         init();
                       },

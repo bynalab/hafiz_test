@@ -8,6 +8,16 @@ class AnalyticsService {
   static Mixpanel? _mixpanel;
   static bool _isInitialized = false;
 
+  // Simple session tracking
+  static DateTime? _sessionStartTime;
+  static String? _currentScreen;
+  static DateTime? _screenStartTime;
+  static bool _sessionEnded = false;
+
+  // Audio tracking deduplication
+  static String? _lastTrackedAudio;
+  static DateTime? _lastAudioTrackTime;
+
   /// Initialize Mixpanel with the project token
   static Future<void> initialize() async {
     if (_isInitialized || !AnalyticsConfig.enableAnalytics) return;
@@ -22,9 +32,11 @@ class AnalyticsService {
           await Mixpanel.init(_projectToken, trackAutomaticEvents: true);
       _isInitialized = true;
 
+      // Initialize session tracking
+      _sessionStartTime = DateTime.now();
+
       if (AnalyticsConfig.debugMode) {
         print('✅ Mixpanel initialized successfully');
-        print('Project token: ${_projectToken.substring(0, 8)}...');
       }
     } catch (e) {
       print('❌ Failed to initialize Mixpanel: $e');
@@ -77,8 +89,129 @@ class AnalyticsService {
     }
   }
 
-  /// Track app-specific events
+  // ===== 1. LIFECYCLE TRACKING =====
+
+  /// Track app lifecycle events
+  static void trackAppLifecycle(String lifecycleState) {
+    trackEvent('App Lifecycle', properties: {
+      'lifecycle_state': lifecycleState,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+
+  /// Track session start
+  static void trackSessionStart() {
+    _sessionStartTime = DateTime.now();
+    _sessionEnded = false; // Reset session ended flag
+    _resetAudioTracking(); // Reset audio tracking state
+    trackEvent('Session Started', properties: {
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+
+  /// Reset audio tracking state
+  static void _resetAudioTracking() {
+    _lastTrackedAudio = null;
+    _lastAudioTrackTime = null;
+  }
+
+  /// Track session end
+  static void trackSessionEnd() {
+    if (_sessionStartTime != null && !_sessionEnded) {
+      _sessionEnded = true; // Prevent duplicate session end events
+      final sessionDuration = DateTime.now().difference(_sessionStartTime!);
+      trackEvent('Session Ended', properties: {
+        'session_duration_seconds': sessionDuration.inSeconds,
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+    }
+  }
+
+  // ===== 2. TIME SPENT ON PAGE/SCREEN =====
+
+  /// Track screen view and start timing
+  static void trackScreenView(String screenName) {
+    // Track time spent on previous screen
+    if (_currentScreen != null && _screenStartTime != null) {
+      final timeSpent = DateTime.now().difference(_screenStartTime!);
+      trackEvent('Time Spent on Screen', properties: {
+        'screen_name': _currentScreen,
+        'time_spent_seconds': timeSpent.inSeconds,
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+    }
+
+    // Start timing for new screen
+    _currentScreen = screenName;
+    _screenStartTime = DateTime.now();
+
+    trackEvent('Screen View', properties: {
+      'screen_name': screenName,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+
+  // ===== 3. BUTTON CLICKS =====
+
+  /// Track button clicks
+  static void trackButtonClick(String buttonName,
+      {String? screen, Map<String, dynamic>? context}) {
+    trackEvent('Button Clicked', properties: {
+      'button_name': buttonName,
+      'screen': screen ?? _currentScreen,
+      'timestamp': DateTime.now().toIso8601String(),
+      ...?context,
+    });
+  }
+
+  // ===== 4. AUDIO CONTROLS =====
+
+  /// Track audio control (play/pause/stop)
+  static void trackAudioControl(String action, String audioName,
+      {String? audioType}) {
+    trackEvent('Audio Control', properties: {
+      'action': action, // 'play', 'pause', 'stop'
+      'audio_name': audioName,
+      'audio_type': audioType ?? 'unknown',
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+
+  // ===== 5. BACK PRESS =====
+
+  /// Track back press
+  static void trackBackPress({String? fromScreen}) {
+    trackEvent('Back Pressed', properties: {
+      'from_screen': fromScreen ?? _currentScreen,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+
+  // ===== 6. TEST REFRESH AND REPEAT =====
+
+  /// Track test refresh
+  static void trackTestRefresh(String testType,
+      {Map<String, dynamic>? context}) {
+    trackEvent('Test Refreshed', properties: {
+      'test_type': testType,
+      'timestamp': DateTime.now().toIso8601String(),
+      ...?context,
+    });
+  }
+
+  /// Track repeat switch toggle
+  static void trackRepeatSwitch(bool isEnabled, {String? audioName}) {
+    trackEvent('Repeat Switch Toggled', properties: {
+      'repeat_enabled': isEnabled,
+      'audio_name': audioName,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+
+  // ===== LEGACY METHODS (keeping for compatibility) =====
+
   static void trackAppLaunch() {
+    trackSessionStart();
     trackEvent('App Launched', properties: {
       'timestamp': DateTime.now().toIso8601String(),
     });
@@ -95,22 +228,6 @@ class AnalyticsService {
   static void trackJuzSelected(int juzNumber) {
     trackEvent('Juz Selected', properties: {
       'juz_number': juzNumber,
-      'timestamp': DateTime.now().toIso8601String(),
-    });
-  }
-
-  static void trackAudioPlayed(String audioType, String audioName) {
-    trackEvent('Audio Played', properties: {
-      'audio_type': audioType,
-      'audio_name': audioName,
-      'timestamp': DateTime.now().toIso8601String(),
-    });
-  }
-
-  static void trackAudioPaused(String audioType, String audioName) {
-    trackEvent('Audio Paused', properties: {
-      'audio_type': audioType,
-      'audio_name': audioName,
       'timestamp': DateTime.now().toIso8601String(),
     });
   }
@@ -143,9 +260,90 @@ class AnalyticsService {
     });
   }
 
-  static void trackScreenView(String screenName) {
-    trackEvent('Screen View', properties: {
-      'screen_name': screenName,
+  // ===== AUDIO LIFECYCLE TRACKING =====
+
+  /// Track audio lifecycle events (start/complete)
+  static void trackAudioLifecycle(
+    String event,
+    String audioName, {
+    String? audioType,
+    String? surahName,
+    int? ayahNumber,
+    bool? isPlaylist,
+    Map<String, dynamic>? additionalProperties,
+  }) {
+    final properties = <String, dynamic>{
+      'audio_name': audioName,
+      'audio_type': audioType ?? 'recitation',
+      'timestamp': DateTime.now().toIso8601String(),
+      if (surahName != null) 'surah_name': surahName,
+      if (ayahNumber != null) 'ayah_number': ayahNumber,
+      if (isPlaylist != null) 'is_playlist': isPlaylist,
+      ...?additionalProperties,
+    };
+
+    trackEvent(event, properties: properties);
+  }
+
+  /// Track audio start with deduplication
+  static void trackAudioStart(
+    String audioName, {
+    String? audioType,
+    String? surahName,
+    int? ayahNumber,
+    bool? isPlaylist,
+    Map<String, dynamic>? additionalProperties,
+  }) {
+    final now = DateTime.now();
+    final audioKey = '${audioName}_${surahName ?? ''}_${ayahNumber ?? ''}';
+
+    // Check if this is a duplicate within 2 seconds
+    if (_lastTrackedAudio == audioKey &&
+        _lastAudioTrackTime != null &&
+        now.difference(_lastAudioTrackTime!).inSeconds < 2) {
+      return; // Skip duplicate
+    }
+
+    // Update tracking state
+    _lastTrackedAudio = audioKey;
+    _lastAudioTrackTime = now;
+
+    trackAudioLifecycle(
+      'Audio Started',
+      audioName,
+      audioType: audioType,
+      surahName: surahName,
+      ayahNumber: ayahNumber,
+      isPlaylist: isPlaylist,
+      additionalProperties: additionalProperties,
+    );
+  }
+
+  /// Track audio completion
+  static void trackAudioComplete(
+    String audioName, {
+    String? audioType,
+    String? surahName,
+    int? ayahNumber,
+    bool? wasPlaylist,
+    Map<String, dynamic>? additionalProperties,
+  }) {
+    trackAudioLifecycle(
+      'Audio Completed',
+      audioName,
+      audioType: audioType,
+      surahName: surahName,
+      ayahNumber: ayahNumber,
+      isPlaylist: wasPlaylist,
+      additionalProperties: additionalProperties,
+    );
+  }
+
+  /// Track speed change
+  static void trackSpeedChanged(double newSpeed, String audioName) {
+    trackEvent('Speed Changed', properties: {
+      'new_speed': newSpeed,
+      'audio_name': audioName,
       'timestamp': DateTime.now().toIso8601String(),
     });
   }

@@ -48,14 +48,16 @@ class QuranHafiz extends StatefulWidget {
   State<QuranHafiz> createState() => _QuranHafizState();
 }
 
-class _QuranHafizState extends State<QuranHafiz> {
+class _QuranHafizState extends State<QuranHafiz> with WidgetsBindingObserver {
   late final ThemeController _themeController;
+  bool _sessionEnded = false;
 
   @override
   void initState() {
     super.initState();
     _themeController = getIt<ThemeController>();
     _themeController.addListener(_onThemeChanged);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   void _onThemeChanged() {
@@ -63,8 +65,52 @@ class _QuranHafizState extends State<QuranHafiz> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    // Track app lifecycle changes
+    switch (state) {
+      case AppLifecycleState.resumed:
+        AnalyticsService.trackAppLifecycle('App opened from minimised');
+        AnalyticsService.trackSessionStart();
+        _sessionEnded = false;
+        break;
+      case AppLifecycleState.paused:
+        AnalyticsService.trackAppLifecycle('App sent to background');
+
+        if (!_sessionEnded) {
+          AnalyticsService.trackSessionEnd();
+          _sessionEnded = true;
+        }
+
+        break;
+      case AppLifecycleState.inactive:
+        AnalyticsService.trackAppLifecycle('App transitioning');
+        break;
+      case AppLifecycleState.detached:
+        AnalyticsService.trackAppLifecycle('App terminated');
+
+        if (!_sessionEnded) {
+          AnalyticsService.trackSessionEnd();
+          _sessionEnded = true;
+        }
+
+        break;
+      case AppLifecycleState.hidden:
+        AnalyticsService.trackAppLifecycle('App hidden');
+        break;
+    }
+  }
+
+  @override
   void dispose() {
     _themeController.removeListener(_onThemeChanged);
+    WidgetsBinding.instance.removeObserver(this);
+
+    if (!_sessionEnded) {
+      AnalyticsService.trackSessionEnd();
+    }
+
     super.dispose();
   }
 

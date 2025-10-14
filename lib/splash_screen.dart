@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hafiz_test/main_menu.dart';
 import 'package:hafiz_test/services/analytics_service.dart';
-import 'package:shimmer/shimmer.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen>
     _iconController =
         AnimationController(vsync: this, duration: const Duration(seconds: 3))
           ..repeat(reverse: true);
+
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         Navigator.pushReplacement(
@@ -92,23 +92,10 @@ class _SplashScreenState extends State<SplashScreen>
                         color: Colors.amber.shade300,
                       ),
                       Image.asset(
-                        'assets/img/quran_opened_star.png',
+                        'assets/img/logo.png',
                         height: 200,
                       ),
                     ],
-                  ),
-                ),
-                Shimmer.fromColors(
-                  baseColor: Colors.amber.shade200,
-                  highlightColor: Colors.greenAccent,
-                  child: const Text(
-                    "Quran Hafiz",
-                    style: TextStyle(
-                      fontSize: 52,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 3,
-                      fontFamily: 'serif',
-                    ),
                   ),
                 ),
                 const SizedBox(height: 15),
@@ -127,7 +114,7 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Column(
                     children: [
                       Text(
-                        "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ",
+                        "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 20,
@@ -146,7 +133,7 @@ class _SplashScreenState extends State<SplashScreen>
                       const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 30),
                         child: Text(
-                          "“And We have certainly made the Qur’an easy for remembrance, so is there any who will remember?” (Q54:17)",
+                          "\"And We have certainly made the Qur'an easy for remembrance, so is there any who will remember?\" (Q54:17)",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,

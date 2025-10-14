@@ -6,6 +6,7 @@ import 'package:hafiz_test/model/surah.model.dart';
 import 'package:hafiz_test/services/audio_services.dart';
 import 'package:hafiz_test/services/surah.services.dart';
 import 'package:hafiz_test/services/rating_service.dart';
+import 'package:hafiz_test/services/analytics_service.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -49,9 +50,24 @@ class QuranViewModel {
   void initiateListeners() {
     _playerStateSub = audioPlayer.playerStateStream.listen((state) {
       isPlayingNotifier.value = state.playing;
+
+      if (state.playing && state.processingState == ProcessingState.ready) {
+        AnalyticsService.trackAudioStart(
+          surah.englishName,
+          surahName: surah.englishName,
+          isPlaylist: isPlaylist,
+        );
+      }
+
       if (state.processingState == ProcessingState.completed) {
         isPlayingNotifier.value = false;
         isPlaylist = false;
+
+        AnalyticsService.trackAudioComplete(
+          surah.englishName,
+          surahName: surah.englishName,
+          wasPlaylist: true,
+        );
 
         // Track surah listening completion for rating system
         RatingService.trackSurahListened();
@@ -68,9 +84,9 @@ class QuranViewModel {
 
   Future<void> _togglePlayback() async {
     if (isPlayingNotifier.value) {
-      await audioService.pause();
+      await audioService.pause(audioName: surah.englishName);
     } else {
-      await audioService.play();
+      await audioService.play(audioName: surah.englishName);
     }
   }
 
@@ -85,6 +101,12 @@ class QuranViewModel {
   }
 
   Future<void> _initializePlaylist() async {
+    AnalyticsService.trackAudioStart(
+      surah.englishName,
+      surahName: surah.englishName,
+      isPlaylist: isPlaylist,
+    );
+
     isPlaylist = true;
     playingIndexNotifier.value = 0;
 
