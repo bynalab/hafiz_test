@@ -19,8 +19,12 @@ void main() {
       const MaterialApp(home: SplashScreen()),
     );
 
-    expect(find.text('Quran Hafiz'), findsOneWidget);
     expect(find.text('Master the Quran, one Ayah at a time'), findsOneWidget);
+    expect(
+      find.text(
+          "وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ"),
+      findsOneWidget,
+    );
 
     // Wait for navigation to complete
     await tester.pump(const Duration(seconds: 3));
