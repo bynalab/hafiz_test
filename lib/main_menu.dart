@@ -106,14 +106,10 @@ class _MainMenuState extends State<_MainMenu> {
               : const Color(0xFF004B40),
           scrolledUnderElevation: 10,
           automaticallyImplyLeading: false,
-          title: SvgPicture.asset(
-            'assets/img/logo.svg',
-            colorFilter: ColorFilter.mode(
-              Theme.of(context).brightness == Brightness.dark
-                  ? Theme.of(context).colorScheme.onSurface
-                  : const Color(0xFF222222),
-              BlendMode.srcIn,
-            ),
+          title: Image.asset(
+            'assets/img/logo.png',
+            width: 100,
+            height: 100,
           ),
           actions: [
             ShowCase(

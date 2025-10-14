@@ -93,7 +93,7 @@ class _SettingDialogState extends State<SettingDialog> {
             const SizedBox(height: 16),
             if (isLoading)
               const Center(child: CircularProgressIndicator.adaptive())
-            else
+            else ...[
               Column(
                 children: [
                   Row(
@@ -158,99 +158,100 @@ class _SettingDialogState extends State<SettingDialog> {
                   ),
                 ],
               ),
-            const SizedBox(height: 30),
-            Text(
-              'Select your favorite reciter',
-              style: GoogleFonts.montserrat(
-                fontWeight: FontWeight.w500,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            SearchableDropdown<Reciter>(
-              items: reciters,
-              selectedItem: reciters.firstWhereOrNull(
-                (reciter) => reciter.identifier == this.reciter,
-              ),
-              getDisplayText: (reciter) => reciter.englishName,
-              getSubText: (reciter) =>
-                  reciter.name != reciter.englishName ? reciter.name : '',
-              getItemId: (reciter) => reciter.identifier,
-              hintText: 'Select your favorite reciter',
-              searchHint: 'Search reciters...',
-              onChanged: (selectedReciter) {
-                final oldValue = reciter;
-                setState(() {
-                  reciter = selectedReciter?.identifier;
-                });
-
-                AnalyticsService.trackSettingsChanged(
-                  'reciter',
-                  oldValue,
-                  selectedReciter?.identifier,
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            LinkButton(
-              icon: Icons.language,
-              title: 'Visit Our Website',
-              onTap: () {
-                launchInBrowser(context, 'https://hafizpro.com', 'Website');
-              },
-            ),
-            const SizedBox(height: 12),
-            LinkButton(
-              icon: Icons.star_rate,
-              title: 'Rate This App',
-              onTap: () => _showInAppRating(context),
-            ),
-            const SizedBox(height: 20),
-            if (kDebugMode) ...[
-              // Debug button for rating system (remove in production)
-              Button(
-                height: 32,
-                color: Colors.orange,
-                child: Text(
-                  'Debug Rating System',
-                  style: GoogleFonts.montserrat(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
+              const SizedBox(height: 30),
+              Text(
+                'Select your favorite reciter',
+                style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                  showDialog(
-                    context: context,
-                    builder: (_) => const RatingDebugDialog(),
+              ),
+              SearchableDropdown<Reciter>(
+                items: reciters,
+                selectedItem: reciters.firstWhereOrNull(
+                  (reciter) => reciter.identifier == this.reciter,
+                ),
+                getDisplayText: (reciter) => reciter.englishName,
+                getSubText: (reciter) =>
+                    reciter.name != reciter.englishName ? reciter.name : '',
+                getItemId: (reciter) => reciter.identifier,
+                hintText: 'Select your favorite reciter',
+                searchHint: 'Search reciters...',
+                onChanged: (selectedReciter) {
+                  final oldValue = reciter;
+                  setState(() {
+                    reciter = selectedReciter?.identifier;
+                  });
+
+                  AnalyticsService.trackSettingsChanged(
+                    'reciter',
+                    oldValue,
+                    selectedReciter?.identifier,
                   );
                 },
               ),
-              const SizedBox(height: 10),
-            ],
-            Button(
-              height: 36,
-              color: Theme.of(context).colorScheme.primary,
-              child: Text(
-                'Save',
-                style: GoogleFonts.montserrat(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
+              const SizedBox(height: 20),
+              LinkButton(
+                icon: Icons.language,
+                title: 'Visit Our Website',
+                onTap: () {
+                  launchInBrowser(context, 'https://hafizpro.com', 'Website');
+                },
               ),
-              onPressed: () {
-                AnalyticsService.trackEvent('Settings Saved', properties: {
-                  'autoplay': autoPlay,
-                  'theme': themeMode.name,
-                  'reciter': reciter ?? 'none',
-                });
-                storageServices.setAutoPlay(autoPlay);
-                storageServices.setReciter(reciter ?? '');
-                themeController.setMode(themeMode.name);
-                Navigator.pop(context);
-              },
-            )
+              const SizedBox(height: 12),
+              LinkButton(
+                icon: Icons.star_rate,
+                title: 'Rate This App',
+                onTap: () => _showInAppRating(context),
+              ),
+              const SizedBox(height: 20),
+              if (kDebugMode) ...[
+                // Debug button for rating system (remove in production)
+                Button(
+                  height: 32,
+                  color: Colors.orange,
+                  child: Text(
+                    'Debug Rating System',
+                    style: GoogleFonts.montserrat(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    showDialog(
+                      context: context,
+                      builder: (_) => const RatingDebugDialog(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+              ],
+              Button(
+                height: 36,
+                color: Theme.of(context).colorScheme.primary,
+                child: Text(
+                  'Save',
+                  style: GoogleFonts.montserrat(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+                onPressed: () {
+                  AnalyticsService.trackEvent('Settings Saved', properties: {
+                    'autoplay': autoPlay,
+                    'theme': themeMode.name,
+                    'reciter': reciter ?? 'none',
+                  });
+                  storageServices.setAutoPlay(autoPlay);
+                  storageServices.setReciter(reciter ?? '');
+                  themeController.setMode(themeMode.name);
+                  Navigator.pop(context);
+                },
+              )
+            ],
           ],
         ),
       ),

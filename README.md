@@ -1,4 +1,4 @@
-# Quran Hafiz 📖
+# Hafiz Pro 📖
 
 **Master the Quran, one Ayah at a time**
 

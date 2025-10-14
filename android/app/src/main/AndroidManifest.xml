@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <application
-        android:label="Hafiz Al-Quran Test"
+        android:label="Hafiz Pro"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
