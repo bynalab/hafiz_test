@@ -50,6 +50,7 @@ class QuranHafiz extends StatefulWidget {
 
 class _QuranHafizState extends State<QuranHafiz> with WidgetsBindingObserver {
   late final ThemeController _themeController;
+  bool _sessionEnded = false;
 
   @override
   void initState() {
@@ -72,17 +73,28 @@ class _QuranHafizState extends State<QuranHafiz> with WidgetsBindingObserver {
       case AppLifecycleState.resumed:
         AnalyticsService.trackAppLifecycle('App opened from minimised');
         AnalyticsService.trackSessionStart();
+        _sessionEnded = false;
         break;
       case AppLifecycleState.paused:
         AnalyticsService.trackAppLifecycle('App sent to background');
-        AnalyticsService.trackSessionEnd();
+
+        if (!_sessionEnded) {
+          AnalyticsService.trackSessionEnd();
+          _sessionEnded = true;
+        }
+
         break;
       case AppLifecycleState.inactive:
         AnalyticsService.trackAppLifecycle('App transitioning');
         break;
       case AppLifecycleState.detached:
         AnalyticsService.trackAppLifecycle('App terminated');
-        AnalyticsService.trackSessionEnd();
+
+        if (!_sessionEnded) {
+          AnalyticsService.trackSessionEnd();
+          _sessionEnded = true;
+        }
+
         break;
       case AppLifecycleState.hidden:
         AnalyticsService.trackAppLifecycle('App hidden');
@@ -94,7 +106,11 @@ class _QuranHafizState extends State<QuranHafiz> with WidgetsBindingObserver {
   void dispose() {
     _themeController.removeListener(_onThemeChanged);
     WidgetsBinding.instance.removeObserver(this);
-    AnalyticsService.trackSessionEnd();
+
+    if (!_sessionEnded) {
+      AnalyticsService.trackSessionEnd();
+    }
+
     super.dispose();
   }
 

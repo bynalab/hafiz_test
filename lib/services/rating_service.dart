@@ -173,7 +173,7 @@ class _RatingDialogState extends State<RatingDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'How would you rate your experience with Quran Hafiz?',
+            'How would you rate your experience with Hafiz Pro?',
             style: TextStyle(
               fontSize: 16,
               color: Theme.of(context)

@@ -57,12 +57,13 @@ class _SearchableDropdownState<T> extends State<SearchableDropdown<T>> {
   }
 
   void _onSearchChanged(String value) {
+    final query = value.toLowerCase();
+
     setState(() {
       _filteredItems = widget.items.where((item) {
-        final displayText = widget.getDisplayText(item).toLowerCase();
-        final subText = widget.getSubText?.call(item);
-        return displayText.contains(value.toLowerCase()) ||
-            (subText?.toLowerCase().contains(value.toLowerCase()) ?? false);
+        final display = widget.getDisplayText(item).toLowerCase();
+        final sub = widget.getSubText?.call(item).toLowerCase() ?? '';
+        return display.contains(query) || sub.contains(query);
       }).toList();
     });
   }
