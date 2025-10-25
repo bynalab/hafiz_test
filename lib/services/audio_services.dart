@@ -12,9 +12,10 @@ class AudioServices {
 
   final audioPlayer = AudioPlayer();
 
-  Future<void> setAudioSource(AudioSource audioSource) async {
+  Future<void> setAudioSource(AudioSource audioSource,
+      {bool preload = true}) async {
     try {
-      await audioPlayer.setAudioSource(audioSource);
+      await audioPlayer.setAudioSource(audioSource, preload: preload);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -23,7 +24,7 @@ class AudioServices {
   Future<void> setPlaylistAudio(List<AudioSource> audioSources) async {
     try {
       await audioPlayer.setAudioSources(audioSources);
-      await stop();
+      await stop(trackEvent: false);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -33,7 +34,7 @@ class AudioServices {
     try {
       // If playback has completed, restart from beginning
       if (audioPlayer.processingState == ProcessingState.completed) {
-        await stop();
+        await stop(trackEvent: false);
         await seek(Duration.zero, index: 0);
       }
 
@@ -67,13 +68,16 @@ class AudioServices {
     }
   }
 
-  Future<void> stop({String? audioName}) async {
+  Future<void> stop({String? audioName, bool trackEvent = true}) async {
     try {
       await audioPlayer.stop();
 
       // Track audio stop with context
-      AnalyticsService.trackAudioControl('stop', audioName ?? 'Audio Playback',
-          audioType: 'recitation');
+      if (trackEvent) {
+        AnalyticsService.trackAudioControl(
+            'stop', audioName ?? 'Audio Playback',
+            audioType: 'recitation');
+      }
     } catch (e) {
       debugPrint('Error stopping audio: ${e.toString()}');
     }
@@ -105,9 +109,9 @@ class AudioServices {
     Duration? position,
     int? index,
   }) async {
-    await audioPlayer.stop();
-    await audioPlayer.seek(position ?? Duration.zero, index: index);
-    await audioPlayer.setAudioSource(
+    await stop();
+    await seek(position ?? Duration.zero, index: index);
+    await setAudioSource(
       preload: false,
       audioSource ?? AudioSource.uri(Uri(), tag: MediaItem(id: '', title: '')),
     );
