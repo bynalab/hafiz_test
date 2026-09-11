@@ -331,6 +331,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 10),
                   SettingsTile(
+                    leading: const LeadingCircle(
+                      Icons.screen_lock_portrait_rounded,
+                    ),
+                    title: context.l10n.settingsKeepScreenAwakeTitle,
+                    subtitle: context.l10n.settingsKeepScreenAwakeSubtitle,
+                    trailing: AppSwitch(
+                      value: controller.keepScreenAwake,
+                      onChanged: controller.setKeepScreenAwake,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  SettingsTile(
                     leading: const LeadingCircle.asset(
                       'assets/icons/hand_megaphone.png',
                     ),
@@ -389,10 +401,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 10),
                   FutureBuilder<TranslationInfo?>(
                     future: getIt.isRegistered<QuranDb>()
-                        ? getIt<QuranDb>().getTranslation(controller.translationId)
+                        ? getIt<QuranDb>()
+                            .getTranslation(controller.translationId)
                         : Future.value(null),
                     builder: (context, snapshot) {
-                      final subtitleName = snapshot.data?.name ?? controller.translationId;
+                      final subtitleName =
+                          snapshot.data?.name ?? controller.translationId;
 
                       return SettingsTile(
                         leading: const LeadingCircle(Icons.translate_rounded),
@@ -400,7 +414,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         subtitle: subtitleName,
                         trailing: Icon(
                           Icons.chevron_right_rounded,
-                          color: isDark ? Colors.white : const Color(0xFF111827),
+                          color:
+                              isDark ? Colors.white : const Color(0xFF111827),
                         ),
                         onTap: () async {
                           final selected = await TranslationPickerSheet(

@@ -417,6 +417,11 @@
   "quranSettingsLayoutList": "Liste",
   "quranSettingsLayoutFocus": "Fokus",
   "quranSettingsLayoutMushaf": "Moshaf",
-  "ayahFinderStartListening": "H\u00f6ren starten",
-  "ayahFinderStopListening": "H\u00f6ren beenden"
+  "ayahFinderStartListening": "Hören starten",
+  "ayahFinderStopListening": "Hören beenden",
+  "settingsKeepScreenAwakeTitle": "Bildschirm eingeschaltet lassen",
+  "settingsKeepScreenAwakeSubtitle": "Verhindert das Ausschalten des Bildschirms während der Nutzung",
+  "recitationReciteNextVerse": "Rezitieren Sie den nächsten Vers...",
+  "recitationAnalyzingNextVerse": "Nächster Vers wird analysiert...",
+  "recitationNextVerseResult": "Ergebnis des nächsten Verses"
 }

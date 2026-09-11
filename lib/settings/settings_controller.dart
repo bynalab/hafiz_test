@@ -6,6 +6,7 @@ import 'package:hafiz_test/services/notification_service.dart';
 import 'package:hafiz_test/services/storage/abstract_storage_service.dart';
 import 'package:hafiz_test/util/theme_controller.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class SettingsController extends ChangeNotifier {
   final IStorageService _storage;
@@ -23,6 +24,7 @@ class SettingsController extends ChangeNotifier {
   bool isLoading = true;
 
   bool autoPlay = true;
+  bool keepScreenAwake = false;
   String? reciter;
   String translationId = 'en_khattab';
   late ThemeMode themeMode;
@@ -35,6 +37,14 @@ class SettingsController extends ChangeNotifier {
   Future<void> load() async {
     try {
       autoPlay = _storage.checkAutoPlay();
+      keepScreenAwake = _storage.getBool('keep_screen_awake') ?? false;
+      if (keepScreenAwake) {
+        try {
+          await WakelockPlus.enable();
+        } catch (e) {
+          debugPrint('Failed to enable Wakelock: $e');
+        }
+      }
       reciter = _storage.getReciterId();
       translationId = _storage.getString('translation_id') ?? 'en_khattab';
       themeMode = ThemeMode.values.byName(_theme.mode);
@@ -81,6 +91,25 @@ class SettingsController extends ChangeNotifier {
 
     AnalyticsService.trackSettingsChanged('autoplay', oldValue, value);
     await _storage.setAutoPlay(value);
+  }
+
+  Future<void> setKeepScreenAwake(bool value) async {
+    final oldValue = keepScreenAwake;
+    keepScreenAwake = value;
+    notifyListeners();
+
+    try {
+      if (value) {
+        await WakelockPlus.enable();
+      } else {
+        await WakelockPlus.disable();
+      }
+    } catch (e) {
+      debugPrint('Failed to set wakelock: $e');
+    }
+
+    AnalyticsService.trackSettingsChanged('keep_screen_awake', oldValue, value);
+    await _storage.setBool('keep_screen_awake', value);
   }
 
   Future<void> setReciter(String identifier) async {
@@ -136,6 +165,7 @@ class SettingsController extends ChangeNotifier {
         'progress_tracking_mode', oldValue, mode);
     await _storage.setProgressTrackingMode(mode);
   }
+
   /// Trigger an immediate test notification for the user.
   Future<void> testNotification() async {
     await _notifications.showTestNotification();
