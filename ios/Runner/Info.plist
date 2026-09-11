@@ -56,5 +56,7 @@
 	<string>We need access to your microphone to record your recitation for verification.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>We need speech recognition permission to analyze your recitation and provide feedback.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We use your photo library so you can select and upload photos in the app.</string>
 </dict>
 </plist>
