@@ -3,7 +3,7 @@ description: Master the Quran, One Ayah at a Time
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 26.08.12+23
+version: 26.09.11+24
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -48,6 +48,7 @@ dependencies:
   string_similarity: ^2.0.0
   share_plus: ^10.1.4
   background_downloader: ^9.5.4
+  wakelock_plus: ^1.4.0
 
 dev_dependencies:
   flutter_test:

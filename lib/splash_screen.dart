@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _iconController;
   late final IStorageService _storage;
 
-  static const String _verseTitle = 'Al-Qamar (57): Verse 20';
+  static const String _verseTitle = 'Al-Qamar (54): Verse 17';
   static const String _verseArabic =
       'وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ';
   static const String _verseTranslation =

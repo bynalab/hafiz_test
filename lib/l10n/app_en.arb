@@ -1183,5 +1183,33 @@
   "ayahFinderStopListening": "Stop listening",
   "@ayahFinderStopListening": {
     "description": "Semantics label on the ayah-finder mic button when actively listening."
+  },
+  "settingsKeepScreenAwakeTitle": "Keep Screen Awake",
+  "@settingsKeepScreenAwakeTitle": {
+    "description": "Settings title for keeping screen awake while using the app."
+  },
+  "settingsKeepScreenAwakeSubtitle": "Prevent screen from turning off while using the app",
+  "@settingsShowAyahNumberSubtitle": {
+    "description": "Settings subtitle explaining Ayah number visibility in tests."
+  },
+  "settingsKeepScreenAwakeTitle": "Keep Screen Awake",
+  "@settingsKeepScreenAwakeTitle": {
+    "description": "Settings title for keeping screen awake while using the app."
+  },
+  "settingsKeepScreenAwakeSubtitle": "Prevent screen from turning off while using the app",
+  "@settingsKeepScreenAwakeSubtitle": {
+    "description": "Settings subtitle explaining keep screen awake behavior."
+  },
+  "recitationReciteNextVerse": "Recite Next Verse...",
+  "@recitationReciteNextVerse": {
+    "description": "Header while user is recording recitation with hidden Ayah number."
+  },
+  "recitationAnalyzingNextVerse": "Analyzing Next Verse...",
+  "@recitationAnalyzingNextVerse": {
+    "description": "Header while recitation is being analyzed with hidden Ayah number."
+  },
+  "recitationNextVerseResult": "Next Verse Result",
+  "@recitationNextVerseResult": {
+    "description": "Header for next verse result with hidden Ayah number."
   }
 }

@@ -17,6 +17,8 @@ import 'package:hafiz_test/services/user_identification_service.dart';
 import 'package:hafiz_test/services/audio_download_service.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
+import 'package:wakelock_plus/wakelock_plus.dart';
+
 final quranHafizKey = GlobalKey<_QuranHafizState>();
 
 void main() async {
@@ -90,6 +92,13 @@ class _QuranHafizState extends State<QuranHafiz> with WidgetsBindingObserver {
   Future<void> _restoreLocale() async {
     try {
       final storage = getIt<IStorageService>();
+      final keepScreenAwake = storage.getBool('keep_screen_awake') ?? false;
+      if (keepScreenAwake) {
+        try {
+          await WakelockPlus.enable();
+        } catch (_) {}
+      }
+
       final raw = storage.getString('language');
       if (raw == null) return;
       const allowed = {'en', 'ar', 'ru', 'de'};

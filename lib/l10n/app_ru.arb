@@ -417,6 +417,11 @@
   "quranSettingsLayoutList": "\u0421\u043f\u0438\u0441\u043e\u043a",
   "quranSettingsLayoutFocus": "\u0424\u043e\u043a\u0443\u0441",
   "quranSettingsLayoutMushaf": "\u041c\u0443\u0441\u0445\u0430\u0444",
-  "ayahFinderStartListening": "\u041d\u0430\u0447\u0430\u0442\u044c \u043f\u0440\u043e\u0441\u043b\u0443\u0448\u0438\u0432\u0430\u043d\u0438\u0435",
-  "ayahFinderStopListening": "\u041e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u043f\u0440\u043e\u0441\u043b\u0443\u0448\u0438\u0432\u0430\u043d\u0438\u0435"
+  "ayahFinderStartListening": "Начать прослушивание",
+  "ayahFinderStopListening": "Остановить прослушивание",
+  "settingsKeepScreenAwakeTitle": "Не выключать экран",
+  "settingsKeepScreenAwakeSubtitle": "Предотвращать отключение экрана во время использования приложения",
+  "recitationReciteNextVerse": "Произнесите следующий аят...",
+  "recitationAnalyzingNextVerse": "Анализ следующего аята...",
+  "recitationNextVerseResult": "Результат следующего аята"
 }
